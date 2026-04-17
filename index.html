@@ -215,9 +215,18 @@
 
   .link-item:last-child { border-bottom: none; }
 
-  .link-item:hover {
+  .link-item:active {
     background: var(--plum);
     color: var(--cream);
+  }
+
+  .link-item.tapped {
+    animation: tap-flash 0.4s ease forwards;
+  }
+
+  @keyframes tap-flash {
+    0%   { background: var(--plum); color: var(--cream); }
+    100% { background: transparent; color: var(--cream-dim); }
   }
 
   .link-item:hover .arrow { transform: translateX(3px); color: var(--cream); }
@@ -488,6 +497,16 @@
   }
 
   checkExistingStatus();
+
+  // Tap flash for link items
+  document.querySelectorAll('.link-item:not(.link-item--expandable)').forEach(link => {
+    link.addEventListener('click', function() {
+      this.classList.remove('tapped');
+      void this.offsetWidth; // force reflow
+      this.classList.add('tapped');
+      setTimeout(() => this.classList.remove('tapped'), 400);
+    });
+  });
 
   window.toggleJoshuaLinks = function(el) {
     el.classList.toggle('open');
