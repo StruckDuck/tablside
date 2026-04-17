@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Tableside Magic</title>
+<title>Admin — Tablside</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Raleway:wght@300;400;500;600&display=swap');
 
@@ -20,7 +20,6 @@
     --teal: #273534;
     --plum: #6f0f43;
     --red: #a01a1a;
-    --red-bg: #fdf0f0;
   }
 
   body {
@@ -33,7 +32,6 @@
     margin: 0 auto;
   }
 
-  /* HEADER */
   .header {
     display: flex;
     align-items: center;
@@ -62,7 +60,6 @@
     cursor: pointer;
   }
 
-  /* MAP */
   .map-container {
     width: 100%;
     background: var(--surface2);
@@ -76,12 +73,7 @@
     margin-bottom: 1.25rem;
   }
 
-  .map-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .map-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .map-placeholder {
     display: flex;
@@ -116,7 +108,16 @@
 
   #map-file-input { display: none; }
 
-  /* QUEUE */
+  .current-table-bar {
+    display: none;
+    margin-bottom: 1.25rem;
+    background: var(--plum);
+    padding: 0.85rem 1rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .section-header {
     display: flex;
     align-items: center;
@@ -143,7 +144,6 @@
     font-weight: 600;
     background: var(--plum);
     color: #fff;
-    transition: background 0.2s;
   }
 
   .queue-count.empty {
@@ -175,7 +175,6 @@
     justify-content: space-between;
     padding: 0.8rem 1rem;
     border-bottom: 1px solid var(--border);
-    transition: background 0.2s;
   }
 
   .queue-entry:last-child { border-bottom: none; }
@@ -183,29 +182,10 @@
 
   .entry-left { display: flex; flex-direction: column; gap: 0.15rem; }
 
-  .entry-label {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: 0.02em;
-  }
-
-  .entry-label.scan {
-    font-weight: 400;
-    color: var(--text-muted);
-  }
-
-  .entry-label.cancelled {
-    font-weight: 400;
-    color: var(--red);
-  }
-
-  .entry-wait {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
+  .entry-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .entry-label.scan { font-weight: 400; color: var(--text-muted); }
+  .entry-label.cancelled { font-weight: 400; color: var(--red); }
+  .entry-wait { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
   .on-my-way-btn {
     background: var(--plum);
@@ -224,8 +204,8 @@
 
   .on-my-way-btn:hover { opacity: 0.8; }
 
-  /* STATS */
-  .stats-toggle {
+  /* COLLAPSIBLE SECTIONS */
+  .collapse-toggle {
     width: 100%;
     display: flex;
     align-items: center;
@@ -234,11 +214,11 @@
     background: var(--surface);
     border: 1px solid var(--border);
     cursor: pointer;
-    margin-bottom: 1px;
     font-family: 'Raleway', sans-serif;
+    margin-bottom: 1px;
   }
 
-  .stats-toggle-label {
+  .collapse-label {
     font-size: 0.65rem;
     font-weight: 500;
     color: var(--text-muted);
@@ -246,26 +226,66 @@
     text-transform: uppercase;
   }
 
-  .stats-toggle-arrow {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    transition: transform 0.2s;
-  }
+  .collapse-arrow { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; }
+  .collapse-arrow.open { transform: rotate(180deg); }
 
-  .stats-toggle-arrow.open { transform: rotate(180deg); }
-
-  .stats-panel {
+  .collapse-panel {
     display: none;
     background: var(--surface);
     border: 1px solid var(--border);
     border-top: none;
-    padding: 1rem;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
-  .stats-panel.open { display: grid; }
+  .collapse-panel.open { display: block; }
+
+  /* STATS */
+  .stats-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats-tab {
+    flex: 1;
+    padding: 0.6rem;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .stats-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  .month-select-row {
+    display: none;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .month-select-row.visible { display: block; }
+
+  .month-select-row select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.7rem;
+    padding: 5px 8px;
+    outline: none;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
 
   .stat-card {
     background: var(--surface2);
@@ -293,28 +313,6 @@
   }
 
   /* SETTINGS */
-  .settings-toggle {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    margin-bottom: 1px;
-    font-family: 'Raleway', sans-serif;
-  }
-
-  .settings-panel {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: none;
-  }
-
-  .settings-panel.open { display: block; }
-
   .setting-row {
     display: flex;
     align-items: center;
@@ -323,20 +321,9 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .setting-row:last-child { border-bottom: none; }
-
-  .setting-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-  }
-
-  .setting-value {
-    font-size: 0.7rem;
-    color: var(--gold);
-    min-width: 36px;
-    text-align: right;
-  }
+  .setting-row:last-of-type { border-bottom: none; }
+  .setting-label { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.08em; }
+  .setting-value { font-size: 0.7rem; color: var(--gold); min-width: 36px; text-align: right; }
 
   input[type="range"] {
     -webkit-appearance: none;
@@ -397,7 +384,61 @@
 
   .saved-msg.show { opacity: 1; }
 
-  /* VENUE MANAGER MODAL */
+  /* COLOR PICKER ROWS */
+  .color-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    gap: 0.5rem;
+  }
+
+  .color-row:last-of-type { border-bottom: none; }
+
+  .color-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  input[type="color"] {
+    width: 32px;
+    height: 28px;
+    border: 1px solid var(--border);
+    padding: 2px;
+    cursor: pointer;
+    background: none;
+  }
+
+  .hex-input {
+    width: 80px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.68rem;
+    padding: 4px 6px;
+    outline: none;
+    letter-spacing: 0.05em;
+  }
+
+  .hex-input:focus { border-color: var(--teal); }
+
+  .text-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.68rem;
+    padding: 5px 8px;
+    outline: none;
+    width: 160px;
+  }
+
+  .text-input:focus { border-color: var(--teal); }
+
+  /* MODAL */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -416,7 +457,7 @@
     border: 1px solid var(--border);
     width: 100%;
     max-width: 400px;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
   }
 
@@ -426,24 +467,14 @@
     justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
   }
 
-  .modal-title {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    line-height: 1;
-  }
+  .modal-title { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .modal-close { background: none; border: none; font-size: 1.1rem; color: var(--text-muted); cursor: pointer; line-height: 1; }
 
   .venue-list { padding: 0.5rem 0; }
 
@@ -453,7 +484,6 @@
     justify-content: space-between;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border);
-    cursor: pointer;
     transition: background 0.15s;
   }
 
@@ -461,40 +491,28 @@
   .venue-item:hover { background: var(--surface2); }
   .venue-item.active { background: #f0f8f0; }
 
-  .venue-item-name {
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--text);
-  }
+  .venue-item-name { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+  .venue-item-active { font-size: 0.6rem; color: #2a6a2a; letter-spacing: 0.1em; text-transform: uppercase; }
 
-  .venue-item-active {
-    font-size: 0.6rem;
-    color: #2a6a2a;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .venue-item-actions {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
+  .venue-item-actions { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 
   .venue-action-btn {
     background: none;
     border: 1px solid var(--border);
     color: var(--text-muted);
     font-family: 'Raleway', sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 3px 8px;
+    padding: 3px 7px;
     cursor: pointer;
     transition: all 0.15s;
+    white-space: nowrap;
   }
 
   .venue-action-btn:hover { border-color: var(--text-muted); color: var(--text); }
   .venue-action-btn.delete:hover { border-color: var(--red); color: var(--red); }
+  .venue-action-btn.active-select { border-color: var(--teal); color: var(--teal); }
 
   .add-venue-section {
     padding: 1rem;
@@ -504,12 +522,7 @@
     gap: 0.6rem;
   }
 
-  .add-venue-title {
-    font-size: 0.62rem;
-    color: var(--text-muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
+  .add-venue-title { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; }
 
   .venue-name-input {
     width: 100%;
@@ -559,11 +572,21 @@
   }
 
   .add-venue-btn:hover { opacity: 0.85; }
+
+  /* CUSTOMIZE MODAL */
+  .customize-section {
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .customize-title { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-title">Tonight</div>
   <div class="venue-badge" id="venue-badge" onclick="openVenueModal()">No venue selected</div>
@@ -577,15 +600,13 @@
 </div>
 <input type="file" id="map-file-input" accept="image/*">
 
-<!-- CURRENT TABLE INDICATOR -->
-<div id="current-table-bar" style="display:none; margin-bottom:1.25rem;">
-  <div style="background:var(--plum);padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;">
-    <div>
-      <div style="font-size:0.6rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.2rem;">Heading to</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:#fff;" id="current-table-label">—</div>
-    </div>
-    <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;" id="current-table-timer"></div>
+<!-- CURRENT TABLE -->
+<div class="current-table-bar" id="current-table-bar">
+  <div>
+    <div style="font-size:0.6rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.2rem;">Heading to</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:#fff;" id="current-table-label">—</div>
   </div>
+  <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;" id="current-table-timer"></div>
 </div>
 
 <!-- QUEUE -->
@@ -594,47 +615,40 @@
   <div class="queue-count empty" id="queue-count">0</div>
 </div>
 <div class="queue-list" id="queue-list">
-  <div class="queue-empty">No requests yet.</div>
+  <div class="queue-empty">No activity yet.</div>
 </div>
 
 <!-- STATS -->
-<div class="stats-toggle" onclick="toggleStats()">
-  <div class="stats-toggle-label">Stats</div>
-  <div class="stats-toggle-arrow" id="stats-arrow">▼</div>
+<div class="collapse-toggle" onclick="togglePanel('stats')">
+  <div class="collapse-label">Stats</div>
+  <div class="collapse-arrow" id="stats-arrow">▼</div>
 </div>
-<div class="stats-panel" id="stats-panel">
-  <div class="stat-card">
-    <div class="stat-value" id="stat-performances">0</div>
-    <div class="stat-label">Tables performed</div>
+<div class="collapse-panel" id="stats-panel">
+  <div class="stats-tabs">
+    <div class="stats-tab active" id="tab-tonight" onclick="switchTab('tonight')">Tonight</div>
+    <div class="stats-tab" id="tab-month" onclick="switchTab('month')">By Month</div>
+    <div class="stats-tab" id="tab-alltime" onclick="switchTab('alltime')">All Time</div>
   </div>
-  <div class="stat-card">
-    <div class="stat-value" id="stat-conversion">—</div>
-    <div class="stat-label">Scan to request rate</div>
+  <div class="month-select-row" id="month-select-row">
+    <select id="month-select" onchange="loadStats()">
+    </select>
   </div>
-  <div class="stat-card">
-    <div class="stat-value" id="stat-cancellations">0</div>
-    <div class="stat-label">Cancellations</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="stat-avg-wait">—</div>
-    <div class="stat-label">Avg wait time</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="stat-total-scans">0</div>
-    <div class="stat-label">Total scans</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="stat-peak">—</div>
-    <div class="stat-label">Peak request hour</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" id="stat-performances">0</div><div class="stat-label">Tables performed</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-conversion">—</div><div class="stat-label">Scan to request rate</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-cancellations">0</div><div class="stat-label">Cancellations</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-avg-wait">—</div><div class="stat-label">Avg wait time</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-total-scans">0</div><div class="stat-label">Total scans</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-peak">—</div><div class="stat-label">Peak request hour</div></div>
   </div>
 </div>
 
 <!-- SETTINGS -->
-<div class="settings-toggle" onclick="toggleSettings()">
-  <div class="stats-toggle-label">Settings</div>
-  <div class="stats-toggle-arrow" id="settings-arrow">▼</div>
+<div class="collapse-toggle" onclick="togglePanel('settings')">
+  <div class="collapse-label">Settings</div>
+  <div class="collapse-arrow" id="settings-arrow">▼</div>
 </div>
-<div class="settings-panel" id="settings-panel">
+<div class="collapse-panel" id="settings-panel">
   <div class="setting-row">
     <div class="setting-label">Timer delay</div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -673,12 +687,41 @@
       </label>
       <button class="add-venue-btn" onclick="addVenue()">Add Venue</button>
     </div>
+
+    <!-- CUSTOMIZE SECTION -->
+    <div class="customize-section" id="customize-section" style="display:none;">
+      <div class="customize-title" id="customize-title">Customize</div>
+      <div class="color-row">
+        <div class="setting-label">Box color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-box-picker" value="#273534">
+          <input type="text" class="hex-input" id="color-box-hex" value="#273534" maxlength="7">
+        </div>
+      </div>
+      <div class="color-row">
+        <div class="setting-label">Accent color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-accent-picker" value="#6f0f43">
+          <input type="text" class="hex-input" id="color-accent-hex" value="#6f0f43" maxlength="7">
+        </div>
+      </div>
+      <div class="color-row">
+        <div class="setting-label">Venue link label</div>
+        <input type="text" class="text-input" id="venue-link-label" placeholder="More evenings here">
+      </div>
+      <div class="color-row" style="border-bottom:none;">
+        <div class="setting-label">Venue link URL</div>
+        <input type="text" class="text-input" id="venue-link-url" placeholder="https://...">
+      </div>
+      <button class="add-venue-btn" style="margin-top:0.75rem;" onclick="saveVenueConfig()">Save Appearance</button>
+      <div class="saved-msg" id="config-saved-msg" style="padding:0.5rem 0 0;">Appearance saved</div>
+    </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, collectionGroup, onSnapshot, doc, setDoc, updateDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
@@ -720,6 +763,7 @@
   // --- VENUES ---
   let venues = JSON.parse(localStorage.getItem('venues') || '[]');
   let newVenueMapData = null;
+  let customizeSlug = null;
 
   function getVenueSlug(name) {
     return name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -727,6 +771,7 @@
 
   window.openVenueModal = function() {
     renderVenueList();
+    document.getElementById('customize-section').style.display = 'none';
     document.getElementById('venue-modal').classList.add('open');
   }
 
@@ -754,10 +799,7 @@
     const name = document.getElementById('new-venue-name').value.trim();
     if (!name) return;
     const slug = getVenueSlug(name);
-    if (venues.find(v => v.slug === slug)) {
-      alert('A venue with that name already exists.');
-      return;
-    }
+    if (venues.find(v => v.slug === slug)) { alert('A venue with that name already exists.'); return; }
     venues.push({ name, slug, map: newVenueMapData || null });
     saveVenues();
     renderVenueList();
@@ -773,28 +815,80 @@
     const venue = venues.find(v => v.slug === slug);
     if (venue) {
       document.getElementById('venue-badge').textContent = venue.name;
-      if (venue.map) {
-        showMap(venue.map, venue.slug);
-      } else {
-        document.getElementById('map-container').innerHTML = `
-          <div class="map-placeholder" onclick="openVenueModal()">
-            <div class="map-placeholder-text">No floor plan for this venue</div>
-          </div>
-        `;
+      if (venue.map) showMap(venue.map, venue.slug);
+      else {
+        document.getElementById('map-container').innerHTML = `<div class="map-placeholder" onclick="openVenueModal()"><div class="map-placeholder-text">No floor plan for this venue</div></div>`;
       }
     }
     closeVenueModal();
     subscribeToVenue();
+    loadStats();
   }
+
+  window.openCustomize = function(slug) {
+    customizeSlug = slug;
+    const venue = venues.find(v => v.slug === slug);
+    document.getElementById('customize-title').textContent = `Customize — ${venue?.name || slug}`;
+    document.getElementById('customize-section').style.display = 'block';
+
+    // Load existing config if any
+    const cfg = venue?.config || {};
+    const boxColor = cfg.colorBox || '#273534';
+    const accentColor = cfg.colorAccent || '#6f0f43';
+    document.getElementById('color-box-picker').value = boxColor;
+    document.getElementById('color-box-hex').value = boxColor;
+    document.getElementById('color-accent-picker').value = accentColor;
+    document.getElementById('color-accent-hex').value = accentColor;
+    document.getElementById('venue-link-label').value = cfg.venueLinkLabel || '';
+    document.getElementById('venue-link-url').value = cfg.venueLinkUrl || '';
+
+    document.getElementById('customize-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  window.saveVenueConfig = async function() {
+    if (!customizeSlug) return;
+    const venue = venues.find(v => v.slug === customizeSlug);
+    if (!venue) return;
+
+    const cfg = {
+      colorBox: document.getElementById('color-box-hex').value || '#273534',
+      colorAccent: document.getElementById('color-accent-hex').value || '#6f0f43',
+      venueLinkLabel: document.getElementById('venue-link-label').value.trim(),
+      venueLinkUrl: document.getElementById('venue-link-url').value.trim()
+    };
+
+    venue.config = cfg;
+    saveVenues();
+
+    // Save to Firebase so diner page can read it
+    try {
+      await setDoc(doc(db, 'venueConfigs', customizeSlug), cfg);
+    } catch(e) {}
+
+    const msg = document.getElementById('config-saved-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2000);
+  }
+
+  // Sync color picker <-> hex input
+  ['box', 'accent'].forEach(key => {
+    const picker = document.getElementById(`color-${key}-picker`);
+    const hex = document.getElementById(`color-${key}-hex`);
+    picker.addEventListener('input', () => { hex.value = picker.value; });
+    hex.addEventListener('input', () => {
+      if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value;
+    });
+  });
 
   window.renameVenue = function(slug) {
     const venue = venues.find(v => v.slug === slug);
     if (!venue) return;
     const newName = prompt('Rename venue:', venue.name);
     if (!newName || !newName.trim()) return;
+    const oldSlug = venue.slug;
     venue.name = newName.trim();
     venue.slug = getVenueSlug(newName.trim());
-    if (settings.activeVenue === slug) {
+    if (settings.activeVenue === oldSlug) {
       settings.activeVenue = venue.slug;
       localStorage.setItem('activeVenue', venue.slug);
       document.getElementById('venue-badge').textContent = venue.name;
@@ -833,19 +927,18 @@
       settings.activeVenue = null;
       localStorage.removeItem('activeVenue');
       document.getElementById('venue-badge').textContent = 'No venue selected';
-      document.getElementById('map-container').innerHTML = `
-        <div class="map-placeholder" onclick="openVenueModal()">
-          <div class="map-placeholder-text">Select a venue to load floor plan</div>
-        </div>
-      `;
+      document.getElementById('map-container').innerHTML = `<div class="map-placeholder" onclick="openVenueModal()"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>`;
       if (unsubscribe) unsubscribe();
     }
     renderVenueList();
   }
 
-  function saveVenues() {
-    localStorage.setItem('venues', JSON.stringify(venues));
+  window.openQRGenerator = function(slug) {
+    localStorage.setItem('qr_preselect', slug);
+    window.open('qr.html', '_blank');
   }
+
+  function saveVenues() { localStorage.setItem('venues', JSON.stringify(venues)); }
 
   function renderVenueList() {
     const list = document.getElementById('venue-list');
@@ -854,12 +947,14 @@
       return;
     }
     list.innerHTML = venues.map(v => `
-      <div class="venue-item${settings.activeVenue === v.slug ? ' active' : ''}" onclick="selectVenue('${v.slug}')">
-        <div>
+      <div class="venue-item${settings.activeVenue === v.slug ? ' active' : ''}">
+        <div onclick="selectVenue('${v.slug}')" style="cursor:pointer;flex:1;">
           <div class="venue-item-name">${v.name}</div>
           ${settings.activeVenue === v.slug ? '<div class="venue-item-active">Active</div>' : ''}
         </div>
-        <div class="venue-item-actions" onclick="event.stopPropagation()">
+        <div class="venue-item-actions">
+          <button class="venue-action-btn${settings.activeVenue === v.slug ? ' active-select' : ''}" onclick="selectVenue('${v.slug}')">Select</button>
+          <button class="venue-action-btn" onclick="openCustomize('${v.slug}')">Customize</button>
           <button class="venue-action-btn" onclick="renameVenue('${v.slug}')">Rename</button>
           <button class="venue-action-btn" onclick="updateVenueMap('${v.slug}')">Map</button>
           <button class="venue-action-btn" onclick="openQRGenerator('${v.slug}')">QR Codes</button>
@@ -870,14 +965,12 @@
   }
 
   function showMap(src, slug) {
-    const container = document.getElementById('map-container');
-    container.innerHTML = `
+    document.getElementById('map-container').innerHTML = `
       <img src="${src}" alt="Floor plan">
       <button class="map-change-btn" onclick="updateVenueMap('${slug}')">Change map</button>
     `;
   }
 
-  // Load active venue on startup
   if (settings.activeVenue) {
     const venue = venues.find(v => v.slug === settings.activeVenue);
     if (venue) {
@@ -886,47 +979,33 @@
     }
   }
 
-  // --- QUEUE & FIREBASE ---
+  // --- QUEUE ---
   let entries = [];
   let unsubscribe = null;
-
-  // Stats counters
-  let stats = {
-    scans: 0,
-    requests: 0,
-    performances: 0,
-    cancellations: 0,
-    waitTimes: [],
-    requestHours: []
-  };
 
   function subscribeToVenue() {
     if (!settings.activeVenue) return;
     if (unsubscribe) unsubscribe();
     entries = [];
-    stats = { scans: 0, requests: 0, performances: 0, cancellations: 0, waitTimes: [], requestHours: [] };
     renderQueue();
-    updateStats();
 
     const tablesRef = collection(db, 'venues', settings.activeVenue, 'tables');
     unsubscribe = onSnapshot(tablesRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         const data = { id: change.doc.id, ...change.doc.data() };
-        handleUpdate(data, change.type);
+        handleUpdate(data);
       });
       renderQueue();
-      updateStats();
     });
   }
 
-  function handleUpdate(data, changeType) {
+  function handleUpdate(data) {
     const label = `Table ${data.table}`;
     const existing = entries.find(e => e.id === data.id);
 
     if (data.status === 'scanned') {
       if (!existing) {
-        entries.push({ id: data.id, table: data.table, label, type: 'scan', requestedAt: null, scannedAt: data.scannedAt?.toMillis?.() || Date.now() });
-        stats.scans++;
+        entries.push({ id: data.id, table: data.table, label, type: 'scan', requestedAt: null });
       }
     } else if (data.status === 'requested') {
       if (existing && existing.type === 'scan') {
@@ -934,39 +1013,23 @@
         existing.requestedAt = data.requestedAt?.toMillis?.() || Date.now();
         entries = entries.filter(e => e.id !== data.id);
         entries.push(existing);
-        stats.requests++;
-        stats.requestHours.push(new Date().getHours());
         playAlert();
       } else if (!existing) {
         entries.push({ id: data.id, table: data.table, label, type: 'request', requestedAt: data.requestedAt?.toMillis?.() || Date.now() });
-        stats.scans++;
-        stats.requests++;
-        stats.requestHours.push(new Date().getHours());
         playAlert();
       }
       updateQueuePositions();
     } else if (data.status === 'cancelled') {
-      if (existing && existing.type === 'request') {
-        existing.type = 'cancelled';
-        existing.requestedAt = null;
-        stats.cancellations++;
-        updateQueuePositions();
-      } else if (existing) {
-        existing.type = 'cancelled';
-      }
+      if (existing) existing.type = 'cancelled';
+      if (existing?.type === 'request') updateQueuePositions();
     } else if (data.status === 'on_my_way' || data.status === 'performed') {
-      if (existing) {
-        if (existing.requestedAt) {
-          const waitMs = Date.now() - existing.requestedAt;
-          stats.waitTimes.push(waitMs);
-        }
-        if (data.status === 'performed') stats.performances++;
-        entries = entries.filter(e => e.id !== data.id);
-      }
+      entries = entries.filter(e => e.id !== data.id);
+      updateQueuePositions();
     }
   }
 
   async function updateQueuePositions() {
+    if (!settings.activeVenue) return;
     const requestEntries = entries.filter(e => e.type === 'request');
     for (let i = 0; i < requestEntries.length; i++) {
       const tableRef = doc(db, 'venues', settings.activeVenue, 'tables', requestEntries[i].id);
@@ -995,53 +1058,46 @@
       const div = document.createElement('div');
       div.className = `queue-entry${isTop ? ' is-top' : ''}`;
 
-      let labelHtml = '';
       if (entry.type === 'request') {
         const waitMs = entry.requestedAt ? Date.now() - entry.requestedAt : 0;
         const waitMins = Math.floor(waitMs / 60000);
         const waitSecs = Math.floor((waitMs % 60000) / 1000);
         const waitStr = waitMins > 0 ? `${waitMins}m ${waitSecs}s` : `${waitSecs}s`;
-        labelHtml = `
+        div.innerHTML = `
           <div class="entry-left">
             <div class="entry-label">${entry.label}</div>
             <div class="entry-wait">Waiting ${waitStr}</div>
           </div>
-          ${isTop ? `<button class="on-my-way-btn" data-id="${entry.id}" data-table="${entry.table}">On my way</button>` : ''}
+          ${isTop ? `<button class="on-my-way-btn" data-id="${entry.id}" data-table="${entry.table}" data-label="${entry.label}">On my way</button>` : ''}
         `;
       } else if (entry.type === 'scan') {
-        labelHtml = `<div class="entry-left"><div class="entry-label scan">${entry.label} — Scan</div></div>`;
+        div.innerHTML = `<div class="entry-left"><div class="entry-label scan">${entry.label} — Scan</div></div>`;
       } else if (entry.type === 'cancelled') {
-        labelHtml = `<div class="entry-left"><div class="entry-label cancelled">${entry.label} — Cancelled Request</div></div>`;
+        div.innerHTML = `<div class="entry-left"><div class="entry-label cancelled">${entry.label} — Cancelled Request</div></div>`;
       }
 
-      div.innerHTML = labelHtml;
       listEl.appendChild(div);
     });
 
-    // Bind on my way buttons
     listEl.querySelectorAll('.on-my-way-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
-        const entryIndex = entries.findIndex(e => e.id === id);
-        const entry = entries[entryIndex];
+        const entryLabel = btn.dataset.label;
+        const entry = entries.find(e => e.id === id);
         if (!entry) return;
 
         const tableRef = doc(db, 'venues', settings.activeVenue, 'tables', id);
         await updateDoc(tableRef, { status: 'on_my_way', onMyWayAt: serverTimestamp() });
 
-        if (entry.requestedAt) {
-          stats.waitTimes.push(Date.now() - entry.requestedAt);
-        }
+        // Log performance event
+        await logEvent('performance', entry.table, entry.requestedAt);
 
         // Show current table indicator
         const bar = document.getElementById('current-table-bar');
-        const label = document.getElementById('current-table-label');
-        const timerEl = document.getElementById('current-table-timer');
-        bar.style.display = 'block';
-        label.textContent = entry.label;
-        const timerMins = settings.timer;
-        let secondsLeft = timerMins * 60;
-        timerEl.textContent = `${timerMins}:00 remaining`;
+        bar.style.display = 'flex';
+        document.getElementById('current-table-label').textContent = entryLabel;
+        let secondsLeft = settings.timer * 60;
+        document.getElementById('current-table-timer').textContent = `${settings.timer}:00 remaining`;
         const countdown = setInterval(() => {
           secondsLeft--;
           if (secondsLeft <= 0) {
@@ -1050,56 +1106,112 @@
           } else {
             const m = Math.floor(secondsLeft / 60);
             const s = secondsLeft % 60;
-            timerEl.textContent = `${m}:${s.toString().padStart(2,'0')} remaining`;
+            document.getElementById('current-table-timer').textContent = `${m}:${s.toString().padStart(2,'0')} remaining`;
           }
         }, 1000);
 
-        // Don't remove locally — Firebase snapshot will handle it via handleUpdate
+        // Don't remove locally — Firebase snapshot handles it
         setTimeout(async () => {
           try {
             await updateDoc(tableRef, { status: 'performed', performedAt: serverTimestamp() });
-            stats.performances++;
-            updateStats();
+            loadStats();
           } catch(e) {}
         }, settings.timer * 60 * 1000);
 
         updateQueuePositions();
         renderQueue();
-        updateStats();
       });
     });
   }
 
-  function updateStats() {
-    document.getElementById('stat-performances').textContent = stats.performances;
-    document.getElementById('stat-total-scans').textContent = stats.scans;
-    document.getElementById('stat-cancellations').textContent = stats.cancellations;
+  setInterval(() => { if (entries.some(e => e.type === 'request')) renderQueue(); }, 1000);
 
-    const rate = stats.scans > 0 ? Math.round((stats.requests / stats.scans) * 100) + '%' : '—';
-    document.getElementById('stat-conversion').textContent = rate;
+  // --- PERSISTENT STATS ---
+  let currentTab = 'tonight';
 
-    if (stats.waitTimes.length > 0) {
-      const avg = stats.waitTimes.reduce((a, b) => a + b, 0) / stats.waitTimes.length;
-      const mins = Math.floor(avg / 60000);
-      const secs = Math.floor((avg % 60000) / 1000);
-      document.getElementById('stat-avg-wait').textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-    } else {
-      document.getElementById('stat-avg-wait').textContent = '—';
-    }
-
-    if (stats.requestHours.length > 0) {
-      const hourCounts = {};
-      stats.requestHours.forEach(h => { hourCounts[h] = (hourCounts[h] || 0) + 1; });
-      const peakHour = Object.entries(hourCounts).sort((a, b) => b[1] - a[1])[0][0];
-      const h = parseInt(peakHour);
-      const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
-      document.getElementById('stat-peak').textContent = label;
-    } else {
-      document.getElementById('stat-peak').textContent = '—';
-    }
+  async function logEvent(type, table, requestedAt) {
+    if (!settings.activeVenue) return;
+    try {
+      const waitMs = (type === 'performance' && requestedAt) ? Date.now() - requestedAt : null;
+      const evRef = doc(db, 'venueEvents', settings.activeVenue, 'events', `${Date.now()}_${table}_${type}`);
+      await setDoc(evRef, {
+        type,
+        table,
+        venue: settings.activeVenue,
+        timestamp: serverTimestamp(),
+        date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
+        hour: new Date().getHours(),
+        waitMs: waitMs || null
+      });
+    } catch(e) {}
   }
 
-  setInterval(() => { if (entries.some(e => e.type === 'request')) renderQueue(); }, 1000);
+  window.switchTab = function(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById('month-select-row').className = `month-select-row${tab === 'month' ? ' visible' : ''}`;
+    loadStats();
+  }
+
+  async function loadStats() {
+    if (!settings.activeVenue) return;
+    try {
+      const eventsRef = collection(db, 'venueEvents', settings.activeVenue, 'events');
+      const snap = await getDocs(eventsRef);
+      let events = snap.docs.map(d => d.data());
+
+      const today = new Date().toISOString().split('T')[0];
+      const selectedMonth = document.getElementById('month-select')?.value;
+
+      // Populate month dropdown
+      const months = [...new Set(events.map(e => e.month).filter(Boolean))].sort().reverse();
+      const monthSelect = document.getElementById('month-select');
+      if (months.length > 0) {
+        const currentVal = monthSelect.value;
+        monthSelect.innerHTML = months.map(m => {
+          const [y, mo] = m.split('-');
+          const label = new Date(parseInt(y), parseInt(mo) - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+          return `<option value="${m}"${m === currentVal ? ' selected' : ''}>${label}</option>`;
+        }).join('');
+      }
+
+      // Filter by tab
+      if (currentTab === 'tonight') events = events.filter(e => e.date === today);
+      else if (currentTab === 'month') {
+        const m = document.getElementById('month-select')?.value || months[0];
+        events = events.filter(e => e.month === m);
+      }
+
+      const scans = events.filter(e => e.type === 'scan').length;
+      const requests = events.filter(e => e.type === 'request').length;
+      const performances = events.filter(e => e.type === 'performance').length;
+      const cancellations = events.filter(e => e.type === 'cancellation').length;
+      const waitTimes = events.filter(e => e.type === 'performance' && e.waitMs).map(e => e.waitMs);
+
+      const rate = scans > 0 ? Math.round((requests / scans) * 100) + '%' : '—';
+      const avgWait = waitTimes.length > 0
+        ? (() => { const avg = waitTimes.reduce((a,b) => a+b,0) / waitTimes.length; const m = Math.floor(avg/60000); const s = Math.floor((avg%60000)/1000); return m > 0 ? `${m}m ${s}s` : `${s}s`; })()
+        : '—';
+
+      const requestEvents = events.filter(e => e.type === 'request' && e.hour != null);
+      let peakLabel = '—';
+      if (requestEvents.length > 0) {
+        const hourCounts = {};
+        requestEvents.forEach(e => { hourCounts[e.hour] = (hourCounts[e.hour] || 0) + 1; });
+        const peakHour = parseInt(Object.entries(hourCounts).sort((a,b) => b[1]-a[1])[0][0]);
+        peakLabel = peakHour === 0 ? '12am' : peakHour < 12 ? `${peakHour}am` : peakHour === 12 ? '12pm' : `${peakHour-12}pm`;
+      }
+
+      document.getElementById('stat-performances').textContent = performances;
+      document.getElementById('stat-conversion').textContent = rate;
+      document.getElementById('stat-cancellations').textContent = cancellations;
+      document.getElementById('stat-avg-wait').textContent = avgWait;
+      document.getElementById('stat-total-scans').textContent = scans;
+      document.getElementById('stat-peak').textContent = peakLabel;
+    } catch(e) {}
+  }
 
   // --- AUDIO ---
   function playAlert() {
@@ -1124,38 +1236,26 @@
           osc.start(ctx.currentTime + start);
           osc.stop(ctx.currentTime + start + duration);
         };
-        if (alertType === 'chime' || alertType === 'both') {
-          playTone(880, 0, 0.6);
-        } else if (alertType === 'double') {
-          playTone(660, 0, 0.15);
-          playTone(660, 0.22, 0.15);
-        }
+        if (alertType === 'chime' || alertType === 'both') playTone(880, 0, 0.6);
+        else if (alertType === 'double') { playTone(660, 0, 0.15); playTone(660, 0.22, 0.15); }
       } catch(e) {}
     }
   }
 
   // --- TOGGLES ---
-  window.toggleStats = function() {
-    const panel = document.getElementById('stats-panel');
-    const arrow = document.getElementById('stats-arrow');
+  window.togglePanel = function(name) {
+    const panel = document.getElementById(`${name}-panel`);
+    const arrow = document.getElementById(`${name}-arrow`);
     panel.classList.toggle('open');
     arrow.classList.toggle('open');
-  }
-
-  window.toggleSettings = function() {
-    const panel = document.getElementById('settings-panel');
-    const arrow = document.getElementById('settings-arrow');
-    panel.classList.toggle('open');
-    arrow.classList.toggle('open');
-  }
-
-  window.openQRGenerator = function(slug) {
-    localStorage.setItem('qr_preselect', slug);
-    window.open('qr.html', '_blank');
+    if (name === 'stats' && panel.classList.contains('open')) loadStats();
   }
 
   // Init
-  if (settings.activeVenue) subscribeToVenue();
+  if (settings.activeVenue) {
+    subscribeToVenue();
+    loadStats();
+  }
 </script>
 </body>
 </html>

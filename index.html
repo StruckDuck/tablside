@@ -152,7 +152,15 @@
     transition: all 0.8s ease;
   }
 
-  .status-indicator { border-color: var(--border); }
+  .status-indicator.waiting  { border-color: var(--text-muted); }
+  .status-indicator.soon     { border-color: var(--gold-dim); box-shadow: 0 0 12px rgba(146,123,82,0.2); }
+  .status-indicator.next     { border-color: var(--gold); box-shadow: 0 0 20px rgba(146,123,82,0.35); }
+  .status-indicator.incoming { border-color: var(--cream); box-shadow: 0 0 28px rgba(234,233,214,0.35); animation: pulse 1.5s ease-in-out infinite; }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(234,233,214,0.2); }
+    50%       { box-shadow: 0 0 35px rgba(234,233,214,0.5); }
+  }
 
   .status-dot {
     width: 8px;
@@ -215,10 +223,7 @@
 
   .link-item:last-child { border-bottom: none; }
 
-  .link-item:active {
-    background: var(--plum);
-    color: var(--cream);
-  }
+  .link-item:active { background: var(--plum); color: var(--cream); }
 
   .link-item.tapped {
     animation: tap-flash 0.4s ease forwards;
@@ -229,14 +234,21 @@
     100% { background: transparent; color: var(--cream-dim); }
   }
 
-  .link-item:hover .arrow { transform: translateX(3px); color: var(--cream); }
-
   .link-item.highlight { color: var(--gold); }
 
   .link-item .arrow {
     font-size: 0.65rem;
     color: var(--text-muted);
     transition: transform 0.2s, color 0.2s;
+  }
+
+  .link-item--expandable { cursor: pointer; }
+  .link-item--expandable .arrow { transition: transform 0.2s; }
+  .link-item--expandable.open .arrow { transform: rotate(90deg); }
+  .link-item--sub {
+    padding-left: 2rem;
+    background: rgba(0,0,0,0.15);
+    font-size: 0.68rem;
   }
 
   .footer-name {
@@ -247,15 +259,6 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     text-align: center;
-  }
-
-  .table-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.8rem;
-    font-weight: 300;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
   }
 
   .after-headline {
@@ -298,15 +301,6 @@
 
   .tip-btn--soft:hover { opacity: 0.75; }
 
-  .link-item--expandable { cursor: pointer; }
-  .link-item--expandable .arrow { transition: transform 0.2s; }
-  .link-item--expandable.open .arrow { transform: rotate(90deg); }
-  .link-item--sub {
-    padding-left: 2rem;
-    background: rgba(0,0,0,0.15);
-    font-size: 0.68rem;
-  }
-
   .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 2rem; }
   .screen.active { display: flex; }
 </style>
@@ -322,9 +316,9 @@
     <div class="subtext">Request a performance for your table,<br>and he'll be with you shortly.</div>
     <button class="btn-primary" id="btn-request">Yes — come to our table</button>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
-    <div class="links-section">
-      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
-        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+    <div class="links-section" id="links-landing">
+      <a class="link-item" id="venue-link" href="#" target="_blank">
+        <span id="venue-link-label">More evenings at Lady Slipper</span><span class="arrow">›</span>
       </a>
       <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
         <span>Keep up with Joshua</span><span class="arrow">›</span>
@@ -355,8 +349,8 @@
     <button class="btn-secondary" id="btn-cancel">Never mind — cancel our request</button>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
     <div class="links-section">
-      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
-        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+      <a class="link-item" id="venue-link-queue" href="#" target="_blank">
+        <span id="venue-link-label-queue">More evenings at Lady Slipper</span><span class="arrow">›</span>
       </a>
       <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
         <span>Keep up with Joshua</span><span class="arrow">›</span>
@@ -381,12 +375,20 @@
     <a class="tip-btn" href="https://g.page/r/CT8uYeXujDHFEBM/review" target="_blank">Leave a kind word</a>
     <a class="tip-btn tip-btn--soft" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
     <div class="links-section">
-      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
-        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+      <a class="link-item" id="venue-link-after" href="#" target="_blank">
+        <span id="venue-link-label-after">More evenings at Lady Slipper</span><span class="arrow">›</span>
       </a>
-      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
         <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </a>
+      </div>
+      <div class="joshua-links" style="display:none;">
+        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
+          <span>Website</span><span class="arrow">›</span>
+        </a>
+        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+          <span>Instagram</span><span class="arrow">›</span>
+        </a>
+      </div>
       <a class="link-item" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank">
         <span>Stay in the loop</span><span class="arrow">›</span>
       </a>
@@ -398,7 +400,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, onSnapshot, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
@@ -416,9 +418,34 @@
   const venue = params.get('venue') || 'unknown';
   const table = params.get('table') || '?';
 
-
   const tableRef = doc(db, 'venues', venue, 'tables', `table_${table}`);
+  const configRef = doc(db, 'venueConfigs', venue);
   let unsubscribe = null;
+
+  // Load venue config and apply colors/links
+  async function loadVenueConfig() {
+    try {
+      const snap = await getDoc(configRef);
+      if (!snap.exists()) return;
+      const cfg = snap.data();
+
+      const root = document.documentElement;
+      if (cfg.colorBox)    root.style.setProperty('--teal', cfg.colorBox);
+      if (cfg.colorAccent) root.style.setProperty('--plum', cfg.colorAccent);
+
+      const venueLabel = cfg.venueLinkLabel || 'More evenings here';
+      const venueUrl   = cfg.venueLinkUrl   || '#';
+
+      ['venue-link', 'venue-link-queue', 'venue-link-after'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.href = venueUrl;
+      });
+      ['venue-link-label', 'venue-link-label-queue', 'venue-link-label-after'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = venueLabel;
+      });
+    } catch(e) {}
+  }
 
   document.getElementById('btn-request').addEventListener('click', async () => {
     const snap = await getDoc(tableRef);
@@ -430,15 +457,31 @@
       requestedAt: serverTimestamp(),
       performedAt: null
     });
+    // Log event for stats
+    await logEvent('request');
     showScreen('screen-queue');
     listenForUpdates();
   });
 
   document.getElementById('btn-cancel').addEventListener('click', async () => {
     await setDoc(tableRef, { status: 'cancelled' }, { merge: true });
+    await logEvent('cancellation');
     if (unsubscribe) unsubscribe();
     showScreen('screen-landing');
   });
+
+  async function logEvent(type) {
+    try {
+      const evRef = doc(db, 'venueEvents', venue, 'events', `${Date.now()}_${table}_${type}`);
+      await setDoc(evRef, {
+        type,
+        table,
+        venue,
+        timestamp: serverTimestamp(),
+        date: new Date().toISOString().split('T')[0]
+      });
+    } catch(e) {}
+  }
 
   function listenForUpdates() {
     if (unsubscribe) unsubscribe();
@@ -481,28 +524,41 @@
 
   async function checkExistingStatus() {
     const snap = await getDoc(tableRef);
+    const prevStatus = snap.exists() ? snap.data().status : null;
+
+    if (prevStatus === 'performed') {
+      await setDoc(tableRef, {
+        table, venue,
+        status: 'scanned',
+        scannedAt: serverTimestamp(),
+        requestedAt: null,
+        performedAt: null,
+        queuePosition: null
+      });
+      await logEvent('scan');
+      showScreen('screen-landing');
+      return;
+    }
+
     await setDoc(tableRef, {
       table, venue,
       status: 'scanned',
       scannedAt: serverTimestamp()
     }, { merge: true });
+    await logEvent('scan');
+
     if (!snap.exists()) return;
-    const data = snap.data();
-    if (data.status === 'performed') {
-      showScreen('screen-after');
-    } else if (['requested', 'on_my_way'].includes(data.status)) {
+    if (['requested', 'on_my_way'].includes(prevStatus)) {
       showScreen('screen-queue');
       listenForUpdates();
     }
   }
 
-  checkExistingStatus();
-
-  // Tap flash for link items
+  // Tap flash
   document.querySelectorAll('.link-item:not(.link-item--expandable)').forEach(link => {
     link.addEventListener('click', function() {
       this.classList.remove('tapped');
-      void this.offsetWidth; // force reflow
+      void this.offsetWidth;
       this.classList.add('tapped');
       setTimeout(() => this.classList.remove('tapped'), 400);
     });
@@ -515,6 +571,9 @@
       next.style.display = next.style.display === 'none' ? 'block' : 'none';
     }
   }
+
+  loadVenueConfig();
+  checkExistingStatus();
 </script>
 </body>
 </html>
