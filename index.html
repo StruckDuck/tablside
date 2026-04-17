@@ -289,6 +289,15 @@
 
   .tip-btn--soft:hover { opacity: 0.75; }
 
+  .link-item--expandable { cursor: pointer; }
+  .link-item--expandable .arrow { transition: transform 0.2s; }
+  .link-item--expandable.open .arrow { transform: rotate(90deg); }
+  .link-item--sub {
+    padding-left: 2rem;
+    background: rgba(0,0,0,0.15);
+    font-size: 0.68rem;
+  }
+
   .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 2rem; }
   .screen.active { display: flex; }
 </style>
@@ -308,9 +317,17 @@
       <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
         <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
       </a>
-      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
         <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </a>
+      </div>
+      <div class="joshua-links" style="display:none;">
+        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
+          <span>Website</span><span class="arrow">›</span>
+        </a>
+        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+          <span>Instagram</span><span class="arrow">›</span>
+        </a>
+      </div>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
@@ -332,9 +349,17 @@
       <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
         <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
       </a>
-      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
         <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </a>
+      </div>
+      <div class="joshua-links" style="display:none;">
+        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
+          <span>Website</span><span class="arrow">›</span>
+        </a>
+        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+          <span>Instagram</span><span class="arrow">›</span>
+        </a>
+      </div>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
@@ -388,7 +413,8 @@
 
   document.getElementById('btn-request').addEventListener('click', async () => {
     const snap = await getDoc(tableRef);
-    if (snap.exists() && snap.data().status !== 'cancelled') return;
+    const status = snap.exists() ? snap.data().status : null;
+    if (status === 'requested' || status === 'on_my_way') return;
     await setDoc(tableRef, {
       table, venue,
       status: 'requested',
@@ -462,6 +488,14 @@
   }
 
   checkExistingStatus();
+
+  window.toggleJoshuaLinks = function(el) {
+    el.classList.toggle('open');
+    const next = el.nextElementSibling;
+    if (next && next.classList.contains('joshua-links')) {
+      next.style.display = next.style.display === 'none' ? 'block' : 'none';
+    }
+  }
 </script>
 </body>
 </html>

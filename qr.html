@@ -327,13 +327,13 @@
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(11);
         doc.setTextColor(100, 100, 100);
-        doc.text(`${venueName} — Table ${i}`, pageW / 2, pageH / 2 + 70, { align: 'center' });
+        doc.text(`${venueName} — Table ${i}`, pageW / 2, pageH / 2 + 80, { align: 'center' });
 
         // Small URL below label
         doc.setFontSize(7);
         doc.setTextColor(180, 180, 180);
         const url_display = `${BASE_URL}?venue=${selectedVenue}&table=${i}`;
-        doc.text(url_display, pageW / 2, pageH / 2 + 76, { align: 'center' });
+        doc.text(url_display, pageW / 2, pageH / 2 + 87, { align: 'center' });
       }
     } else {
       // 20 per page — 4 columns x 5 rows
@@ -343,7 +343,7 @@
       const margin = 10;
       const cellW = (pageW - margin * 2) / cols;
       const cellH = (pageH - margin * 2) / rows;
-      const qrSize = Math.min(cellW, cellH) - 12;
+      const qrSize = Math.min(cellW, cellH) - 18;
 
       let tableNum = 1;
       let pageNum = 0;
@@ -372,12 +372,9 @@
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(7);
             doc.setTextColor(80, 80, 80);
-            doc.text(`Table ${tableNum}`, cellX + cellW / 2, qrY + qrSize + 4, { align: 'center' });
+            doc.text(`Table ${tableNum}`, cellX + cellW / 2, qrY + qrSize + 8, { align: 'center' });
 
-            // Light cell border
-            doc.setDrawColor(220, 220, 220);
-            doc.setLineWidth(0.2);
-            doc.rect(cellX + 1, cellY + 1, cellW - 2, cellH - 2);
+            // No border — clean cut guides only via spacing
 
             tableNum++;
           }
