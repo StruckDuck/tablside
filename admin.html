@@ -577,6 +577,17 @@
 </div>
 <input type="file" id="map-file-input" accept="image/*">
 
+<!-- CURRENT TABLE INDICATOR -->
+<div id="current-table-bar" style="display:none; margin-bottom:1.25rem;">
+  <div style="background:var(--plum);padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:0.6rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.2rem;">Heading to</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:#fff;" id="current-table-label">—</div>
+    </div>
+    <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;" id="current-table-timer"></div>
+  </div>
+</div>
+
 <!-- QUEUE -->
 <div class="section-header">
   <div class="section-label">Queue</div>
@@ -1023,16 +1034,30 @@
           stats.waitTimes.push(Date.now() - entry.requestedAt);
         }
 
-        // Remove top entry, also remove any cancelled/scan entries that were above it
-        // (there shouldn't be any, but just in case — top is always first request)
-        // Remove everything before and including the top request entry
+        // Show current table indicator
+        const bar = document.getElementById('current-table-bar');
+        const label = document.getElementById('current-table-label');
+        const timerEl = document.getElementById('current-table-timer');
+        bar.style.display = 'block';
+        label.textContent = entry.label;
+        const timerMins = settings.timer;
+        let secondsLeft = timerMins * 60;
+        timerEl.textContent = `${timerMins}:00 remaining`;
+        const countdown = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft <= 0) {
+            clearInterval(countdown);
+            bar.style.display = 'none';
+          } else {
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            timerEl.textContent = `${m}:${s.toString().padStart(2,'0')} remaining`;
+          }
+        }, 1000);
+
+        // Remove only the top request entry, everything else stays and moves up
         const topIdx = entries.findIndex(e => e.type === 'request');
         entries.splice(topIdx, 1);
-
-        // Remove any leading cancelled/scan notices now at the top
-        while (entries.length > 0 && entries[0].type !== 'request') {
-          entries.shift();
-        }
 
         setTimeout(async () => {
           try {
