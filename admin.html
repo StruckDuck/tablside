@@ -589,12 +589,12 @@
 
 <div class="header">
   <div class="header-title">Tonight</div>
-  <div class="venue-badge" id="venue-badge" id="venue-badge-btn">No venue selected</div>
+  <div class="venue-badge" id="venue-badge">No venue selected</div>
 </div>
 
 <!-- MAP -->
 <div class="map-container" id="map-container">
-  <div class="map-placeholder" id="venue-badge-btn">
+  <div class="map-placeholder" id="map-placeholder">
     <div class="map-placeholder-text">Select a venue to load floor plan</div>
   </div>
 </div>
@@ -847,7 +847,7 @@
       document.getElementById('venue-badge').textContent = venue.name;
       if (venue.map) showMap(venue.map, venue.slug);
       else {
-        document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="venue-badge-btn"><div class="map-placeholder-text">No floor plan for this venue</div></div>`;
+        document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="map-placeholder"><div class="map-placeholder-text">No floor plan for this venue</div></div>`;
       }
     }
     closeVenueModal();
@@ -962,7 +962,7 @@
       settings.activeVenue = null;
       localStorage.removeItem('activeVenue');
       document.getElementById('venue-badge').textContent = 'No venue selected';
-      document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="venue-badge-btn"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>`;
+      document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="map-placeholder"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>`;
       if (unsubscribe) unsubscribe();
     }
     renderVenueList();
@@ -1308,7 +1308,7 @@
     if (changeBtn) updateVenueMap(changeBtn.dataset.slug);
   });
 
-  document.getElementById('venue-badge-btn').addEventListener('click', () => openVenueModal());
+  document.getElementById('venue-badge').addEventListener('click', () => openVenueModal());
   document.getElementById('modal-close-btn').addEventListener('click', () => closeVenueModal());
   document.getElementById('add-venue-btn').addEventListener('click', () => addVenue());
   document.getElementById('save-config-btn').addEventListener('click', () => saveVenueConfig());
