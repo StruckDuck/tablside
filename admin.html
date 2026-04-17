@@ -312,7 +312,7 @@
   }
 
   // --- VENUES ---
-  var venues = JSON.parse(localStorage.getItem('venues') || '[]');
+  var venues = [];
   var newVenueMapData = null;
   var customizeSlug = null;
 
@@ -321,7 +321,35 @@
   }
 
   function saveVenues() {
-    localStorage.setItem('venues', JSON.stringify(venues));
+    // Save to Firebase (without map images - those stay local)
+    var batch = db.batch();
+    venues.forEach(function(v) {
+      var ref = db.collection('venuePresets').doc(v.slug);
+      batch.set(ref, { name: v.name, slug: v.slug, config: v.config || {} });
+    });
+    batch.commit().catch(function(e) { console.error('saveVenues error', e); });
+    // Still save map images locally
+    venues.forEach(function(v) {
+      if (v.map) localStorage.setItem('map_' + v.slug, v.map);
+    });
+  }
+
+  function loadVenues() {
+    db.collection('venuePresets').get().then(function(snap) {
+      venues = snap.docs.map(function(d) {
+        var data = d.data();
+        return { name: data.name, slug: data.slug, config: data.config || {}, map: localStorage.getItem('map_' + data.slug) || null };
+      });
+      renderVenueList();
+      // Restore active venue display
+      if (settings.activeVenue) {
+        var active = venues.find(function(v) { return v.slug === settings.activeVenue; });
+        if (active) {
+          document.getElementById('venue-badge').textContent = active.name;
+          if (active.map) showMap(active.map, active.slug);
+        }
+      }
+    }).catch(function(e) { console.error('loadVenues error', e); });
   }
 
   // Venue badge
@@ -500,7 +528,8 @@
   function deleteVenue(slug) {
     if (!confirm('Delete this venue?')) return;
     venues = venues.filter(function(v) { return v.slug !== slug; });
-    saveVenues();
+    db.collection('venuePresets').doc(slug).delete().catch(function() {});
+    localStorage.removeItem('map_' + slug);
     if (settings.activeVenue === slug) {
       settings.activeVenue = null;
       localStorage.removeItem('activeVenue');
@@ -558,14 +587,8 @@
     });
   }
 
-  // Load active venue on startup
-  if (settings.activeVenue) {
-    var activeVenue = venues.find(function(v) { return v.slug === settings.activeVenue; });
-    if (activeVenue) {
-      document.getElementById('venue-badge').textContent = activeVenue.name;
-      if (activeVenue.map) showMap(activeVenue.map, activeVenue.slug);
-    }
-  }
+  // Load venues from Firebase on startup
+  loadVenues();
 
   // --- QUEUE ---
   var entries = [];
@@ -813,6 +836,7 @@
     subscribeToVenue();
     loadStats();
   }
+  // loadVenues() already called above
 </script>
 </body>
 </html>
