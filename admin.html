@@ -589,7 +589,7 @@
 
 <div class="header">
   <div class="header-title">Tonight</div>
-  <div class="venue-badge" id="venue-badge">No venue selected</div>
+  <div class="venue-badge" id="venue-badge" onclick="openVenueModal()">No venue selected</div>
 </div>
 
 <!-- MAP -->
@@ -619,15 +619,15 @@
 </div>
 
 <!-- STATS -->
-<div class="collapse-toggle" id="stats-toggle-btn">
+<div class="collapse-toggle" onclick="togglePanel('stats')">
   <div class="collapse-label">Stats</div>
   <div class="collapse-arrow" id="stats-arrow">▼</div>
 </div>
 <div class="collapse-panel" id="stats-panel">
   <div class="stats-tabs">
-    <div class="stats-tab active" id="tab-tonight" id="tab-tonight">Tonight</div>
-    <div class="stats-tab" id="tab-month" id="tab-month">By Month</div>
-    <div class="stats-tab" id="tab-alltime" id="tab-alltime">All Time</div>
+    <div class="stats-tab active" id="tab-tonight" onclick="switchTab('tonight')">Tonight</div>
+    <div class="stats-tab" id="tab-month" onclick="switchTab('month')">By Month</div>
+    <div class="stats-tab" id="tab-alltime" onclick="switchTab('alltime')">All Time</div>
   </div>
   <div class="month-select-row" id="month-select-row">
     <select id="month-select" onchange="loadStats()">
@@ -644,7 +644,7 @@
 </div>
 
 <!-- SETTINGS -->
-<div class="collapse-toggle" id="settings-toggle-btn">
+<div class="collapse-toggle" onclick="togglePanel('settings')">
   <div class="collapse-label">Settings</div>
   <div class="collapse-arrow" id="settings-arrow">▼</div>
 </div>
@@ -675,7 +675,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title">Venues</div>
-      <button class="modal-close" id="modal-close-btn">×</button>
+      <button class="modal-close" onclick="closeVenueModal()">×</button>
     </div>
     <div class="venue-list" id="venue-list"></div>
     <div class="add-venue-section">
@@ -685,7 +685,7 @@
         <span id="upload-map-text">+ Upload floor plan</span>
         <input type="file" id="new-venue-map-input" accept="image/*">
       </label>
-      <button class="add-venue-btn" id="add-venue-btn">Add Venue</button>
+      <button class="add-venue-btn" onclick="addVenue()">Add Venue</button>
     </div>
 
     <!-- CUSTOMIZE SECTION -->
@@ -741,7 +741,7 @@
         <div class="setting-label">Venue link URL</div>
         <input type="text" class="text-input" id="venue-link-url" placeholder="https://...">
       </div>
-      <button class="add-venue-btn" style="margin-top:0.75rem;" id="save-config-btn">Save Appearance</button>
+      <button class="add-venue-btn" style="margin-top:0.75rem;" onclick="saveVenueConfig()">Save Appearance</button>
       <div class="saved-msg" id="config-saved-msg" style="padding:0.5rem 0 0;">Appearance saved</div>
     </div>
   </div>
@@ -750,6 +750,10 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, collectionGroup, onSnapshot, doc, setDoc, updateDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  window.onerror = (msg, src, line) => {
+    console.error('Script error:', msg, 'line:', line);
+  };
 
   const firebaseConfig = {
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
@@ -1300,23 +1304,13 @@
     if (name === 'stats' && panel.classList.contains('open')) loadStats();
   }
 
-  // Wire up all button event listeners
+  // Map container delegation for dynamically rendered content
   document.getElementById('map-container').addEventListener('click', (e) => {
     const placeholder = e.target.closest('#map-placeholder');
     const changeBtn = e.target.closest('#map-change-btn');
     if (placeholder) openVenueModal();
     if (changeBtn) updateVenueMap(changeBtn.dataset.slug);
   });
-
-  document.getElementById('venue-badge').addEventListener('click', () => openVenueModal());
-  document.getElementById('modal-close-btn').addEventListener('click', () => closeVenueModal());
-  document.getElementById('add-venue-btn').addEventListener('click', () => addVenue());
-  document.getElementById('save-config-btn').addEventListener('click', () => saveVenueConfig());
-  document.getElementById('stats-toggle-btn').addEventListener('click', () => togglePanel('stats'));
-  document.getElementById('settings-toggle-btn').addEventListener('click', () => togglePanel('settings'));
-  document.getElementById('tab-tonight').addEventListener('click', () => switchTab('tonight'));
-  document.getElementById('tab-month').addEventListener('click', () => switchTab('month'));
-  document.getElementById('tab-alltime').addEventListener('click', () => switchTab('alltime'));
 
   // Init
   if (settings.activeVenue) {
