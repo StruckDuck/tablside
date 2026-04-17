@@ -592,6 +592,9 @@
   <div class="venue-badge" id="venue-badge" onclick="openVenueModal()">No venue selected</div>
 </div>
 
+<!-- ERROR DISPLAY (debug) -->
+<div id="debug-error" style="display:none;background:#fdf0f0;border:1px solid #e88;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.7rem;color:#a01a1a;word-break:break-all;"></div>
+
 <!-- MAP -->
 <div class="map-container" id="map-container">
   <div class="map-placeholder" id="map-placeholder">
@@ -752,7 +755,13 @@
   import { getFirestore, collection, collectionGroup, onSnapshot, doc, setDoc, updateDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   window.onerror = (msg, src, line) => {
-    console.error('Script error:', msg, 'line:', line);
+    const el = document.getElementById('debug-error');
+    if (el) { el.style.display = 'block'; el.textContent = `Error line ${line}: ${msg}`; }
+  };
+
+  window.onunhandledrejection = (e) => {
+    const el = document.getElementById('debug-error');
+    if (el) { el.style.display = 'block'; el.textContent = `Promise error: ${e.reason}`; }
   };
 
   const firebaseConfig = {
