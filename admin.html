@@ -851,6 +851,7 @@
         <div class="venue-item-actions" onclick="event.stopPropagation()">
           <button class="venue-action-btn" onclick="renameVenue('${v.slug}')">Rename</button>
           <button class="venue-action-btn" onclick="updateVenueMap('${v.slug}')">Map</button>
+          <button class="venue-action-btn" onclick="openQRGenerator('${v.slug}')">QR Codes</button>
           <button class="venue-action-btn delete" onclick="deleteVenue('${v.slug}')">Delete</button>
         </div>
       </div>
@@ -1125,6 +1126,11 @@
     const arrow = document.getElementById('settings-arrow');
     panel.classList.toggle('open');
     arrow.classList.toggle('open');
+  }
+
+  window.openQRGenerator = function(slug) {
+    localStorage.setItem('qr_preselect', slug);
+    window.open('qr.html', '_blank');
   }
 
   // Init

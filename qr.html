@@ -226,7 +226,7 @@
   let venues = JSON.parse(localStorage.getItem('venues') || '[]');
   let selectedVenue = null;
 
-  function renderVenueSelect() {
+  function renderVenueSelect(preselect) {
     const area = document.getElementById('venue-select-area');
     if (venues.length === 0) {
       area.innerHTML = '<div class="no-venues-msg">No venues found. Add venues in the admin page first.</div>';
@@ -234,7 +234,7 @@
     }
     area.innerHTML = `<select class="full-select" id="venue-select" onchange="onVenueChange()">
       <option value="">— Select a venue —</option>
-      ${venues.map(v => `<option value="${v.slug}">${v.name}</option>`).join('')}
+      ${venues.map(v => `<option value="${v.slug}"${preselect === v.slug ? ' selected' : ''}>${v.name}</option>`).join('')}
     </select>`;
   }
 
@@ -392,7 +392,9 @@
     document.getElementById('generate-btn-2').disabled = false;
   }
 
-  renderVenueSelect();
+  const preselect = localStorage.getItem('qr_preselect');
+  if (preselect) localStorage.removeItem('qr_preselect');
+  renderVenueSelect(preselect);
 </script>
 </body>
 </html>
