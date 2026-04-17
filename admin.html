@@ -123,6 +123,8 @@
   <div class="queue-empty">No activity yet.</div>
 </div>
 
+<div id="cancel-notices" style="margin-top:-1rem;margin-bottom:1rem;display:flex;flex-direction:column;gap:4px;"></div>
+
 <div class="collapse-toggle" id="stats-toggle">
   <div class="collapse-label">Stats</div>
   <div class="collapse-arrow" id="stats-arrow">▼</div>
@@ -614,9 +616,21 @@
     var existing = entries.find(function(e) { return e.id === data.id; });
 
     if (data.status === 'scanned') {
-      if (!existing) entries.push({ id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null });
+      if (!existing) {
+        var scanEntry = { id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null, scannedAt: Date.now() };
+        entries.push(scanEntry);
+        // Auto-remove scan after 5 minutes if not converted
+        setTimeout(function() {
+          var e = entries.find(function(e) { return e.id === data.id; });
+          if (e && e.type === 'scan') {
+            entries = entries.filter(function(e) { return e.id !== data.id; });
+            renderQueue();
+          }
+        }, 5 * 60 * 1000);
+      }
     } else if (data.status === 'requested') {
       if (existing && existing.type === 'scan') {
+        // Convert scan to request — move to bottom of requests
         existing.type = 'request';
         existing.requestedAt = data.requestedAt ? data.requestedAt.toMillis() : Date.now();
         entries = entries.filter(function(e) { return e.id !== data.id; });
@@ -628,12 +642,26 @@
       }
       updateQueuePositions();
     } else if (data.status === 'cancelled') {
-      if (existing) existing.type = 'cancelled';
+      // Remove from list entirely, show timed notification
+      entries = entries.filter(function(e) { return e.id !== data.id; });
+      showCancelNotice(label);
       updateQueuePositions();
     } else if (data.status === 'on_my_way' || data.status === 'performed') {
       entries = entries.filter(function(e) { return e.id !== data.id; });
       updateQueuePositions();
     }
+  }
+
+  function showCancelNotice(label) {
+    var container = document.getElementById('cancel-notices');
+    var notice = document.createElement('div');
+    notice.style.cssText = 'font-size:0.65rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0.75rem;background:#fff5f5;border:1px solid #f5c0c0;opacity:1;transition:opacity 0.5s;';
+    notice.textContent = label + ' — Cancelled Request';
+    container.appendChild(notice);
+    setTimeout(function() {
+      notice.style.opacity = '0';
+      setTimeout(function() { if (notice.parentNode) notice.parentNode.removeChild(notice); }, 500);
+    }, 5 * 60 * 1000);
   }
 
   function updateQueuePositions() {
@@ -659,9 +687,13 @@
     }
 
     listEl.innerHTML = '';
-    var topEntry = entries.find(function(e) { return e.type === 'request'; });
+    // Sort: requests first (in order), scans at bottom
+    var requests = entries.filter(function(e) { return e.type === 'request'; });
+    var scans = entries.filter(function(e) { return e.type === 'scan'; });
+    var sorted = requests.concat(scans);
+    var topEntry = requests.length > 0 ? requests[0] : null;
 
-    entries.forEach(function(entry) {
+    sorted.forEach(function(entry) {
       var isTop = entry === topEntry;
       var div = document.createElement('div');
       div.className = 'queue-entry' + (isTop ? ' is-top' : '');
@@ -675,8 +707,6 @@
           (isTop ? '<button class="on-my-way-btn" data-id="' + entry.id + '" data-label="' + entry.label + '">On my way</button>' : '');
       } else if (entry.type === 'scan') {
         div.innerHTML = '<div class="entry-left"><div class="entry-label scan">' + entry.label + ' — Scan</div></div>';
-      } else if (entry.type === 'cancelled') {
-        div.innerHTML = '<div class="entry-left"><div class="entry-label cancelled">' + entry.label + ' — Cancelled Request</div></div>';
       }
 
       listEl.appendChild(div);
