@@ -927,7 +927,6 @@
       if (!existing) {
         entries.push({ id: data.id, table: data.table, label, type: 'scan', requestedAt: null, scannedAt: data.scannedAt?.toMillis?.() || Date.now() });
         stats.scans++;
-        playAlert();
       }
     } else if (data.status === 'requested') {
       if (existing && existing.type === 'scan') {
@@ -1055,10 +1054,7 @@
           }
         }, 1000);
 
-        // Remove only the top request entry, everything else stays and moves up
-        const topIdx = entries.findIndex(e => e.type === 'request');
-        entries.splice(topIdx, 1);
-
+        // Don't remove locally — Firebase snapshot will handle it via handleUpdate
         setTimeout(async () => {
           try {
             await updateDoc(tableRef, { status: 'performed', performedAt: serverTimestamp() });

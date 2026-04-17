@@ -213,7 +213,6 @@
 </div>
 
 <button class="generate-btn" id="generate-btn" onclick="generatePDF()" disabled>Generate PDF</button>
-<button class="generate-btn secondary" id="generate-btn-2" onclick="generatePDF()" disabled style="margin-top:1px;">Preview first code</button>
 
 <div class="status-msg" id="status-msg"></div>
 
@@ -244,7 +243,6 @@
     const count = document.getElementById('table-count').value;
     updatePreview(slug, count);
     document.getElementById('generate-btn').disabled = !slug;
-    document.getElementById('generate-btn-2').disabled = !slug;
   }
 
   function updatePreview(slug, count) {
@@ -386,7 +384,6 @@
     doc.save(filename);
     statusEl.textContent = `✓ Downloaded: ${filename}`;
     document.getElementById('generate-btn').disabled = false;
-    document.getElementById('generate-btn-2').disabled = false;
   }
 
   const preselect = localStorage.getItem('qr_preselect');
