@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>An Evening of Magic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #26060f;
+    --border: #3d5250;
+    --gold: #927b52;
+    --gold-dim: #7a6545;
+    --cream: #eae9d6;
+    --cream-dim: #c4bfa6;
+    --text: #eae9d6;
+    --text-muted: #9aab9a;
+    --teal: #273534;
+    --plum: #6f0f43;
+  }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    background: var(--teal);
+    border: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+  }
+
+  .monogram {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    line-height: 1;
+  }
+
+  .rule {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .rule-line { flex: 1; height: 1px; background: var(--border); }
+
+  .rule-diamond {
+    width: 5px;
+    height: 5px;
+    background: var(--gold-dim);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.03em;
+  }
+
+  .subtext {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--cream-dim);
+    text-align: center;
+    line-height: 1.8;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--plum);
+    color: var(--cream);
+    border-color: var(--plum);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+
+  .btn-secondary:hover { color: var(--cream-dim); }
+
+  .status-card {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.25);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .status-indicator {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.8s ease;
+  }
+
+  .status-indicator { border-color: var(--border); }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: width 0.8s ease, height 0.8s ease, background 0.8s ease;
+  }
+
+  .waiting  .status-dot { width: 8px;  height: 8px;  background: var(--text-muted); }
+  .soon     .status-dot { width: 18px; height: 18px; background: var(--gold-dim); }
+  .next     .status-dot { width: 28px; height: 28px; background: var(--gold); animation: dotpulse 1.8s ease-in-out infinite; }
+  .incoming .status-dot { width: 40px; height: 40px; background: var(--cream); animation: dotpulse 0.9s ease-in-out infinite; }
+
+  @keyframes dotpulse {
+    0%, 100% { transform: scale(1);    opacity: 1; }
+    50%       { transform: scale(0.78); opacity: 0.6; }
+  }
+
+  .status-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--cream);
+    text-align: center;
+    font-style: italic;
+  }
+
+  .status-sublabel {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .links-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.25);
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    text-decoration: none;
+    color: var(--cream-dim);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .link-item:last-child { border-bottom: none; }
+
+  .link-item:hover {
+    background: var(--plum);
+    color: var(--cream);
+  }
+
+  .link-item:hover .arrow { transform: translateX(3px); color: var(--cream); }
+
+  .link-item.highlight { color: var(--gold); }
+
+  .link-item .arrow {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .table-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .after-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .tip-btn {
+    width: 100%;
+    padding: 1.1rem 2rem;
+    background: var(--plum);
+    border: 1px solid var(--plum);
+    color: var(--cream);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: opacity 0.2s;
+  }
+
+  .tip-btn:hover { opacity: 0.85; }
+
+  .tip-btn--soft {
+    background: transparent;
+    border: 1px solid rgba(234,233,214,0.35);
+    color: var(--cream-dim);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+  }
+
+  .tip-btn--soft:hover { opacity: 0.75; }
+
+  .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 2rem; }
+  .screen.active { display: flex; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- SCREEN 1: Landing -->
+  <div class="screen active" id="screen-landing">
+    <div class="monogram">JS</div>
+    <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+    <div class="headline">There is a magician<br>in the room tonight.</div>
+    <div class="subtext">Request a performance for your table,<br>and he'll be with you shortly.</div>
+    <button class="btn-primary" id="btn-request">Yes — come to our table</button>
+    <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+    <div class="links-section">
+      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
+        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+      </a>
+      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+        <span>Keep up with Joshua</span><span class="arrow">›</span>
+      </a>
+    </div>
+    <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
+  </div>
+
+  <!-- SCREEN 2: In Queue -->
+  <div class="screen" id="screen-queue">
+    <div class="monogram">JS</div>
+    <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+    <div class="status-card">
+      <div class="status-indicator waiting" id="status-indicator">
+        <div class="status-dot"></div>
+      </div>
+      <div class="status-label" id="status-label">You're on the list.</div>
+      <div class="status-sublabel" id="status-sublabel">The magician will be with you soon</div>
+    </div>
+    <button class="btn-secondary" id="btn-cancel">Never mind — cancel our request</button>
+    <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+    <div class="links-section">
+      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
+        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+      </a>
+      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+        <span>Keep up with Joshua</span><span class="arrow">›</span>
+      </a>
+    </div>
+    <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
+  </div>
+
+  <!-- SCREEN 3: After Performance -->
+  <div class="screen" id="screen-after">
+    <div class="monogram">JS</div>
+    <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+    <div class="after-headline">Thank you for having me.</div>
+    <a class="tip-btn" href="https://g.page/r/CT8uYeXujDHFEBM/review" target="_blank">Leave a kind word</a>
+    <a class="tip-btn tip-btn--soft" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
+    <div class="links-section">
+      <a class="link-item" href="https://www.ladyslippernwa.com/events" target="_blank">
+        <span>More evenings at Lady Slipper</span><span class="arrow">›</span>
+      </a>
+      <a class="link-item" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
+        <span>Keep up with Joshua</span><span class="arrow">›</span>
+      </a>
+      <a class="link-item" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank">
+        <span>Stay in the loop</span><span class="arrow">›</span>
+      </a>
+    </div>
+    <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
+    authDomain: "tableside-e94a6.firebaseapp.com",
+    projectId: "tableside-e94a6",
+    storageBucket: "tableside-e94a6.firebasestorage.app",
+    messagingSenderId: "899595202591",
+    appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const params = new URLSearchParams(window.location.search);
+  const venue = params.get('venue') || 'unknown';
+  const table = params.get('table') || '?';
+
+
+  const tableRef = doc(db, 'venues', venue, 'tables', `table_${table}`);
+  let unsubscribe = null;
+
+  document.getElementById('btn-request').addEventListener('click', async () => {
+    const snap = await getDoc(tableRef);
+    if (snap.exists() && snap.data().status !== 'cancelled') return;
+    await setDoc(tableRef, {
+      table, venue,
+      status: 'requested',
+      requestedAt: serverTimestamp(),
+      performedAt: null
+    });
+    showScreen('screen-queue');
+    listenForUpdates();
+  });
+
+  document.getElementById('btn-cancel').addEventListener('click', async () => {
+    await setDoc(tableRef, { status: 'cancelled' }, { merge: true });
+    if (unsubscribe) unsubscribe();
+    showScreen('screen-landing');
+  });
+
+  function listenForUpdates() {
+    if (unsubscribe) unsubscribe();
+    unsubscribe = onSnapshot(tableRef, (snap) => {
+      if (!snap.exists()) return;
+      const data = snap.data();
+
+      if (data.status === 'performed') {
+        showScreen('screen-after');
+        if (unsubscribe) unsubscribe();
+        return;
+      }
+
+      if (data.status === 'on_my_way') {
+        updateQueueStatus('incoming', 'On the way.', 'Your magician is headed to your table');
+        return;
+      }
+
+      const position = data.queuePosition || 1;
+      if (position <= 1) {
+        updateQueueStatus('next', "You're next.", 'The magician will be with you shortly');
+      } else if (position === 2) {
+        updateQueueStatus('soon', 'Almost time.', 'One table ahead of you');
+      } else {
+        updateQueueStatus('waiting', "You're on the list.", `${position - 1} table${position - 1 > 1 ? 's' : ''} ahead of you`);
+      }
+    });
+  }
+
+  function updateQueueStatus(state, label, sublabel) {
+    document.getElementById('status-indicator').className = `status-indicator ${state}`;
+    document.getElementById('status-label').textContent = label;
+    document.getElementById('status-sublabel').textContent = sublabel;
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  async function checkExistingStatus() {
+    const snap = await getDoc(tableRef);
+    await setDoc(tableRef, {
+      table, venue,
+      status: 'scanned',
+      scannedAt: serverTimestamp()
+    }, { merge: true });
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.status === 'performed') {
+      showScreen('screen-after');
+    } else if (['requested', 'on_my_way'].includes(data.status)) {
+      showScreen('screen-queue');
+      listenForUpdates();
+    }
+  }
+
+  checkExistingStatus();
+</script>
+</body>
+</html>

@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Tableside Magic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Raleway:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f4f2ee;
+    --surface: #ffffff;
+    --surface2: #ede9e2;
+    --border: #d6d0c6;
+    --text: #1a1612;
+    --text-muted: #8a8278;
+    --gold: #7a6545;
+    --teal: #273534;
+    --plum: #6f0f43;
+    --red: #a01a1a;
+    --red-bg: #fdf0f0;
+  }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 1.25rem 1rem 3rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--teal);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .venue-badge {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+
+  /* MAP */
+  .map-container {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .map-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .map-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 2rem;
+    cursor: pointer;
+  }
+
+  .map-placeholder-text {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .map-change-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+
+  #map-file-input { display: none; }
+
+  /* QUEUE */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .queue-count {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    background: var(--plum);
+    color: #fff;
+    transition: background 0.2s;
+  }
+
+  .queue-count.empty {
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .queue-list {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .queue-empty {
+    padding: 1.5rem;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .queue-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .queue-entry:last-child { border-bottom: none; }
+  .queue-entry.is-top { background: #faf8f4; }
+
+  .entry-left { display: flex; flex-direction: column; gap: 0.15rem; }
+
+  .entry-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .entry-label.scan {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .entry-label.cancelled {
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .entry-wait {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .on-my-way-btn {
+    background: var(--plum);
+    border: none;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .on-my-way-btn:hover { opacity: 0.8; }
+
+  /* STATS */
+  .stats-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    margin-bottom: 1px;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .stats-toggle-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .stats-toggle-arrow {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+
+  .stats-toggle-arrow.open { transform: rotate(180deg); }
+
+  .stats-panel {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-panel.open { display: grid; }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--teal);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* SETTINGS */
+  .settings-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    margin-bottom: 1px;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .settings-panel {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .settings-panel.open { display: block; }
+
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .setting-row:last-child { border-bottom: none; }
+
+  .setting-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .setting-value {
+    font-size: 0.7rem;
+    color: var(--gold);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 90px;
+    height: 2px;
+    background: var(--border);
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--teal);
+    cursor: pointer;
+  }
+
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .save-btn {
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .save-btn:hover { background: var(--teal); color: #fff; }
+
+  .saved-msg {
+    text-align: center;
+    font-size: 0.62rem;
+    color: #2a6a2a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 1rem 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .saved-msg.show { opacity: 1; }
+
+  /* VENUE MANAGER MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-title {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .venue-list { padding: 0.5rem 0; }
+
+  .venue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .venue-item:last-child { border-bottom: none; }
+  .venue-item:hover { background: var(--surface2); }
+  .venue-item.active { background: #f0f8f0; }
+
+  .venue-item-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .venue-item-active {
+    font-size: 0.6rem;
+    color: #2a6a2a;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .venue-item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .venue-action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .venue-action-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .venue-action-btn.delete:hover { border-color: var(--red); color: var(--red); }
+
+  .add-venue-section {
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .add-venue-title {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .venue-name-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.78rem;
+    padding: 8px 10px;
+    outline: none;
+  }
+
+  .venue-name-input:focus { border-color: var(--teal); }
+
+  .upload-map-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color 0.15s;
+  }
+
+  .upload-map-label:hover { border-color: var(--text-muted); }
+  .upload-map-label.has-image { border-color: var(--teal); color: var(--teal); }
+
+  #new-venue-map-input { display: none; }
+
+  .add-venue-btn {
+    padding: 0.7rem;
+    background: var(--teal);
+    border: none;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .add-venue-btn:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">Tonight</div>
+  <div class="venue-badge" id="venue-badge" onclick="openVenueModal()">No venue selected</div>
+</div>
+
+<!-- MAP -->
+<div class="map-container" id="map-container">
+  <div class="map-placeholder" onclick="openVenueModal()">
+    <div class="map-placeholder-text">Select a venue to load floor plan</div>
+  </div>
+</div>
+<input type="file" id="map-file-input" accept="image/*">
+
+<!-- QUEUE -->
+<div class="section-header">
+  <div class="section-label">Queue</div>
+  <div class="queue-count empty" id="queue-count">0</div>
+</div>
+<div class="queue-list" id="queue-list">
+  <div class="queue-empty">No requests yet.</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-toggle" onclick="toggleStats()">
+  <div class="stats-toggle-label">Stats</div>
+  <div class="stats-toggle-arrow" id="stats-arrow">▼</div>
+</div>
+<div class="stats-panel" id="stats-panel">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-performances">0</div>
+    <div class="stat-label">Tables performed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-conversion">—</div>
+    <div class="stat-label">Scan to request rate</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-cancellations">0</div>
+    <div class="stat-label">Cancellations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-avg-wait">—</div>
+    <div class="stat-label">Avg wait time</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-total-scans">0</div>
+    <div class="stat-label">Total scans</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-peak">—</div>
+    <div class="stat-label">Peak request hour</div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings-toggle" onclick="toggleSettings()">
+  <div class="stats-toggle-label">Settings</div>
+  <div class="stats-toggle-arrow" id="settings-arrow">▼</div>
+</div>
+<div class="settings-panel" id="settings-panel">
+  <div class="setting-row">
+    <div class="setting-label">Timer delay</div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <input type="range" id="timer-range" min="1" max="10" value="3" step="1">
+      <div class="setting-value" id="timer-value">3 min</div>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div class="setting-label">Alert sound</div>
+    <select id="alert-select">
+      <option value="chime">Chime</option>
+      <option value="double">Double tap</option>
+      <option value="vibrate">Vibrate only</option>
+      <option value="both">Chime + vibrate</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+  <button class="save-btn" id="save-btn">Save Settings</button>
+  <div class="saved-msg" id="saved-msg">Settings saved</div>
+</div>
+
+<!-- VENUE MODAL -->
+<div class="modal-overlay" id="venue-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Venues</div>
+      <button class="modal-close" onclick="closeVenueModal()">×</button>
+    </div>
+    <div class="venue-list" id="venue-list"></div>
+    <div class="add-venue-section">
+      <div class="add-venue-title">Add new venue</div>
+      <input type="text" class="venue-name-input" id="new-venue-name" placeholder="Venue name (e.g. Lady Slipper)">
+      <label class="upload-map-label" id="upload-map-label">
+        <span id="upload-map-text">+ Upload floor plan</span>
+        <input type="file" id="new-venue-map-input" accept="image/*">
+      </label>
+      <button class="add-venue-btn" onclick="addVenue()">Add Venue</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
+    authDomain: "tableside-e94a6.firebaseapp.com",
+    projectId: "tableside-e94a6",
+    storageBucket: "tableside-e94a6.firebasestorage.app",
+    messagingSenderId: "899595202591",
+    appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // --- SETTINGS ---
+  let settings = {
+    timer: parseInt(localStorage.getItem('timer') || '3'),
+    alert: localStorage.getItem('alert') || 'chime',
+    activeVenue: localStorage.getItem('activeVenue') || null
+  };
+
+  document.getElementById('timer-range').value = settings.timer;
+  document.getElementById('timer-value').textContent = `${settings.timer} min`;
+  document.getElementById('alert-select').value = settings.alert;
+
+  document.getElementById('timer-range').addEventListener('input', (e) => {
+    document.getElementById('timer-value').textContent = `${e.target.value} min`;
+  });
+
+  document.getElementById('save-btn').addEventListener('click', () => {
+    settings.timer = parseInt(document.getElementById('timer-range').value);
+    settings.alert = document.getElementById('alert-select').value;
+    localStorage.setItem('timer', settings.timer);
+    localStorage.setItem('alert', settings.alert);
+    const msg = document.getElementById('saved-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2000);
+  });
+
+  // --- VENUES ---
+  let venues = JSON.parse(localStorage.getItem('venues') || '[]');
+  let newVenueMapData = null;
+
+  function getVenueSlug(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  window.openVenueModal = function() {
+    renderVenueList();
+    document.getElementById('venue-modal').classList.add('open');
+  }
+
+  window.closeVenueModal = function() {
+    document.getElementById('venue-modal').classList.remove('open');
+    document.getElementById('new-venue-name').value = '';
+    newVenueMapData = null;
+    document.getElementById('upload-map-label').classList.remove('has-image');
+    document.getElementById('upload-map-text').textContent = '+ Upload floor plan';
+  }
+
+  document.getElementById('new-venue-map-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      newVenueMapData = ev.target.result;
+      document.getElementById('upload-map-label').classList.add('has-image');
+      document.getElementById('upload-map-text').textContent = '✓ Floor plan ready';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  window.addVenue = function() {
+    const name = document.getElementById('new-venue-name').value.trim();
+    if (!name) return;
+    const slug = getVenueSlug(name);
+    if (venues.find(v => v.slug === slug)) {
+      alert('A venue with that name already exists.');
+      return;
+    }
+    venues.push({ name, slug, map: newVenueMapData || null });
+    saveVenues();
+    renderVenueList();
+    document.getElementById('new-venue-name').value = '';
+    newVenueMapData = null;
+    document.getElementById('upload-map-label').classList.remove('has-image');
+    document.getElementById('upload-map-text').textContent = '+ Upload floor plan';
+  }
+
+  window.selectVenue = function(slug) {
+    settings.activeVenue = slug;
+    localStorage.setItem('activeVenue', slug);
+    const venue = venues.find(v => v.slug === slug);
+    if (venue) {
+      document.getElementById('venue-badge').textContent = venue.name;
+      if (venue.map) {
+        showMap(venue.map, venue.slug);
+      } else {
+        document.getElementById('map-container').innerHTML = `
+          <div class="map-placeholder" onclick="openVenueModal()">
+            <div class="map-placeholder-text">No floor plan for this venue</div>
+          </div>
+        `;
+      }
+    }
+    closeVenueModal();
+    subscribeToVenue();
+  }
+
+  window.renameVenue = function(slug) {
+    const venue = venues.find(v => v.slug === slug);
+    if (!venue) return;
+    const newName = prompt('Rename venue:', venue.name);
+    if (!newName || !newName.trim()) return;
+    venue.name = newName.trim();
+    venue.slug = getVenueSlug(newName.trim());
+    if (settings.activeVenue === slug) {
+      settings.activeVenue = venue.slug;
+      localStorage.setItem('activeVenue', venue.slug);
+      document.getElementById('venue-badge').textContent = venue.name;
+    }
+    saveVenues();
+    renderVenueList();
+    subscribeToVenue();
+  }
+
+  window.updateVenueMap = function(slug) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const venue = venues.find(v => v.slug === slug);
+        if (venue) {
+          venue.map = ev.target.result;
+          saveVenues();
+          if (settings.activeVenue === slug) showMap(ev.target.result, slug);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  window.deleteVenue = function(slug) {
+    if (!confirm('Delete this venue?')) return;
+    venues = venues.filter(v => v.slug !== slug);
+    saveVenues();
+    if (settings.activeVenue === slug) {
+      settings.activeVenue = null;
+      localStorage.removeItem('activeVenue');
+      document.getElementById('venue-badge').textContent = 'No venue selected';
+      document.getElementById('map-container').innerHTML = `
+        <div class="map-placeholder" onclick="openVenueModal()">
+          <div class="map-placeholder-text">Select a venue to load floor plan</div>
+        </div>
+      `;
+      if (unsubscribe) unsubscribe();
+    }
+    renderVenueList();
+  }
+
+  function saveVenues() {
+    localStorage.setItem('venues', JSON.stringify(venues));
+  }
+
+  function renderVenueList() {
+    const list = document.getElementById('venue-list');
+    if (venues.length === 0) {
+      list.innerHTML = '<div style="padding:1rem;font-size:0.72rem;color:var(--text-muted);text-align:center;">No venues yet. Add one below.</div>';
+      return;
+    }
+    list.innerHTML = venues.map(v => `
+      <div class="venue-item${settings.activeVenue === v.slug ? ' active' : ''}" onclick="selectVenue('${v.slug}')">
+        <div>
+          <div class="venue-item-name">${v.name}</div>
+          ${settings.activeVenue === v.slug ? '<div class="venue-item-active">Active</div>' : ''}
+        </div>
+        <div class="venue-item-actions" onclick="event.stopPropagation()">
+          <button class="venue-action-btn" onclick="renameVenue('${v.slug}')">Rename</button>
+          <button class="venue-action-btn" onclick="updateVenueMap('${v.slug}')">Map</button>
+          <button class="venue-action-btn delete" onclick="deleteVenue('${v.slug}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function showMap(src, slug) {
+    const container = document.getElementById('map-container');
+    container.innerHTML = `
+      <img src="${src}" alt="Floor plan">
+      <button class="map-change-btn" onclick="updateVenueMap('${slug}')">Change map</button>
+    `;
+  }
+
+  // Load active venue on startup
+  if (settings.activeVenue) {
+    const venue = venues.find(v => v.slug === settings.activeVenue);
+    if (venue) {
+      document.getElementById('venue-badge').textContent = venue.name;
+      if (venue.map) showMap(venue.map, venue.slug);
+    }
+  }
+
+  // --- QUEUE & FIREBASE ---
+  let entries = [];
+  let unsubscribe = null;
+
+  // Stats counters
+  let stats = {
+    scans: 0,
+    requests: 0,
+    performances: 0,
+    cancellations: 0,
+    waitTimes: [],
+    requestHours: []
+  };
+
+  function subscribeToVenue() {
+    if (!settings.activeVenue) return;
+    if (unsubscribe) unsubscribe();
+    entries = [];
+    stats = { scans: 0, requests: 0, performances: 0, cancellations: 0, waitTimes: [], requestHours: [] };
+    renderQueue();
+    updateStats();
+
+    const tablesRef = collection(db, 'venues', settings.activeVenue, 'tables');
+    unsubscribe = onSnapshot(tablesRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const data = { id: change.doc.id, ...change.doc.data() };
+        handleUpdate(data, change.type);
+      });
+      renderQueue();
+      updateStats();
+    });
+  }
+
+  function handleUpdate(data, changeType) {
+    const label = `Table ${data.table}`;
+    const existing = entries.find(e => e.id === data.id);
+
+    if (data.status === 'scanned') {
+      if (!existing) {
+        entries.push({ id: data.id, table: data.table, label, type: 'scan', requestedAt: null, scannedAt: data.scannedAt?.toMillis?.() || Date.now() });
+        stats.scans++;
+        playAlert();
+      }
+    } else if (data.status === 'requested') {
+      if (existing && existing.type === 'scan') {
+        existing.type = 'request';
+        existing.requestedAt = data.requestedAt?.toMillis?.() || Date.now();
+        entries = entries.filter(e => e.id !== data.id);
+        entries.push(existing);
+        stats.requests++;
+        stats.requestHours.push(new Date().getHours());
+        playAlert();
+      } else if (!existing) {
+        entries.push({ id: data.id, table: data.table, label, type: 'request', requestedAt: data.requestedAt?.toMillis?.() || Date.now() });
+        stats.scans++;
+        stats.requests++;
+        stats.requestHours.push(new Date().getHours());
+        playAlert();
+      }
+      updateQueuePositions();
+    } else if (data.status === 'cancelled') {
+      if (existing && existing.type === 'request') {
+        existing.type = 'cancelled';
+        existing.requestedAt = null;
+        stats.cancellations++;
+        updateQueuePositions();
+      } else if (existing) {
+        existing.type = 'cancelled';
+      }
+    } else if (data.status === 'on_my_way' || data.status === 'performed') {
+      if (existing) {
+        if (existing.requestedAt) {
+          const waitMs = Date.now() - existing.requestedAt;
+          stats.waitTimes.push(waitMs);
+        }
+        if (data.status === 'performed') stats.performances++;
+        entries = entries.filter(e => e.id !== data.id);
+      }
+    }
+  }
+
+  async function updateQueuePositions() {
+    const requestEntries = entries.filter(e => e.type === 'request');
+    for (let i = 0; i < requestEntries.length; i++) {
+      const tableRef = doc(db, 'venues', settings.activeVenue, 'tables', requestEntries[i].id);
+      try { await updateDoc(tableRef, { queuePosition: i + 1 }); } catch(e) {}
+    }
+  }
+
+  function renderQueue() {
+    const listEl = document.getElementById('queue-list');
+    const countEl = document.getElementById('queue-count');
+    const requestCount = entries.filter(e => e.type === 'request').length;
+
+    countEl.textContent = requestCount;
+    countEl.className = `queue-count${requestCount === 0 ? ' empty' : ''}`;
+
+    if (entries.length === 0) {
+      listEl.innerHTML = '<div class="queue-empty">No activity yet.</div>';
+      return;
+    }
+
+    listEl.innerHTML = '';
+    const topEntry = entries.find(e => e.type === 'request');
+
+    entries.forEach((entry) => {
+      const isTop = entry === topEntry;
+      const div = document.createElement('div');
+      div.className = `queue-entry${isTop ? ' is-top' : ''}`;
+
+      let labelHtml = '';
+      if (entry.type === 'request') {
+        const waitMs = entry.requestedAt ? Date.now() - entry.requestedAt : 0;
+        const waitMins = Math.floor(waitMs / 60000);
+        const waitSecs = Math.floor((waitMs % 60000) / 1000);
+        const waitStr = waitMins > 0 ? `${waitMins}m ${waitSecs}s` : `${waitSecs}s`;
+        labelHtml = `
+          <div class="entry-left">
+            <div class="entry-label">${entry.label}</div>
+            <div class="entry-wait">Waiting ${waitStr}</div>
+          </div>
+          ${isTop ? `<button class="on-my-way-btn" data-id="${entry.id}" data-table="${entry.table}">On my way</button>` : ''}
+        `;
+      } else if (entry.type === 'scan') {
+        labelHtml = `<div class="entry-left"><div class="entry-label scan">${entry.label} — Scan</div></div>`;
+      } else if (entry.type === 'cancelled') {
+        labelHtml = `<div class="entry-left"><div class="entry-label cancelled">${entry.label} — Cancelled Request</div></div>`;
+      }
+
+      div.innerHTML = labelHtml;
+      listEl.appendChild(div);
+    });
+
+    // Bind on my way buttons
+    listEl.querySelectorAll('.on-my-way-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const entryIndex = entries.findIndex(e => e.id === id);
+        const entry = entries[entryIndex];
+        if (!entry) return;
+
+        const tableRef = doc(db, 'venues', settings.activeVenue, 'tables', id);
+        await updateDoc(tableRef, { status: 'on_my_way', onMyWayAt: serverTimestamp() });
+
+        if (entry.requestedAt) {
+          stats.waitTimes.push(Date.now() - entry.requestedAt);
+        }
+
+        // Remove top entry, also remove any cancelled/scan entries that were above it
+        // (there shouldn't be any, but just in case — top is always first request)
+        // Remove everything before and including the top request entry
+        const topIdx = entries.findIndex(e => e.type === 'request');
+        entries.splice(topIdx, 1);
+
+        // Remove any leading cancelled/scan notices now at the top
+        while (entries.length > 0 && entries[0].type !== 'request') {
+          entries.shift();
+        }
+
+        setTimeout(async () => {
+          try {
+            await updateDoc(tableRef, { status: 'performed', performedAt: serverTimestamp() });
+            stats.performances++;
+            updateStats();
+          } catch(e) {}
+        }, settings.timer * 60 * 1000);
+
+        updateQueuePositions();
+        renderQueue();
+        updateStats();
+      });
+    });
+  }
+
+  function updateStats() {
+    document.getElementById('stat-performances').textContent = stats.performances;
+    document.getElementById('stat-total-scans').textContent = stats.scans;
+    document.getElementById('stat-cancellations').textContent = stats.cancellations;
+
+    const rate = stats.scans > 0 ? Math.round((stats.requests / stats.scans) * 100) + '%' : '—';
+    document.getElementById('stat-conversion').textContent = rate;
+
+    if (stats.waitTimes.length > 0) {
+      const avg = stats.waitTimes.reduce((a, b) => a + b, 0) / stats.waitTimes.length;
+      const mins = Math.floor(avg / 60000);
+      const secs = Math.floor((avg % 60000) / 1000);
+      document.getElementById('stat-avg-wait').textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+    } else {
+      document.getElementById('stat-avg-wait').textContent = '—';
+    }
+
+    if (stats.requestHours.length > 0) {
+      const hourCounts = {};
+      stats.requestHours.forEach(h => { hourCounts[h] = (hourCounts[h] || 0) + 1; });
+      const peakHour = Object.entries(hourCounts).sort((a, b) => b[1] - a[1])[0][0];
+      const h = parseInt(peakHour);
+      const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
+      document.getElementById('stat-peak').textContent = label;
+    } else {
+      document.getElementById('stat-peak').textContent = '—';
+    }
+  }
+
+  setInterval(() => { if (entries.some(e => e.type === 'request')) renderQueue(); }, 1000);
+
+  // --- AUDIO ---
+  function playAlert() {
+    const alertType = settings.alert;
+    if (alertType === 'off') return;
+    if (alertType === 'vibrate' || alertType === 'both') {
+      if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
+    }
+    if (['chime', 'double', 'both'].includes(alertType)) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const playTone = (freq, start, duration) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0, ctx.currentTime + start);
+          gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
+          osc.start(ctx.currentTime + start);
+          osc.stop(ctx.currentTime + start + duration);
+        };
+        if (alertType === 'chime' || alertType === 'both') {
+          playTone(880, 0, 0.6);
+        } else if (alertType === 'double') {
+          playTone(660, 0, 0.15);
+          playTone(660, 0.22, 0.15);
+        }
+      } catch(e) {}
+    }
+  }
+
+  // --- TOGGLES ---
+  window.toggleStats = function() {
+    const panel = document.getElementById('stats-panel');
+    const arrow = document.getElementById('stats-arrow');
+    panel.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  window.toggleSettings = function() {
+    const panel = document.getElementById('settings-panel');
+    const arrow = document.getElementById('settings-arrow');
+    panel.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  // Init
+  if (settings.activeVenue) subscribeToVenue();
+</script>
+</body>
+</html>
