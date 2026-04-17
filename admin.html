@@ -589,12 +589,12 @@
 
 <div class="header">
   <div class="header-title">Tonight</div>
-  <div class="venue-badge" id="venue-badge" onclick="openVenueModal()">No venue selected</div>
+  <div class="venue-badge" id="venue-badge" id="venue-badge-btn">No venue selected</div>
 </div>
 
 <!-- MAP -->
 <div class="map-container" id="map-container">
-  <div class="map-placeholder" onclick="openVenueModal()">
+  <div class="map-placeholder" id="venue-badge-btn">
     <div class="map-placeholder-text">Select a venue to load floor plan</div>
   </div>
 </div>
@@ -619,15 +619,15 @@
 </div>
 
 <!-- STATS -->
-<div class="collapse-toggle" onclick="togglePanel('stats')">
+<div class="collapse-toggle" id="stats-toggle-btn">
   <div class="collapse-label">Stats</div>
   <div class="collapse-arrow" id="stats-arrow">▼</div>
 </div>
 <div class="collapse-panel" id="stats-panel">
   <div class="stats-tabs">
-    <div class="stats-tab active" id="tab-tonight" onclick="switchTab('tonight')">Tonight</div>
-    <div class="stats-tab" id="tab-month" onclick="switchTab('month')">By Month</div>
-    <div class="stats-tab" id="tab-alltime" onclick="switchTab('alltime')">All Time</div>
+    <div class="stats-tab active" id="tab-tonight" id="tab-tonight">Tonight</div>
+    <div class="stats-tab" id="tab-month" id="tab-month">By Month</div>
+    <div class="stats-tab" id="tab-alltime" id="tab-alltime">All Time</div>
   </div>
   <div class="month-select-row" id="month-select-row">
     <select id="month-select" onchange="loadStats()">
@@ -644,7 +644,7 @@
 </div>
 
 <!-- SETTINGS -->
-<div class="collapse-toggle" onclick="togglePanel('settings')">
+<div class="collapse-toggle" id="settings-toggle-btn">
   <div class="collapse-label">Settings</div>
   <div class="collapse-arrow" id="settings-arrow">▼</div>
 </div>
@@ -675,7 +675,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title">Venues</div>
-      <button class="modal-close" onclick="closeVenueModal()">×</button>
+      <button class="modal-close" id="modal-close-btn">×</button>
     </div>
     <div class="venue-list" id="venue-list"></div>
     <div class="add-venue-section">
@@ -685,12 +685,19 @@
         <span id="upload-map-text">+ Upload floor plan</span>
         <input type="file" id="new-venue-map-input" accept="image/*">
       </label>
-      <button class="add-venue-btn" onclick="addVenue()">Add Venue</button>
+      <button class="add-venue-btn" id="add-venue-btn">Add Venue</button>
     </div>
 
     <!-- CUSTOMIZE SECTION -->
     <div class="customize-section" id="customize-section" style="display:none;">
       <div class="customize-title" id="customize-title">Customize</div>
+      <div class="color-row">
+        <div class="setting-label">Background color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-bg-picker" value="#26060f">
+          <input type="text" class="hex-input" id="color-bg-hex" value="#26060f" maxlength="7">
+        </div>
+      </div>
       <div class="color-row">
         <div class="setting-label">Box color</div>
         <div class="color-inputs">
@@ -706,6 +713,27 @@
         </div>
       </div>
       <div class="color-row">
+        <div class="setting-label">Highlight color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-highlight-picker" value="#927b52">
+          <input type="text" class="hex-input" id="color-highlight-hex" value="#927b52" maxlength="7">
+        </div>
+      </div>
+      <div class="color-row">
+        <div class="setting-label">Text color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-text-picker" value="#eae9d6">
+          <input type="text" class="hex-input" id="color-text-hex" value="#eae9d6" maxlength="7">
+        </div>
+      </div>
+      <div class="color-row">
+        <div class="setting-label">Muted text color</div>
+        <div class="color-inputs">
+          <input type="color" id="color-muted-picker" value="#9aab9a">
+          <input type="text" class="hex-input" id="color-muted-hex" value="#9aab9a" maxlength="7">
+        </div>
+      </div>
+      <div class="color-row">
         <div class="setting-label">Venue link label</div>
         <input type="text" class="text-input" id="venue-link-label" placeholder="More evenings here">
       </div>
@@ -713,7 +741,7 @@
         <div class="setting-label">Venue link URL</div>
         <input type="text" class="text-input" id="venue-link-url" placeholder="https://...">
       </div>
-      <button class="add-venue-btn" style="margin-top:0.75rem;" onclick="saveVenueConfig()">Save Appearance</button>
+      <button class="add-venue-btn" style="margin-top:0.75rem;" id="save-config-btn">Save Appearance</button>
       <div class="saved-msg" id="config-saved-msg" style="padding:0.5rem 0 0;">Appearance saved</div>
     </div>
   </div>
@@ -781,6 +809,8 @@
     newVenueMapData = null;
     document.getElementById('upload-map-label').classList.remove('has-image');
     document.getElementById('upload-map-text').textContent = '+ Upload floor plan';
+    document.getElementById('customize-section').style.display = 'none';
+    document.querySelector('.add-venue-section').style.display = 'flex';
   }
 
   document.getElementById('new-venue-map-input').addEventListener('change', (e) => {
@@ -817,7 +847,7 @@
       document.getElementById('venue-badge').textContent = venue.name;
       if (venue.map) showMap(venue.map, venue.slug);
       else {
-        document.getElementById('map-container').innerHTML = `<div class="map-placeholder" onclick="openVenueModal()"><div class="map-placeholder-text">No floor plan for this venue</div></div>`;
+        document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="venue-badge-btn"><div class="map-placeholder-text">No floor plan for this venue</div></div>`;
       }
     }
     closeVenueModal();
@@ -830,15 +860,16 @@
     const venue = venues.find(v => v.slug === slug);
     document.getElementById('customize-title').textContent = `Customize — ${venue?.name || slug}`;
     document.getElementById('customize-section').style.display = 'block';
+    document.querySelector('.add-venue-section').style.display = 'none';
 
     // Load existing config if any
     const cfg = venue?.config || {};
-    const boxColor = cfg.colorBox || '#273534';
-    const accentColor = cfg.colorAccent || '#6f0f43';
-    document.getElementById('color-box-picker').value = boxColor;
-    document.getElementById('color-box-hex').value = boxColor;
-    document.getElementById('color-accent-picker').value = accentColor;
-    document.getElementById('color-accent-hex').value = accentColor;
+    const defaults = { bg: '#26060f', box: '#273534', accent: '#6f0f43', highlight: '#927b52', text: '#eae9d6', muted: '#9aab9a' };
+    Object.entries(defaults).forEach(([key, def]) => {
+      const val = cfg[`color${key.charAt(0).toUpperCase()+key.slice(1)}`] || def;
+      document.getElementById(`color-${key}-picker`).value = val;
+      document.getElementById(`color-${key}-hex`).value = val;
+    });
     document.getElementById('venue-link-label').value = cfg.venueLinkLabel || '';
     document.getElementById('venue-link-url').value = cfg.venueLinkUrl || '';
 
@@ -851,8 +882,12 @@
     if (!venue) return;
 
     const cfg = {
+      colorBg: document.getElementById('color-bg-hex').value || '#26060f',
       colorBox: document.getElementById('color-box-hex').value || '#273534',
       colorAccent: document.getElementById('color-accent-hex').value || '#6f0f43',
+      colorHighlight: document.getElementById('color-highlight-hex').value || '#927b52',
+      colorText: document.getElementById('color-text-hex').value || '#eae9d6',
+      colorMuted: document.getElementById('color-muted-hex').value || '#9aab9a',
       venueLinkLabel: document.getElementById('venue-link-label').value.trim(),
       venueLinkUrl: document.getElementById('venue-link-url').value.trim()
     };
@@ -871,7 +906,7 @@
   }
 
   // Sync color picker <-> hex input
-  ['box', 'accent'].forEach(key => {
+  ['bg', 'box', 'accent', 'highlight', 'text', 'muted'].forEach(key => {
     const picker = document.getElementById(`color-${key}-picker`);
     const hex = document.getElementById(`color-${key}-hex`);
     picker.addEventListener('input', () => { hex.value = picker.value; });
@@ -927,7 +962,7 @@
       settings.activeVenue = null;
       localStorage.removeItem('activeVenue');
       document.getElementById('venue-badge').textContent = 'No venue selected';
-      document.getElementById('map-container').innerHTML = `<div class="map-placeholder" onclick="openVenueModal()"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>`;
+      document.getElementById('map-container').innerHTML = `<div class="map-placeholder" id="venue-badge-btn"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>`;
       if (unsubscribe) unsubscribe();
     }
     renderVenueList();
@@ -947,27 +982,41 @@
       return;
     }
     list.innerHTML = venues.map(v => `
-      <div class="venue-item${settings.activeVenue === v.slug ? ' active' : ''}">
-        <div onclick="selectVenue('${v.slug}')" style="cursor:pointer;flex:1;">
+      <div class="venue-item${settings.activeVenue === v.slug ? ' active' : ''}" data-slug="${v.slug}">
+        <div class="venue-item-info" data-action="select" data-slug="${v.slug}" style="cursor:pointer;flex:1;">
           <div class="venue-item-name">${v.name}</div>
           ${settings.activeVenue === v.slug ? '<div class="venue-item-active">Active</div>' : ''}
         </div>
         <div class="venue-item-actions">
-          <button class="venue-action-btn${settings.activeVenue === v.slug ? ' active-select' : ''}" onclick="selectVenue('${v.slug}')">Select</button>
-          <button class="venue-action-btn" onclick="openCustomize('${v.slug}')">Customize</button>
-          <button class="venue-action-btn" onclick="renameVenue('${v.slug}')">Rename</button>
-          <button class="venue-action-btn" onclick="updateVenueMap('${v.slug}')">Map</button>
-          <button class="venue-action-btn" onclick="openQRGenerator('${v.slug}')">QR Codes</button>
-          <button class="venue-action-btn delete" onclick="deleteVenue('${v.slug}')">Delete</button>
+          <button class="venue-action-btn${settings.activeVenue === v.slug ? ' active-select' : ''}" data-action="select" data-slug="${v.slug}">Select</button>
+          <button class="venue-action-btn" data-action="customize" data-slug="${v.slug}">Customize</button>
+          <button class="venue-action-btn" data-action="rename" data-slug="${v.slug}">Rename</button>
+          <button class="venue-action-btn" data-action="map" data-slug="${v.slug}">Map</button>
+          <button class="venue-action-btn" data-action="qr" data-slug="${v.slug}">QR Codes</button>
+          <button class="venue-action-btn delete" data-action="delete" data-slug="${v.slug}">Delete</button>
         </div>
       </div>
     `).join('');
+
+    // Event delegation for all venue actions
+    list.onclick = (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const slug = btn.dataset.slug;
+      if (action === 'select') selectVenue(slug);
+      else if (action === 'customize') openCustomize(slug);
+      else if (action === 'rename') renameVenue(slug);
+      else if (action === 'map') updateVenueMap(slug);
+      else if (action === 'qr') openQRGenerator(slug);
+      else if (action === 'delete') deleteVenue(slug);
+    };
   }
 
   function showMap(src, slug) {
     document.getElementById('map-container').innerHTML = `
       <img src="${src}" alt="Floor plan">
-      <button class="map-change-btn" onclick="updateVenueMap('${slug}')">Change map</button>
+      <button class="map-change-btn" id="map-change-btn" data-slug="${slug}">Change map</button>
     `;
   }
 
@@ -1250,6 +1299,24 @@
     arrow.classList.toggle('open');
     if (name === 'stats' && panel.classList.contains('open')) loadStats();
   }
+
+  // Wire up all button event listeners
+  document.getElementById('map-container').addEventListener('click', (e) => {
+    const placeholder = e.target.closest('#map-placeholder');
+    const changeBtn = e.target.closest('#map-change-btn');
+    if (placeholder) openVenueModal();
+    if (changeBtn) updateVenueMap(changeBtn.dataset.slug);
+  });
+
+  document.getElementById('venue-badge-btn').addEventListener('click', () => openVenueModal());
+  document.getElementById('modal-close-btn').addEventListener('click', () => closeVenueModal());
+  document.getElementById('add-venue-btn').addEventListener('click', () => addVenue());
+  document.getElementById('save-config-btn').addEventListener('click', () => saveVenueConfig());
+  document.getElementById('stats-toggle-btn').addEventListener('click', () => togglePanel('stats'));
+  document.getElementById('settings-toggle-btn').addEventListener('click', () => togglePanel('settings'));
+  document.getElementById('tab-tonight').addEventListener('click', () => switchTab('tonight'));
+  document.getElementById('tab-month').addEventListener('click', () => switchTab('month'));
+  document.getElementById('tab-alltime').addEventListener('click', () => switchTab('alltime'));
 
   // Init
   if (settings.activeVenue) {
