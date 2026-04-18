@@ -621,6 +621,25 @@
     var label = 'Table ' + data.table;
     var existing = entries.find(function(e) { return e.id === data.id; });
 
+    // If a table is already on_my_way when admin page loads, restore the countdown bar
+    if (data.status === 'on_my_way' && data.onMyWayAt && !window._countdownInterval) {
+      var startedAt = data.onMyWayAt.toMillis();
+      var timerMs = (data.timerMinutes || settings.timer) * 60 * 1000;
+      var remaining = timerMs - (Date.now() - startedAt);
+      if (remaining > 0) {
+        var bar = document.getElementById('current-table-bar');
+        bar.style.display = 'flex';
+        document.getElementById('current-table-label').textContent = label;
+        window._countdownInterval = setInterval(function() {
+          var rem = Math.max(0, timerMs - (Date.now() - startedAt));
+          if (rem === 0) { clearInterval(window._countdownInterval); window._countdownInterval = null; bar.style.display = 'none'; return; }
+          var m = Math.floor(rem / 60000);
+          var s = Math.floor((rem % 60000) / 1000);
+          document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
+        }, 1000);
+      }
+    }
+
     if (data.status === 'scanned') {
       if (!existing) {
         var scannedAt = data.scannedAt ? data.scannedAt.toMillis() : Date.now();
