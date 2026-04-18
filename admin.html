@@ -630,9 +630,11 @@
         var bar = document.getElementById('current-table-bar');
         bar.style.display = 'flex';
         document.getElementById('current-table-label').textContent = label;
+        window._countdownStart = startedAt;
+        window._countdownTimerMs = timerMs;
         window._countdownInterval = setInterval(function() {
           var rem = Math.max(0, timerMs - (Date.now() - startedAt));
-          if (rem === 0) { clearInterval(window._countdownInterval); window._countdownInterval = null; bar.style.display = 'none'; return; }
+          if (rem === 0) { clearInterval(window._countdownInterval); window._countdownInterval = null; window._countdownStart = null; bar.style.display = 'none'; return; }
           var m = Math.floor(rem / 60000);
           var s = Math.floor((rem % 60000) / 1000);
           document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
@@ -901,6 +903,22 @@
       } catch(e) {}
     }
   }
+
+  // Visibility change — force update countdown when phone unlocks
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible' && window._countdownStart && window._countdownTimerMs) {
+      var rem = Math.max(0, window._countdownTimerMs - (Date.now() - window._countdownStart));
+      if (rem === 0) {
+        clearInterval(window._countdownInterval);
+        window._countdownInterval = null;
+        document.getElementById('current-table-bar').style.display = 'none';
+      } else {
+        var m = Math.floor(rem / 60000);
+        var s = Math.floor((rem % 60000) / 1000);
+        document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
+      }
+    }
+  });
 
   // Init
   if (settings.activeVenue) {
