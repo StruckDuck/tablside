@@ -11,87 +11,111 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
     --bg:#f4f2ee; --surface:#fff; --surface2:#ede9e2; --border:#d6d0c6;
-    --text:#1a1612; --text-muted:#8a8278; --gold:#7a6545; --teal:#273534;
+    --text:#1a1612; --muted:#8a8278; --gold:#7a6545; --teal:#273534;
     --plum:#6f0f43; --red:#a01a1a;
   }
   body { font-family:'Raleway',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:1.25rem 1rem 3rem; max-width:500px; margin:0 auto; }
+
+  /* HEADER */
   .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
   .header-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:400; color:var(--teal); letter-spacing:0.15em; text-transform:uppercase; }
   .venue-badge { font-size:0.65rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); background:var(--surface2); border:1px solid var(--border); padding:4px 10px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+
+  /* MAP */
   .map-container { width:100%; background:var(--surface2); border:1px solid var(--border); min-height:80px; position:relative; overflow:hidden; margin-bottom:1.25rem; cursor:pointer; }
   .map-container img { width:100%; height:auto; display:block; }
-  .map-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.4rem; padding:2rem; min-height:80px; }
-  .map-placeholder-text { font-size:0.68rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; }
-  .map-change-btn { position:absolute; bottom:8px; right:8px; background:rgba(255,255,255,0.92); border:1px solid var(--border); color:var(--text-muted); font-family:'Raleway',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; padding:4px 10px; cursor:pointer; }
-  .current-table-bar { display:none; margin-bottom:1.25rem; background:var(--plum); padding:0.85rem 1rem; flex-direction:row; align-items:center; justify-content:space-between; }
-  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
-  .section-label { font-size:0.65rem; font-weight:500; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; }
+  .map-placeholder { display:flex; align-items:center; justify-content:center; min-height:80px; padding:2rem; }
+  .map-placeholder-text { font-size:0.68rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; text-align:center; }
+  .map-change-btn { position:absolute; bottom:8px; right:8px; background:rgba(255,255,255,0.92); border:1px solid var(--border); color:var(--muted); font-family:'Raleway',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; padding:4px 10px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+
+  /* HEADING TO BAR */
+  .heading-bar { display:none; background:var(--plum); padding:0.85rem 1rem; margin-bottom:1.25rem; flex-direction:row; align-items:center; justify-content:space-between; }
+  .heading-bar-label { font-size:0.6rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:0.2rem; }
+  .heading-bar-table { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:#fff; }
+  .heading-bar-timer { font-size:0.6rem; color:rgba(255,255,255,0.5); letter-spacing:0.1em; text-transform:uppercase; }
+
+  /* QUEUE */
+  .queue-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
+  .queue-label { font-size:0.65rem; font-weight:500; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
   .queue-count { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:600; background:var(--plum); color:#fff; }
-  .queue-count.empty { background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); }
-  .queue-list { width:100%; border:1px solid var(--border); background:var(--surface); margin-bottom:1.5rem; overflow:hidden; }
-  .queue-empty { padding:1.5rem; text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--text-muted); }
+  .queue-count.empty { background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
+  .queue-list { width:100%; border:1px solid var(--border); background:var(--surface); margin-bottom:0.5rem; overflow:hidden; }
+  .queue-empty { padding:1.5rem; text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--muted); }
   .queue-entry { display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1rem; border-bottom:1px solid var(--border); }
   .queue-entry:last-child { border-bottom:none; }
   .queue-entry.is-top { background:#faf8f4; }
   .entry-left { display:flex; flex-direction:column; gap:0.15rem; }
-  .entry-label { font-size:0.88rem; font-weight:600; color:var(--text); }
-  .entry-label.scan { font-weight:400; color:var(--text-muted); }
-  .entry-label.cancelled { font-weight:400; color:var(--red); }
-  .entry-wait { font-size:0.6rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; }
-  .on-my-way-btn { background:var(--plum); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:0.45rem 0.85rem; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; }
+  .entry-name { font-size:0.88rem; font-weight:600; color:var(--text); }
+  .entry-name.scan { font-weight:400; color:var(--muted); }
+  .entry-wait { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+  .on-my-way-btn { background:var(--plum); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:0.5rem 0.9rem; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; min-height:36px; }
+  .cancel-notices { margin-bottom:1rem; display:flex; flex-direction:column; gap:4px; }
+  .cancel-notice { font-size:0.65rem; color:var(--red); letter-spacing:0.1em; text-transform:uppercase; padding:0.5rem 0.75rem; background:#fff5f5; border:1px solid #f5c0c0; transition:opacity 0.5s; }
+
+  /* COLLAPSIBLE */
   .collapse-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1rem; background:var(--surface); border:1px solid var(--border); cursor:pointer; font-family:'Raleway',sans-serif; margin-bottom:1px; -webkit-tap-highlight-color:transparent; }
-  .collapse-label { font-size:0.65rem; font-weight:500; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; }
-  .collapse-arrow { font-size:0.7rem; color:var(--text-muted); transition:transform 0.2s; pointer-events:none; }
+  .collapse-label { font-size:0.65rem; font-weight:500; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; pointer-events:none; }
+  .collapse-arrow { font-size:0.7rem; color:var(--muted); transition:transform 0.2s; pointer-events:none; }
   .collapse-arrow.open { transform:rotate(180deg); }
   .collapse-panel { display:none; background:var(--surface); border:1px solid var(--border); border-top:none; margin-bottom:1rem; }
   .collapse-panel.open { display:block; }
+
+  /* STATS */
   .stats-tabs { display:flex; border-bottom:1px solid var(--border); }
-  .stats-tab { flex:1; padding:0.6rem; font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-align:center; cursor:pointer; color:var(--text-muted); border-bottom:2px solid transparent; -webkit-tap-highlight-color:transparent; }
+  .stats-tab { flex:1; padding:0.6rem; font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-align:center; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; -webkit-tap-highlight-color:transparent; }
   .stats-tab.active { color:var(--teal); border-bottom-color:var(--teal); }
-  .month-select-row { display:none; padding:0.6rem 1rem; border-bottom:1px solid var(--border); }
-  .month-select-row.visible { display:block; }
+  .month-row { display:none; padding:0.6rem 1rem; border-bottom:1px solid var(--border); }
+  .month-row.visible { display:block; }
   .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; padding:1rem; }
   .stat-card { background:var(--surface2); border:1px solid var(--border); padding:0.75rem; display:flex; flex-direction:column; gap:0.25rem; }
   .stat-value { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:400; color:var(--teal); line-height:1; }
-  .stat-label { font-size:0.6rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; line-height:1.4; }
+  .stat-label { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; line-height:1.4; }
+
+  /* SETTINGS */
   .setting-row { display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1rem; border-bottom:1px solid var(--border); }
-  .setting-label { font-size:0.7rem; color:var(--text-muted); letter-spacing:0.08em; }
+  .setting-row:last-of-type { border-bottom:none; }
+  .setting-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.08em; }
   .setting-value { font-size:0.7rem; color:var(--gold); min-width:36px; text-align:right; }
   input[type=range] { -webkit-appearance:none; width:90px; height:2px; background:var(--border); outline:none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--teal); cursor:pointer; }
   select { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.68rem; padding:4px 8px; outline:none; cursor:pointer; }
-  .save-btn { width:calc(100% - 2rem); margin:1rem; padding:0.75rem; background:transparent; border:1px solid var(--teal); color:var(--teal); font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; }
+  .action-btn { width:calc(100% - 2rem); margin:1rem; padding:0.75rem; background:transparent; border:1px solid var(--teal); color:var(--teal); font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .saved-msg { text-align:center; font-size:0.62rem; color:#2a6a2a; letter-spacing:0.1em; text-transform:uppercase; padding:0 1rem 0.75rem; opacity:0; transition:opacity 0.3s; }
   .saved-msg.show { opacity:1; }
-  .color-row { display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1rem; border-bottom:1px solid var(--border); gap:0.5rem; }
-  .color-inputs { display:flex; align-items:center; gap:0.5rem; }
-  input[type=color] { width:32px; height:28px; border:1px solid var(--border); padding:2px; cursor:pointer; background:none; }
-  .hex-input { width:80px; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.68rem; padding:4px 6px; outline:none; }
-  .text-input { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.68rem; padding:5px 8px; outline:none; width:160px; }
+
+  /* MODAL */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center; padding:1rem; }
   .modal-overlay.open { display:flex; }
   .modal { background:var(--surface); border:1px solid var(--border); width:100%; max-width:400px; max-height:85vh; overflow-y:auto; }
   .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--surface); z-index:1; }
-  .modal-title { font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); }
-  .modal-close { background:none; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer; line-height:1; padding:0 4px; -webkit-tap-highlight-color:transparent; }
+  .modal-title { font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+  .modal-close { background:none; border:none; font-size:1.4rem; color:var(--muted); cursor:pointer; padding:0 4px; -webkit-tap-highlight-color:transparent; }
   .venue-list { padding:0.5rem 0; }
   .venue-item { display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; border-bottom:1px solid var(--border); }
   .venue-item:last-child { border-bottom:none; }
   .venue-item.active { background:#f0f8f0; }
   .venue-item-name { font-size:0.82rem; font-weight:500; color:var(--text); }
-  .venue-item-active { font-size:0.6rem; color:#2a6a2a; letter-spacing:0.1em; text-transform:uppercase; }
-  .venue-item-actions { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
-  .venue-action-btn { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Raleway',sans-serif; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; padding:5px 8px; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; min-height:32px; }
-  .venue-action-btn.delete { color:var(--red); border-color:var(--red); }
-  .venue-action-btn.primary { color:var(--teal); border-color:var(--teal); }
-  .add-venue-section { padding:1rem; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:0.6rem; }
-  .add-venue-title { font-size:0.62rem; color:var(--text-muted); letter-spacing:0.12em; text-transform:uppercase; }
-  .venue-name-input { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.78rem; padding:10px; outline:none; }
-  .upload-map-label { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:var(--surface2); border:1px solid var(--border); cursor:pointer; font-size:0.68rem; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase; min-height:40px; }
-  .upload-map-label.has-image { border-color:var(--teal); color:var(--teal); }
-  .add-venue-btn { padding:0.85rem; background:var(--teal); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; min-height:44px; -webkit-tap-highlight-color:transparent; }
-  .customize-section { padding:1rem; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:0; }
-  .customize-title { font-size:0.62rem; color:var(--text-muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+  .venue-item-active-label { font-size:0.6rem; color:#2a6a2a; letter-spacing:0.1em; text-transform:uppercase; }
+  .venue-actions { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+  .venue-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Raleway',sans-serif; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; padding:5px 8px; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; min-height:32px; }
+  .venue-btn.primary { color:var(--teal); border-color:var(--teal); }
+  .venue-btn.danger { color:var(--red); border-color:var(--red); }
+  .add-venue-form { padding:1rem; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:0.6rem; }
+  .form-label { font-size:0.62rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; }
+  .text-field { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.78rem; padding:10px; outline:none; }
+  .file-label { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:var(--surface2); border:1px solid var(--border); cursor:pointer; font-size:0.68rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; min-height:40px; }
+  .file-label.ready { border-color:var(--teal); color:var(--teal); }
+  .primary-btn { padding:0.85rem; background:var(--teal); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; min-height:44px; -webkit-tap-highlight-color:transparent; }
+
+  /* CUSTOMIZE */
+  .customize-form { padding:1rem; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:0; }
+  .customize-title { font-size:0.62rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+  .color-row { display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1rem; border-bottom:1px solid var(--border); gap:0.5rem; }
+  .color-row:last-of-type { border-bottom:none; }
+  .color-inputs { display:flex; align-items:center; gap:0.5rem; }
+  input[type=color] { width:32px; height:28px; border:1px solid var(--border); padding:2px; cursor:pointer; background:none; }
+  .hex-input { width:80px; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.68rem; padding:4px 6px; outline:none; }
+  .short-input { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.68rem; padding:5px 8px; outline:none; width:160px; }
 </style>
 </head>
 <body>
@@ -102,28 +126,23 @@
 </div>
 
 <div class="map-container" id="map-container">
-  <div class="map-placeholder" id="map-placeholder">
-    <div class="map-placeholder-text">Select a venue to load floor plan</div>
-  </div>
+  <div class="map-placeholder"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>
 </div>
 
-<div class="current-table-bar" id="current-table-bar">
+<div class="heading-bar" id="heading-bar">
   <div>
-    <div style="font-size:0.6rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.2rem;">Heading to</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:#fff;" id="current-table-label">—</div>
+    <div class="heading-bar-label">Heading to</div>
+    <div class="heading-bar-table" id="heading-bar-table">—</div>
   </div>
-  <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;" id="current-table-timer"></div>
+  <div class="heading-bar-timer" id="heading-bar-timer"></div>
 </div>
 
-<div class="section-header">
-  <div class="section-label">Queue</div>
+<div class="queue-header">
+  <div class="queue-label">Queue</div>
   <div class="queue-count empty" id="queue-count">0</div>
 </div>
-<div class="queue-list" id="queue-list">
-  <div class="queue-empty">No activity yet.</div>
-</div>
-
-<div id="cancel-notices" style="margin-top:-1rem;margin-bottom:1rem;display:flex;flex-direction:column;gap:4px;"></div>
+<div class="queue-list" id="queue-list"><div class="queue-empty">No activity yet.</div></div>
+<div class="cancel-notices" id="cancel-notices"></div>
 
 <div class="collapse-toggle" id="stats-toggle">
   <div class="collapse-label">Stats</div>
@@ -135,9 +154,7 @@
     <div class="stats-tab" id="tab-month">By Month</div>
     <div class="stats-tab" id="tab-alltime">All Time</div>
   </div>
-  <div class="month-select-row" id="month-select-row">
-    <select id="month-select"></select>
-  </div>
+  <div class="month-row" id="month-row"><select id="month-select"></select></div>
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-value" id="stat-performances">0</div><div class="stat-label">Tables performed</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-conversion">—</div><div class="stat-label">Scan to request rate</div></div>
@@ -157,7 +174,7 @@
     <div class="setting-label">Timer delay</div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
       <input type="range" id="timer-range" min="1" max="10" value="3" step="1">
-      <div class="setting-value" id="timer-value">3 min</div>
+      <div class="setting-value" id="timer-display">3 min</div>
     </div>
   </div>
   <div class="setting-row">
@@ -170,8 +187,8 @@
       <option value="off">Off</option>
     </select>
   </div>
-  <button class="save-btn" id="save-settings-btn">Save Settings</button>
-  <div class="saved-msg" id="saved-msg">Settings saved</div>
+  <button class="action-btn" id="save-settings-btn">Save Settings</button>
+  <div class="saved-msg" id="settings-saved">Settings saved</div>
 </div>
 
 <div class="modal-overlay" id="venue-modal">
@@ -181,99 +198,118 @@
       <button class="modal-close" id="modal-close-btn">×</button>
     </div>
     <div class="venue-list" id="venue-list"></div>
-    <div class="add-venue-section" id="add-venue-section">
-      <div class="add-venue-title">Add new venue</div>
-      <input type="text" class="venue-name-input" id="new-venue-name" placeholder="Venue name (e.g. Lady Slipper)">
-      <label class="upload-map-label" id="upload-map-label">
-        <span id="upload-map-text">+ Upload floor plan</span>
-        <input type="file" id="new-venue-map-input" accept="image/*" style="display:none;">
+    <div class="add-venue-form" id="add-venue-form">
+      <div class="form-label">Add new venue</div>
+      <input type="text" class="text-field" id="new-venue-name" placeholder="Venue name (e.g. Lady Slipper)">
+      <label class="file-label" id="map-upload-label">
+        <span id="map-upload-text">+ Upload floor plan</span>
+        <input type="file" id="map-upload-input" accept="image/*" style="display:none;">
       </label>
-      <button class="add-venue-btn" id="add-venue-btn">Add Venue</button>
+      <button class="primary-btn" id="add-venue-btn">Add Venue</button>
     </div>
-    <div class="customize-section" id="customize-section" style="display:none;">
+    <div class="customize-form" id="customize-form" style="display:none;">
       <div class="customize-title" id="customize-title">Customize</div>
-      <div class="color-row">
-        <div class="setting-label">Background color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-bg-picker" value="#26060f">
-          <input type="text" class="hex-input" id="color-bg-hex" value="#26060f" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Box color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-box-picker" value="#273534">
-          <input type="text" class="hex-input" id="color-box-hex" value="#273534" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Accent color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-accent-picker" value="#6f0f43">
-          <input type="text" class="hex-input" id="color-accent-hex" value="#6f0f43" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Highlight color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-highlight-picker" value="#927b52">
-          <input type="text" class="hex-input" id="color-highlight-hex" value="#927b52" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Text color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-text-picker" value="#eae9d6">
-          <input type="text" class="hex-input" id="color-text-hex" value="#eae9d6" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Muted text color</div>
-        <div class="color-inputs">
-          <input type="color" id="color-muted-picker" value="#9aab9a">
-          <input type="text" class="hex-input" id="color-muted-hex" value="#9aab9a" maxlength="7">
-        </div>
-      </div>
-      <div class="color-row">
-        <div class="setting-label">Venue link label</div>
-        <input type="text" class="text-input" id="venue-link-label" placeholder="More evenings here">
-      </div>
-      <div class="color-row" style="border-bottom:none;">
-        <div class="setting-label">Venue link URL</div>
-        <input type="text" class="text-input" id="venue-link-url" placeholder="https://...">
-      </div>
-      <button class="add-venue-btn" style="margin-top:0.75rem;" id="save-config-btn">Save Appearance</button>
-      <div class="saved-msg" id="config-saved-msg" style="padding:0.5rem 0 0;">Appearance saved</div>
+      <div class="color-row"><div class="setting-label">Background</div><div class="color-inputs"><input type="color" id="c-bg-p" value="#26060f"><input type="text" class="hex-input" id="c-bg-h" value="#26060f" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Box color</div><div class="color-inputs"><input type="color" id="c-box-p" value="#273534"><input type="text" class="hex-input" id="c-box-h" value="#273534" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Accent color</div><div class="color-inputs"><input type="color" id="c-accent-p" value="#6f0f43"><input type="text" class="hex-input" id="c-accent-h" value="#6f0f43" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Highlight color</div><div class="color-inputs"><input type="color" id="c-highlight-p" value="#927b52"><input type="text" class="hex-input" id="c-highlight-h" value="#927b52" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Text color</div><div class="color-inputs"><input type="color" id="c-text-p" value="#eae9d6"><input type="text" class="hex-input" id="c-text-h" value="#eae9d6" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Muted text</div><div class="color-inputs"><input type="color" id="c-muted-p" value="#9aab9a"><input type="text" class="hex-input" id="c-muted-h" value="#9aab9a" maxlength="7"></div></div>
+      <div class="color-row"><div class="setting-label">Venue link label</div><input type="text" class="short-input" id="c-link-label" placeholder="More evenings here"></div>
+      <div class="color-row"><div class="setting-label">Venue link URL</div><input type="text" class="short-input" id="c-link-url" placeholder="https://..."></div>
+      <button class="primary-btn" style="margin-top:0.75rem;" id="save-config-btn">Save Appearance</button>
+      <div class="saved-msg" id="config-saved">Appearance saved</div>
     </div>
   </div>
 </div>
 
 <script>
-  var firebaseConfig = {
+  // ─── FIREBASE ───────────────────────────────────────────────────────────────
+  firebase.initializeApp({
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
     authDomain: "tableside-e94a6.firebaseapp.com",
     projectId: "tableside-e94a6",
     storageBucket: "tableside-e94a6.firebasestorage.app",
     messagingSenderId: "899595202591",
     appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
-  };
-
-  firebase.initializeApp(firebaseConfig);
+  });
   var db = firebase.firestore();
+  var FS = firebase.firestore.FieldValue;
 
-  // --- SETTINGS ---
+  // ─── STATE ──────────────────────────────────────────────────────────────────
   var settings = {
     timer: parseInt(localStorage.getItem('timer') || '3'),
     alert: localStorage.getItem('alert') || 'chime',
     activeVenue: localStorage.getItem('activeVenue') || null
   };
+  var venues = [];
+  var entries = [];
+  var unsubscribe = null;
+  var currentTab = 'tonight';
+  var customizeSlug = null;
+  var newMapData = null;
+  var countdownStart = null;
+  var countdownMs = null;
+  var countdownTimeout = null;
 
+  // ─── HELPERS ────────────────────────────────────────────────────────────────
+  function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+  function fmtTime(ms) {
+    var m = Math.floor(ms / 60000);
+    var s = Math.floor((ms % 60000) / 1000);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function showSaved(id) {
+    var el = document.getElementById(id);
+    el.classList.add('show');
+    setTimeout(function() { el.classList.remove('show'); }, 2000);
+  }
+
+  // ─── COUNTDOWN ──────────────────────────────────────────────────────────────
+  // Uses timestamps + visibilitychange so phone lock doesn't freeze it.
+  function startCountdown(startedAt, timerMs) {
+    stopCountdown();
+    countdownStart = startedAt;
+    countdownMs = timerMs;
+    tickCountdown();
+  }
+
+  function stopCountdown() {
+    if (countdownTimeout) clearTimeout(countdownTimeout);
+    countdownTimeout = null;
+    countdownStart = null;
+    countdownMs = null;
+  }
+
+  function tickCountdown() {
+    if (!countdownStart || !countdownMs) return;
+    var remaining = Math.max(0, countdownMs - (Date.now() - countdownStart));
+    if (remaining === 0) {
+      document.getElementById('heading-bar').style.display = 'none';
+      stopCountdown();
+      return;
+    }
+    document.getElementById('heading-bar-timer').textContent = fmtTime(remaining) + ' remaining';
+    countdownTimeout = setTimeout(tickCountdown, 1000);
+  }
+
+  // Snap to correct time immediately when phone unlocks
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible' && countdownStart && countdownMs) {
+      if (countdownTimeout) clearTimeout(countdownTimeout);
+      tickCountdown();
+    }
+  });
+
+  // ─── SETTINGS ───────────────────────────────────────────────────────────────
   document.getElementById('timer-range').value = settings.timer;
-  document.getElementById('timer-value').textContent = settings.timer + ' min';
+  document.getElementById('timer-display').textContent = settings.timer + ' min';
   document.getElementById('alert-select').value = settings.alert;
 
   document.getElementById('timer-range').addEventListener('input', function() {
-    document.getElementById('timer-value').textContent = this.value + ' min';
+    document.getElementById('timer-display').textContent = this.value + ' min';
   });
 
   document.getElementById('save-settings-btn').addEventListener('click', function() {
@@ -281,16 +317,14 @@
     settings.alert = document.getElementById('alert-select').value;
     localStorage.setItem('timer', settings.timer);
     localStorage.setItem('alert', settings.alert);
-    // Save timer to Firebase so diner page can read it
     if (settings.activeVenue) {
-      db.collection('venueConfigs').doc(settings.activeVenue).set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
+      db.collection('venueConfigs').doc(settings.activeVenue)
+        .set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
     }
-    var msg = document.getElementById('saved-msg');
-    msg.classList.add('show');
-    setTimeout(function() { msg.classList.remove('show'); }, 2000);
+    showSaved('settings-saved');
   });
 
-  // --- COLLAPSE TOGGLES ---
+  // ─── STATS ──────────────────────────────────────────────────────────────────
   document.getElementById('stats-toggle').addEventListener('click', function() {
     document.getElementById('stats-panel').classList.toggle('open');
     document.getElementById('stats-arrow').classList.toggle('open');
@@ -302,42 +336,297 @@
     document.getElementById('settings-arrow').classList.toggle('open');
   });
 
-  // --- STATS TABS ---
-  var currentTab = 'tonight';
   document.getElementById('tab-tonight').addEventListener('click', function() { switchTab('tonight'); });
   document.getElementById('tab-month').addEventListener('click', function() { switchTab('month'); });
   document.getElementById('tab-alltime').addEventListener('click', function() { switchTab('alltime'); });
+  document.getElementById('month-select').addEventListener('change', function() { loadStats(); });
 
   function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.stats-tab').forEach(function(t) { t.classList.remove('active'); });
     document.getElementById('tab-' + tab).classList.add('active');
-    var row = document.getElementById('month-select-row');
-    row.className = 'month-select-row' + (tab === 'month' ? ' visible' : '');
+    document.getElementById('month-row').className = 'month-row' + (tab === 'month' ? ' visible' : '');
     loadStats();
   }
 
-  // --- VENUES ---
-  var venues = [];
-  var newVenueMapData = null;
-  var customizeSlug = null;
+  function loadStats() {
+    if (!settings.activeVenue) return;
+    db.collection('venueEvents').doc(settings.activeVenue).collection('events').get()
+      .then(function(snap) {
+        var all = snap.docs.map(function(d) { return d.data(); });
+        var today = new Date().toISOString().split('T')[0];
+        var months = [];
+        all.forEach(function(e) { if (e.month && months.indexOf(e.month) < 0) months.push(e.month); });
+        months.sort().reverse();
 
-  function getVenueSlug(name) {
-    return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        var sel = document.getElementById('month-select');
+        if (months.length) {
+          var cur = sel.value;
+          sel.innerHTML = months.map(function(m) {
+            var d = new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]) - 1);
+            var lbl = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+            return '<option value="' + m + '"' + (m === cur ? ' selected' : '') + '>' + lbl + '</option>';
+          }).join('');
+        }
+
+        var events = all;
+        if (currentTab === 'tonight') events = all.filter(function(e) { return e.date === today; });
+        else if (currentTab === 'month') { var m = sel.value || months[0]; events = all.filter(function(e) { return e.month === m; }); }
+
+        var scans = events.filter(function(e) { return e.type === 'scan'; }).length;
+        var reqs  = events.filter(function(e) { return e.type === 'request'; }).length;
+        var perfs = events.filter(function(e) { return e.type === 'performance'; }).length;
+        var cxls  = events.filter(function(e) { return e.type === 'cancellation'; }).length;
+        var waits = events.filter(function(e) { return e.type === 'performance' && e.waitMs; }).map(function(e) { return e.waitMs; });
+
+        document.getElementById('stat-performances').textContent = perfs;
+        document.getElementById('stat-total-scans').textContent = scans;
+        document.getElementById('stat-cancellations').textContent = cxls;
+        document.getElementById('stat-conversion').textContent = scans > 0 ? Math.round(reqs / scans * 100) + '%' : '—';
+
+        if (waits.length) {
+          var avg = waits.reduce(function(a, b) { return a + b; }, 0) / waits.length;
+          document.getElementById('stat-avg-wait').textContent = fmtTime(avg);
+        } else document.getElementById('stat-avg-wait').textContent = '—';
+
+        var reqHours = events.filter(function(e) { return e.type === 'request' && e.hour != null; });
+        if (reqHours.length) {
+          var hc = {};
+          reqHours.forEach(function(e) { hc[e.hour] = (hc[e.hour] || 0) + 1; });
+          var ph = parseInt(Object.keys(hc).sort(function(a,b){return hc[b]-hc[a];})[0]);
+          document.getElementById('stat-peak').textContent = ph === 0 ? '12am' : ph < 12 ? ph + 'am' : ph === 12 ? '12pm' : (ph-12) + 'pm';
+        } else document.getElementById('stat-peak').textContent = '—';
+      }).catch(function() {});
+  }
+
+  function logEvent(type, table, requestedAt) {
+    if (!settings.activeVenue) return;
+    var waitMs = (type === 'performance' && requestedAt) ? Date.now() - requestedAt : null;
+    db.collection('venueEvents').doc(settings.activeVenue).collection('events')
+      .doc(Date.now() + '_' + table + '_' + type)
+      .set({
+        type: type, table: table, venue: settings.activeVenue,
+        timestamp: FS.serverTimestamp(),
+        date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
+        hour: new Date().getHours(),
+        waitMs: waitMs || null
+      }).catch(function() {});
+  }
+
+  // ─── AUDIO ──────────────────────────────────────────────────────────────────
+  function playAlert() {
+    var t = settings.alert;
+    if (t === 'off') return;
+    if ((t === 'vibrate' || t === 'both') && navigator.vibrate) navigator.vibrate([150, 80, 150]);
+    if (t === 'chime' || t === 'double' || t === 'both') {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function tone(freq, start, dur) {
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.frequency.value = freq; o.type = 'sine';
+          g.gain.setValueAtTime(0, ctx.currentTime + start);
+          g.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+          o.start(ctx.currentTime + start); o.stop(ctx.currentTime + start + dur);
+        }
+        if (t === 'chime' || t === 'both') tone(880, 0, 0.6);
+        else { tone(660, 0, 0.15); tone(660, 0.22, 0.15); }
+      } catch(e) {}
+    }
+  }
+
+  // ─── VENUES ─────────────────────────────────────────────────────────────────
+  document.getElementById('venue-badge').addEventListener('click', openVenueModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeVenueModal);
+  document.getElementById('add-venue-btn').addEventListener('click', addVenue);
+  document.getElementById('save-config-btn').addEventListener('click', saveConfig);
+  document.getElementById('map-upload-label').addEventListener('click', function() {
+    document.getElementById('map-upload-input').click();
+  });
+  document.getElementById('map-upload-input').addEventListener('change', function() {
+    var file = this.files[0]; if (!file) return;
+    var r = new FileReader();
+    r.onload = function(ev) {
+      newMapData = ev.target.result;
+      document.getElementById('map-upload-label').classList.add('ready');
+      document.getElementById('map-upload-text').textContent = '✓ Floor plan ready';
+    };
+    r.readAsDataURL(file);
+  });
+
+  document.getElementById('map-container').addEventListener('click', function(e) {
+    var btn = e.target.closest('.map-change-btn');
+    if (btn) updateMap(btn.dataset.slug);
+    else openVenueModal();
+  });
+
+  // Color picker sync
+  ['bg','box','accent','highlight','text','muted'].forEach(function(k) {
+    var p = document.getElementById('c-'+k+'-p'), h = document.getElementById('c-'+k+'-h');
+    p.addEventListener('input', function() { h.value = p.value; });
+    h.addEventListener('input', function() { if (/^#[0-9a-fA-F]{6}$/.test(h.value)) p.value = h.value; });
+  });
+
+  function openVenueModal() {
+    renderVenueList();
+    document.getElementById('add-venue-form').style.display = 'flex';
+    document.getElementById('customize-form').style.display = 'none';
+    document.getElementById('venue-modal').classList.add('open');
+  }
+
+  function closeVenueModal() {
+    document.getElementById('venue-modal').classList.remove('open');
+    document.getElementById('new-venue-name').value = '';
+    newMapData = null;
+    document.getElementById('map-upload-label').classList.remove('ready');
+    document.getElementById('map-upload-text').textContent = '+ Upload floor plan';
+    document.getElementById('add-venue-form').style.display = 'flex';
+    document.getElementById('customize-form').style.display = 'none';
+  }
+
+  function addVenue() {
+    var name = document.getElementById('new-venue-name').value.trim();
+    if (!name) return;
+    var s = slug(name);
+    if (venues.find(function(v) { return v.slug === s; })) { alert('A venue with that name already exists.'); return; }
+    var v = { name: name, slug: s, map: newMapData || null, config: {} };
+    venues.push(v);
+    saveVenues();
+    renderVenueList();
+    document.getElementById('new-venue-name').value = '';
+    newMapData = null;
+    document.getElementById('map-upload-label').classList.remove('ready');
+    document.getElementById('map-upload-text').textContent = '+ Upload floor plan';
+  }
+
+  function selectVenue(s) {
+    settings.activeVenue = s;
+    localStorage.setItem('activeVenue', s);
+    var v = venues.find(function(v) { return v.slug === s; });
+    if (v) {
+      document.getElementById('venue-badge').textContent = v.name;
+      if (v.map) showMap(v.map, s);
+      else setMapPlaceholder('No floor plan for this venue');
+    }
+    db.collection('venueConfigs').doc(s).set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
+    closeVenueModal();
+    subscribeToVenue();
+    loadStats();
+  }
+
+  function openCustomize(s) {
+    customizeSlug = s;
+    var v = venues.find(function(v) { return v.slug === s; });
+    document.getElementById('customize-title').textContent = 'Customize — ' + (v ? v.name : s);
+    document.getElementById('add-venue-form').style.display = 'none';
+    document.getElementById('customize-form').style.display = 'block';
+    var defs = { bg:'#26060f', box:'#273534', accent:'#6f0f43', highlight:'#927b52', text:'#eae9d6', muted:'#9aab9a' };
+    var cfg = (v && v.config) || {};
+    Object.keys(defs).forEach(function(k) {
+      var capK = k.charAt(0).toUpperCase() + k.slice(1);
+      var val = cfg['color'+capK] || defs[k];
+      document.getElementById('c-'+k+'-p').value = val;
+      document.getElementById('c-'+k+'-h').value = val;
+    });
+    document.getElementById('c-link-label').value = cfg.venueLinkLabel || '';
+    document.getElementById('c-link-url').value = cfg.venueLinkUrl || '';
+    document.getElementById('customize-form').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function saveConfig() {
+    if (!customizeSlug) return;
+    var v = venues.find(function(v) { return v.slug === customizeSlug; });
+    if (!v) return;
+    var cfg = {
+      colorBg:        document.getElementById('c-bg-h').value,
+      colorBox:       document.getElementById('c-box-h').value,
+      colorAccent:    document.getElementById('c-accent-h').value,
+      colorHighlight: document.getElementById('c-highlight-h').value,
+      colorText:      document.getElementById('c-text-h').value,
+      colorMuted:     document.getElementById('c-muted-h').value,
+      venueLinkLabel: document.getElementById('c-link-label').value.trim(),
+      venueLinkUrl:   document.getElementById('c-link-url').value.trim()
+    };
+    v.config = cfg;
+    saveVenues();
+    db.collection('venueConfigs').doc(customizeSlug).set(cfg).catch(function() {});
+    showSaved('config-saved');
+  }
+
+  function renameVenue(s) {
+    var v = venues.find(function(v) { return v.slug === s; });
+    if (!v) return;
+    var n = prompt('Rename venue:', v.name);
+    if (!n || !n.trim()) return;
+    var oldSlug = v.slug;
+    v.name = n.trim(); v.slug = slug(n.trim());
+    if (settings.activeVenue === oldSlug) {
+      settings.activeVenue = v.slug;
+      localStorage.setItem('activeVenue', v.slug);
+      document.getElementById('venue-badge').textContent = v.name;
+    }
+    saveVenues(); renderVenueList(); subscribeToVenue();
+  }
+
+  function updateMap(s) {
+    var inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = function() {
+      var file = inp.files[0]; if (!file) return;
+      var r = new FileReader();
+      r.onload = function(ev) {
+        var v = venues.find(function(v) { return v.slug === s; });
+        if (!v) return;
+        v.map = ev.target.result;
+        localStorage.setItem('map_' + s, ev.target.result);
+        saveVenues();
+        if (settings.activeVenue === s) showMap(ev.target.result, s);
+      };
+      r.readAsDataURL(file);
+    };
+    inp.click();
+  }
+
+  function deleteVenue(s) {
+    if (!confirm('Delete this venue?')) return;
+    venues = venues.filter(function(v) { return v.slug !== s; });
+    db.collection('venuePresets').doc(s).delete().catch(function() {});
+    localStorage.removeItem('map_' + s);
+    if (settings.activeVenue === s) {
+      settings.activeVenue = null;
+      localStorage.removeItem('activeVenue');
+      document.getElementById('venue-badge').textContent = 'No venue selected';
+      setMapPlaceholder('Select a venue to load floor plan');
+      if (unsubscribe) unsubscribe();
+    }
+    saveVenues(); renderVenueList();
+  }
+
+  function openQRGenerator(s) {
+    localStorage.setItem('qr_preselect', s);
+    window.open('qr.html', '_blank');
+  }
+
+  function showMap(src, s) {
+    document.getElementById('map-container').innerHTML =
+      '<img src="' + src + '" alt="Floor plan">' +
+      '<button class="map-change-btn" data-slug="' + s + '">Change map</button>';
+  }
+
+  function setMapPlaceholder(text) {
+    document.getElementById('map-container').innerHTML =
+      '<div class="map-placeholder"><div class="map-placeholder-text">' + text + '</div></div>';
   }
 
   function saveVenues() {
-    // Save to Firebase (without map images - those stay local)
     var batch = db.batch();
     venues.forEach(function(v) {
-      var ref = db.collection('venuePresets').doc(v.slug);
-      batch.set(ref, { name: v.name, slug: v.slug, config: v.config || {} });
+      batch.set(db.collection('venuePresets').doc(v.slug), { name: v.name, slug: v.slug, config: v.config || {} });
     });
-    batch.commit().catch(function(e) { console.error('saveVenues error', e); });
-    // Still save map images locally
-    venues.forEach(function(v) {
-      if (v.map) localStorage.setItem('map_' + v.slug, v.map);
-    });
+    batch.commit().catch(function() {});
+    venues.forEach(function(v) { if (v.map) localStorage.setItem('map_' + v.slug, v.map); });
   }
 
   function loadVenues() {
@@ -347,261 +636,53 @@
         return { name: data.name, slug: data.slug, config: data.config || {}, map: localStorage.getItem('map_' + data.slug) || null };
       });
       renderVenueList();
-      // Restore active venue display
       if (settings.activeVenue) {
-        var active = venues.find(function(v) { return v.slug === settings.activeVenue; });
-        if (active) {
-          document.getElementById('venue-badge').textContent = active.name;
-          if (active.map) showMap(active.map, active.slug);
+        var v = venues.find(function(v) { return v.slug === settings.activeVenue; });
+        if (v) {
+          document.getElementById('venue-badge').textContent = v.name;
+          if (v.map) showMap(v.map, v.slug);
         }
       }
-    }).catch(function(e) { console.error('loadVenues error', e); });
-  }
-
-  // Venue badge
-  document.getElementById('venue-badge').addEventListener('click', function() { openVenueModal(); });
-
-  // Map container
-  document.getElementById('map-container').addEventListener('click', function(e) {
-    if (e.target.closest('#map-change-btn')) {
-      updateVenueMap(e.target.closest('#map-change-btn').dataset.slug);
-    } else {
-      openVenueModal();
-    }
-  });
-
-  // Modal close
-  document.getElementById('modal-close-btn').addEventListener('click', function() { closeVenueModal(); });
-
-  // Add venue
-  document.getElementById('add-venue-btn').addEventListener('click', function() { addVenue(); });
-
-  // Map upload
-  document.getElementById('upload-map-label').addEventListener('click', function() {
-    document.getElementById('new-venue-map-input').click();
-  });
-
-  document.getElementById('new-venue-map-input').addEventListener('change', function() {
-    var file = this.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      newVenueMapData = ev.target.result;
-      document.getElementById('upload-map-label').classList.add('has-image');
-      document.getElementById('upload-map-text').textContent = '✓ Floor plan ready';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Save config
-  document.getElementById('save-config-btn').addEventListener('click', function() { saveVenueConfig(); });
-
-  // Color pickers
-  ['bg','box','accent','highlight','text','muted'].forEach(function(key) {
-    var picker = document.getElementById('color-' + key + '-picker');
-    var hex = document.getElementById('color-' + key + '-hex');
-    picker.addEventListener('input', function() { hex.value = picker.value; });
-    hex.addEventListener('input', function() {
-      if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value;
-    });
-  });
-
-  function openVenueModal() {
-    renderVenueList();
-    document.getElementById('customize-section').style.display = 'none';
-    document.getElementById('add-venue-section').style.display = 'flex';
-    document.getElementById('venue-modal').classList.add('open');
-  }
-
-  function closeVenueModal() {
-    document.getElementById('venue-modal').classList.remove('open');
-    document.getElementById('new-venue-name').value = '';
-    newVenueMapData = null;
-    document.getElementById('upload-map-label').classList.remove('has-image');
-    document.getElementById('upload-map-text').textContent = '+ Upload floor plan';
-    document.getElementById('customize-section').style.display = 'none';
-    document.getElementById('add-venue-section').style.display = 'flex';
-  }
-
-  function addVenue() {
-    var name = document.getElementById('new-venue-name').value.trim();
-    if (!name) return;
-    var slug = getVenueSlug(name);
-    if (venues.find(function(v) { return v.slug === slug; })) { alert('A venue with that name already exists.'); return; }
-    venues.push({ name: name, slug: slug, map: newVenueMapData || null });
-    saveVenues();
-    renderVenueList();
-    document.getElementById('new-venue-name').value = '';
-    newVenueMapData = null;
-    document.getElementById('upload-map-label').classList.remove('has-image');
-    document.getElementById('upload-map-text').textContent = '+ Upload floor plan';
-  }
-
-  function selectVenue(slug) {
-    settings.activeVenue = slug;
-    localStorage.setItem('activeVenue', slug);
-    var venue = venues.find(function(v) { return v.slug === slug; });
-    if (venue) {
-      document.getElementById('venue-badge').textContent = venue.name;
-      if (venue.map) showMap(venue.map, venue.slug);
-      else document.getElementById('map-container').innerHTML = '<div class="map-placeholder" id="map-placeholder"><div class="map-placeholder-text">No floor plan for this venue</div></div>';
-    }
-    // Sync timer to Firebase for this venue
-    db.collection('venueConfigs').doc(slug).set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
-    closeVenueModal();
-    subscribeToVenue();
-    loadStats();
-  }
-
-  function openCustomize(slug) {
-    customizeSlug = slug;
-    var venue = venues.find(function(v) { return v.slug === slug; });
-    document.getElementById('customize-title').textContent = 'Customize — ' + (venue ? venue.name : slug);
-    document.getElementById('add-venue-section').style.display = 'none';
-    document.getElementById('customize-section').style.display = 'block';
-    var defaults = { bg:'#26060f', box:'#273534', accent:'#6f0f43', highlight:'#927b52', text:'#eae9d6', muted:'#9aab9a' };
-    var cfg = (venue && venue.config) ? venue.config : {};
-    Object.keys(defaults).forEach(function(key) {
-      var capKey = key.charAt(0).toUpperCase() + key.slice(1);
-      var val = cfg['color' + capKey] || defaults[key];
-      document.getElementById('color-' + key + '-picker').value = val;
-      document.getElementById('color-' + key + '-hex').value = val;
-    });
-    document.getElementById('venue-link-label').value = cfg.venueLinkLabel || '';
-    document.getElementById('venue-link-url').value = cfg.venueLinkUrl || '';
-    document.getElementById('customize-section').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function saveVenueConfig() {
-    if (!customizeSlug) return;
-    var venue = venues.find(function(v) { return v.slug === customizeSlug; });
-    if (!venue) return;
-    var cfg = {
-      colorBg: document.getElementById('color-bg-hex').value || '#26060f',
-      colorBox: document.getElementById('color-box-hex').value || '#273534',
-      colorAccent: document.getElementById('color-accent-hex').value || '#6f0f43',
-      colorHighlight: document.getElementById('color-highlight-hex').value || '#927b52',
-      colorText: document.getElementById('color-text-hex').value || '#eae9d6',
-      colorMuted: document.getElementById('color-muted-hex').value || '#9aab9a',
-      venueLinkLabel: document.getElementById('venue-link-label').value.trim(),
-      venueLinkUrl: document.getElementById('venue-link-url').value.trim()
-    };
-    venue.config = cfg;
-    saveVenues();
-    db.collection('venueConfigs').doc(customizeSlug).set(cfg).catch(function(e) { console.error(e); });
-    var msg = document.getElementById('config-saved-msg');
-    msg.classList.add('show');
-    setTimeout(function() { msg.classList.remove('show'); }, 2000);
-  }
-
-  function renameVenue(slug) {
-    var venue = venues.find(function(v) { return v.slug === slug; });
-    if (!venue) return;
-    var newName = prompt('Rename venue:', venue.name);
-    if (!newName || !newName.trim()) return;
-    var oldSlug = venue.slug;
-    venue.name = newName.trim();
-    venue.slug = getVenueSlug(newName.trim());
-    if (settings.activeVenue === oldSlug) {
-      settings.activeVenue = venue.slug;
-      localStorage.setItem('activeVenue', venue.slug);
-      document.getElementById('venue-badge').textContent = venue.name;
-    }
-    saveVenues();
-    renderVenueList();
-    subscribeToVenue();
-  }
-
-  function updateVenueMap(slug) {
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = function() {
-      var file = input.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var venue = venues.find(function(v) { return v.slug === slug; });
-        if (venue) {
-          venue.map = ev.target.result;
-          saveVenues();
-          if (settings.activeVenue === slug) showMap(ev.target.result, slug);
-        }
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  }
-
-  function deleteVenue(slug) {
-    if (!confirm('Delete this venue?')) return;
-    venues = venues.filter(function(v) { return v.slug !== slug; });
-    db.collection('venuePresets').doc(slug).delete().catch(function() {});
-    localStorage.removeItem('map_' + slug);
-    if (settings.activeVenue === slug) {
-      settings.activeVenue = null;
-      localStorage.removeItem('activeVenue');
-      document.getElementById('venue-badge').textContent = 'No venue selected';
-      document.getElementById('map-container').innerHTML = '<div class="map-placeholder" id="map-placeholder"><div class="map-placeholder-text">Select a venue to load floor plan</div></div>';
-      if (unsubscribe) unsubscribe();
-    }
-    renderVenueList();
-  }
-
-  function openQRGenerator(slug) {
-    localStorage.setItem('qr_preselect', slug);
-    window.open('qr.html', '_blank');
-  }
-
-  function showMap(src, slug) {
-    document.getElementById('map-container').innerHTML =
-      '<img src="' + src + '" alt="Floor plan"><button class="map-change-btn" id="map-change-btn" data-slug="' + slug + '">Change map</button>';
+    }).catch(function() {});
   }
 
   function renderVenueList() {
     var list = document.getElementById('venue-list');
-    if (venues.length === 0) {
-      list.innerHTML = '<div style="padding:1rem;font-size:0.72rem;color:var(--text-muted);text-align:center;">No venues yet. Add one below.</div>';
+    if (!venues.length) {
+      list.innerHTML = '<div style="padding:1rem;font-size:0.72rem;color:var(--muted);text-align:center;">No venues yet.</div>';
       return;
     }
     list.innerHTML = venues.map(function(v) {
-      return '<div class="venue-item' + (settings.activeVenue === v.slug ? ' active' : '') + '" data-slug="' + v.slug + '">' +
+      var isActive = settings.activeVenue === v.slug;
+      return '<div class="venue-item' + (isActive ? ' active' : '') + '">' +
         '<div style="flex:1;">' +
           '<div class="venue-item-name">' + v.name + '</div>' +
-          (settings.activeVenue === v.slug ? '<div class="venue-item-active">Active</div>' : '') +
+          (isActive ? '<div class="venue-item-active-label">Active</div>' : '') +
         '</div>' +
-        '<div class="venue-item-actions">' +
-          '<button class="venue-action-btn primary" data-action="select" data-slug="' + v.slug + '">Select</button>' +
-          '<button class="venue-action-btn" data-action="customize" data-slug="' + v.slug + '">Customize</button>' +
-          '<button class="venue-action-btn" data-action="rename" data-slug="' + v.slug + '">Rename</button>' +
-          '<button class="venue-action-btn" data-action="map" data-slug="' + v.slug + '">Map</button>' +
-          '<button class="venue-action-btn" data-action="qr" data-slug="' + v.slug + '">QR Codes</button>' +
-          '<button class="venue-action-btn delete" data-action="delete" data-slug="' + v.slug + '">Delete</button>' +
+        '<div class="venue-actions">' +
+          '<button class="venue-btn primary" data-action="select" data-slug="' + v.slug + '">Select</button>' +
+          '<button class="venue-btn" data-action="customize" data-slug="' + v.slug + '">Customize</button>' +
+          '<button class="venue-btn" data-action="rename" data-slug="' + v.slug + '">Rename</button>' +
+          '<button class="venue-btn" data-action="map" data-slug="' + v.slug + '">Map</button>' +
+          '<button class="venue-btn" data-action="qr" data-slug="' + v.slug + '">QR Codes</button>' +
+          '<button class="venue-btn danger" data-action="delete" data-slug="' + v.slug + '">Delete</button>' +
         '</div>' +
       '</div>';
     }).join('');
 
-    list.addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-action]');
-      if (!btn) return;
-      var action = btn.dataset.action;
-      var slug = btn.dataset.slug;
-      if (action === 'select') selectVenue(slug);
-      else if (action === 'customize') openCustomize(slug);
-      else if (action === 'rename') renameVenue(slug);
-      else if (action === 'map') updateVenueMap(slug);
-      else if (action === 'qr') openQRGenerator(slug);
-      else if (action === 'delete') deleteVenue(slug);
-    });
+    list.onclick = function(e) {
+      var btn = e.target.closest('[data-action]'); if (!btn) return;
+      var a = btn.dataset.action, s = btn.dataset.slug;
+      if (a === 'select')    selectVenue(s);
+      else if (a === 'customize') openCustomize(s);
+      else if (a === 'rename')    renameVenue(s);
+      else if (a === 'map')       updateMap(s);
+      else if (a === 'qr')        openQRGenerator(s);
+      else if (a === 'delete')    deleteVenue(s);
+    };
   }
 
-  // Load venues from Firebase on startup
-  loadVenues();
-
-  // --- QUEUE ---
-  var entries = [];
-  var unsubscribe = null;
-
+  // ─── QUEUE ──────────────────────────────────────────────────────────────────
   function subscribeToVenue() {
     if (!settings.activeVenue) return;
     if (unsubscribe) unsubscribe();
@@ -610,8 +691,7 @@
     unsubscribe = db.collection('venues').doc(settings.activeVenue).collection('tables')
       .onSnapshot(function(snapshot) {
         snapshot.docChanges().forEach(function(change) {
-          var data = Object.assign({ id: change.doc.id }, change.doc.data());
-          handleUpdate(data);
+          handleUpdate(Object.assign({ id: change.doc.id }, change.doc.data()));
         });
         renderQueue();
       });
@@ -620,312 +700,155 @@
   function handleUpdate(data) {
     var label = 'Table ' + data.table;
     var existing = entries.find(function(e) { return e.id === data.id; });
-
-    // If a table is already on_my_way when admin page loads, restore the countdown bar
-    if (data.status === 'on_my_way' && data.onMyWayAt && !window._countdownInterval) {
-      var startedAt = data.onMyWayAt.toMillis();
-      var timerMs = (data.timerMinutes || settings.timer) * 60 * 1000;
-      var remaining = timerMs - (Date.now() - startedAt);
-      if (remaining > 0) {
-        var bar = document.getElementById('current-table-bar');
-        bar.style.display = 'flex';
-        document.getElementById('current-table-label').textContent = label;
-        window._countdownStart = startedAt;
-        window._countdownTimerMs = timerMs;
-        window._countdownInterval = setInterval(function() {
-          var rem = Math.max(0, timerMs - (Date.now() - startedAt));
-          if (rem === 0) { clearInterval(window._countdownInterval); window._countdownInterval = null; window._countdownStart = null; bar.style.display = 'none'; return; }
-          var m = Math.floor(rem / 60000);
-          var s = Math.floor((rem % 60000) / 1000);
-          document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
-        }, 1000);
-      }
-    }
+    var FIVE_MIN = 5 * 60 * 1000;
 
     if (data.status === 'scanned') {
       if (!existing) {
         var scannedAt = data.scannedAt ? data.scannedAt.toMillis() : Date.now();
-        entries.push({ id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null, scannedAt: scannedAt });
+        // Only add if scan is less than 5 minutes old
+        if (Date.now() - scannedAt < FIVE_MIN) {
+          entries.push({ id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null, scannedAt: scannedAt });
+        }
       }
+
     } else if (data.status === 'requested') {
       if (existing && existing.type === 'scan') {
-        // Convert scan to request — move to bottom of requests
         existing.type = 'request';
         existing.requestedAt = data.requestedAt ? data.requestedAt.toMillis() : Date.now();
         entries = entries.filter(function(e) { return e.id !== data.id; });
         entries.push(existing);
-        playAlert();
       } else if (!existing) {
         entries.push({ id: data.id, table: data.table, label: label, type: 'request', requestedAt: data.requestedAt ? data.requestedAt.toMillis() : Date.now() });
-        playAlert();
       }
-      updateQueuePositions();
+      playAlert();
+      updatePositions();
+
     } else if (data.status === 'cancelled') {
+      entries = entries.filter(function(e) { return e.id !== data.id; });
       var cancelledAt = data.cancelledAt ? data.cancelledAt.toMillis() : Date.now();
       var age = Date.now() - cancelledAt;
-      // Remove from active entries
+      if (age < FIVE_MIN && !document.querySelector('[data-cancel-id="' + data.id + '"]')) {
+        showCancelNotice(label, data.id, FIVE_MIN - age);
+      }
+      updatePositions();
+
+    } else if (data.status === 'on_my_way') {
       entries = entries.filter(function(e) { return e.id !== data.id; });
-      // Only show notice if cancelled recently (within 5 minutes)
-      if (age < 5 * 60 * 1000) {
-        var existingNotice = document.querySelector('[data-cancel-id="' + data.id + '"]');
-        if (!existingNotice) {
-          showCancelNotice(label, data.id, 5 * 60 * 1000 - age);
+      updatePositions();
+      // Restore countdown bar if page was reloaded mid-performance
+      if (data.onMyWayAt && !countdownStart) {
+        var startedAt = data.onMyWayAt.toMillis();
+        var timerMs = (data.timerMins || settings.timer) * 60 * 1000;
+        if (Date.now() - startedAt < timerMs) {
+          document.getElementById('heading-bar').style.display = 'flex';
+          document.getElementById('heading-bar-table').textContent = label;
+          startCountdown(startedAt, timerMs);
         }
       }
-      updateQueuePositions();
-    } else if (data.status === 'on_my_way' || data.status === 'performed') {
+
+    } else if (data.status === 'performed') {
       entries = entries.filter(function(e) { return e.id !== data.id; });
-      updateQueuePositions();
+      updatePositions();
     }
   }
 
   function showCancelNotice(label, id, remainingMs) {
-    var container = document.getElementById('cancel-notices');
-    var notice = document.createElement('div');
-    notice.style.cssText = 'font-size:0.65rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0.75rem;background:#fff5f5;border:1px solid #f5c0c0;opacity:1;transition:opacity 0.5s;';
-    notice.setAttribute('data-cancel-id', id);
-    notice.textContent = label + ' — Cancelled Request';
-    container.appendChild(notice);
+    var el = document.createElement('div');
+    el.className = 'cancel-notice';
+    el.setAttribute('data-cancel-id', id);
+    el.textContent = label + ' — Cancelled Request';
+    document.getElementById('cancel-notices').appendChild(el);
     setTimeout(function() {
-      notice.style.opacity = '0';
-      setTimeout(function() { if (notice.parentNode) notice.parentNode.removeChild(notice); }, 500);
+      el.style.opacity = '0';
+      setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
     }, remainingMs);
   }
 
-  function updateQueuePositions() {
+  function updatePositions() {
     if (!settings.activeVenue) return;
-    var requestEntries = entries.filter(function(e) { return e.type === 'request'; });
-    requestEntries.forEach(function(entry, i) {
-      db.collection('venues').doc(settings.activeVenue).collection('tables').doc(entry.id)
+    entries.filter(function(e) { return e.type === 'request'; }).forEach(function(e, i) {
+      db.collection('venues').doc(settings.activeVenue).collection('tables').doc(e.id)
         .update({ queuePosition: i + 1 }).catch(function() {});
     });
   }
 
   function renderQueue() {
-    var listEl = document.getElementById('queue-list');
-    var countEl = document.getElementById('queue-count');
-    var requestCount = entries.filter(function(e) { return e.type === 'request'; }).length;
+    var list = document.getElementById('queue-list');
+    var count = document.getElementById('queue-count');
+    var FIVE_MIN = 5 * 60 * 1000;
 
-    countEl.textContent = requestCount;
-    countEl.className = 'queue-count' + (requestCount === 0 ? ' empty' : '');
-
-    if (entries.length === 0) {
-      listEl.innerHTML = '<div class="queue-empty">No activity yet.</div>';
-      return;
-    }
-
-    listEl.innerHTML = '';
-    // Filter out scans older than 5 minutes
-    var fiveMin = 5 * 60 * 1000;
+    // Filter expired scans
     entries = entries.filter(function(e) {
-      if (e.type === 'scan' && e.scannedAt && (Date.now() - e.scannedAt) > fiveMin) return false;
-      return true;
+      return !(e.type === 'scan' && e.scannedAt && Date.now() - e.scannedAt > FIVE_MIN);
     });
 
-    // Sort: requests first (in order), scans at bottom
     var requests = entries.filter(function(e) { return e.type === 'request'; });
-    var scans = entries.filter(function(e) { return e.type === 'scan'; });
-    var sorted = requests.concat(scans);
-    var topEntry = requests.length > 0 ? requests[0] : null;
+    var scans    = entries.filter(function(e) { return e.type === 'scan'; });
+    var sorted   = requests.concat(scans);
+    var top      = requests[0] || null;
 
+    count.textContent = requests.length;
+    count.className = 'queue-count' + (requests.length === 0 ? ' empty' : '');
+
+    if (!sorted.length) { list.innerHTML = '<div class="queue-empty">No activity yet.</div>'; return; }
+
+    list.innerHTML = '';
     sorted.forEach(function(entry) {
-      var isTop = entry === topEntry;
+      var isTop = entry === top;
       var div = document.createElement('div');
       div.className = 'queue-entry' + (isTop ? ' is-top' : '');
 
       if (entry.type === 'request') {
-        var waitMs = entry.requestedAt ? Date.now() - entry.requestedAt : 0;
-        var waitMins = Math.floor(waitMs / 60000);
-        var waitSecs = Math.floor((waitMs % 60000) / 1000);
-        var waitStr = waitMins > 0 ? waitMins + 'm ' + waitSecs + 's' : waitSecs + 's';
-        div.innerHTML = '<div class="entry-left"><div class="entry-label">' + entry.label + '</div><div class="entry-wait">Waiting ' + waitStr + '</div></div>' +
-          (isTop ? '<button class="on-my-way-btn" data-id="' + entry.id + '" data-label="' + entry.label + '">On my way</button>' : '');
-      } else if (entry.type === 'scan') {
-        div.innerHTML = '<div class="entry-left"><div class="entry-label scan">' + entry.label + ' — Scan</div></div>';
+        var ms = entry.requestedAt ? Date.now() - entry.requestedAt : 0;
+        var waitStr = fmtTime(ms);
+        div.innerHTML =
+          '<div class="entry-left">' +
+            '<div class="entry-name">' + entry.label + '</div>' +
+            '<div class="entry-wait">Waiting ' + waitStr + '</div>' +
+          '</div>' +
+          (isTop ? '<button class="on-my-way-btn" data-id="' + entry.id + '" data-label="' + entry.label + '" data-requested="' + (entry.requestedAt || '') + '">On my way</button>' : '');
+      } else {
+        div.innerHTML = '<div class="entry-left"><div class="entry-name scan">' + entry.label + ' — Scan</div></div>';
       }
-
-      listEl.appendChild(div);
+      list.appendChild(div);
     });
 
-    var btn = listEl.querySelector('.on-my-way-btn');
+    var btn = list.querySelector('.on-my-way-btn');
     if (btn) {
       btn.addEventListener('click', function() {
         var id = this.dataset.id;
-        var entryLabel = this.dataset.label;
-        var entry = entries.find(function(e) { return e.id === id; });
-        if (!entry) return;
-
-        var onMyWayAt = Date.now();
-        db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
-          .update({
-            status: 'on_my_way',
-            onMyWayAt: firebase.firestore.FieldValue.serverTimestamp(),
-            timerMins: settings.timer
-          });
-
-        logEvent('performance', entry.table, entry.requestedAt);
-
-        // Show countdown on admin page (cosmetic only - diner page handles its own transition)
-        var bar = document.getElementById('current-table-bar');
-        bar.style.display = 'flex';
-        document.getElementById('current-table-label').textContent = entryLabel;
-        var secondsLeft = settings.timer * 60;
-        document.getElementById('current-table-timer').textContent = settings.timer + ':00 remaining';
-        var countdownInterval = setInterval(function() {
-          secondsLeft--;
-          if (secondsLeft <= 0) {
-            clearInterval(countdownInterval);
-            bar.style.display = 'none';
-          } else {
-            var m = Math.floor(secondsLeft / 60);
-            var s = secondsLeft % 60;
-            document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
-          }
-        }, 1000);
-
-        // Also set performed after timer as a fallback (in case diner page is closed)
+        var lbl = this.dataset.label;
+        var requestedAt = this.dataset.requested ? parseInt(this.dataset.requested) : null;
         var timerMs = settings.timer * 60 * 1000;
-        var tableId = id;
-        var venueId = settings.activeVenue;
-        setTimeout(function() {
-          db.collection('venues').doc(venueId).collection('tables').doc(tableId)
-            .update({ status: 'performed', performedAt: firebase.firestore.FieldValue.serverTimestamp() })
-            .catch(function() {});
-          loadStats();
-        }, timerMs);
 
-        updateQueuePositions();
+        // Write to Firebase — diner page reads onMyWayAt and handles its own transition
+        db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
+          .update({ status: 'on_my_way', onMyWayAt: FS.serverTimestamp(), timerMins: settings.timer });
+
+        logEvent('performance', id.replace('table_', ''), requestedAt);
+
+        // Show heading bar with countdown
+        document.getElementById('heading-bar').style.display = 'flex';
+        document.getElementById('heading-bar-table').textContent = lbl;
+        startCountdown(Date.now(), timerMs);
+
+        updatePositions();
         renderQueue();
       });
     }
   }
 
+  // Refresh wait times every second
   setInterval(function() {
     if (entries.some(function(e) { return e.type === 'request'; })) renderQueue();
   }, 1000);
 
-  // --- PERSISTENT STATS ---
-  function logEvent(type, table, requestedAt) {
-    if (!settings.activeVenue) return;
-    var waitMs = (type === 'performance' && requestedAt) ? Date.now() - requestedAt : null;
-    db.collection('venueEvents').doc(settings.activeVenue).collection('events')
-      .doc(Date.now() + '_' + table + '_' + type)
-      .set({
-        type: type, table: table, venue: settings.activeVenue,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        date: new Date().toISOString().split('T')[0],
-        month: new Date().toISOString().slice(0, 7),
-        hour: new Date().getHours(),
-        waitMs: waitMs || null
-      }).catch(function() {});
-  }
-
-  function loadStats() {
-    if (!settings.activeVenue) return;
-    db.collection('venueEvents').doc(settings.activeVenue).collection('events').get()
-      .then(function(snap) {
-        var events = snap.docs.map(function(d) { return d.data(); });
-        var today = new Date().toISOString().split('T')[0];
-
-        var months = [];
-        events.forEach(function(e) { if (e.month && months.indexOf(e.month) === -1) months.push(e.month); });
-        months.sort().reverse();
-
-        var monthSelect = document.getElementById('month-select');
-        if (months.length > 0) {
-          var currentVal = monthSelect.value;
-          monthSelect.innerHTML = months.map(function(m) {
-            var parts = m.split('-');
-            var label = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
-            return '<option value="' + m + '"' + (m === currentVal ? ' selected' : '') + '>' + label + '</option>';
-          }).join('');
-        }
-
-        if (currentTab === 'tonight') events = events.filter(function(e) { return e.date === today; });
-        else if (currentTab === 'month') {
-          var m = monthSelect.value || months[0];
-          events = events.filter(function(e) { return e.month === m; });
-        }
-
-        var scans = events.filter(function(e) { return e.type === 'scan'; }).length;
-        var requests = events.filter(function(e) { return e.type === 'request'; }).length;
-        var performances = events.filter(function(e) { return e.type === 'performance'; }).length;
-        var cancellations = events.filter(function(e) { return e.type === 'cancellation'; }).length;
-        var waitTimes = events.filter(function(e) { return e.type === 'performance' && e.waitMs; }).map(function(e) { return e.waitMs; });
-
-        document.getElementById('stat-performances').textContent = performances;
-        document.getElementById('stat-total-scans').textContent = scans;
-        document.getElementById('stat-cancellations').textContent = cancellations;
-        document.getElementById('stat-conversion').textContent = scans > 0 ? Math.round((requests / scans) * 100) + '%' : '—';
-
-        if (waitTimes.length > 0) {
-          var avg = waitTimes.reduce(function(a, b) { return a + b; }, 0) / waitTimes.length;
-          var m = Math.floor(avg / 60000);
-          var s = Math.floor((avg % 60000) / 1000);
-          document.getElementById('stat-avg-wait').textContent = m > 0 ? m + 'm ' + s + 's' : s + 's';
-        } else {
-          document.getElementById('stat-avg-wait').textContent = '—';
-        }
-
-        var requestEvents = events.filter(function(e) { return e.type === 'request' && e.hour != null; });
-        if (requestEvents.length > 0) {
-          var hourCounts = {};
-          requestEvents.forEach(function(e) { hourCounts[e.hour] = (hourCounts[e.hour] || 0) + 1; });
-          var peak = Object.keys(hourCounts).sort(function(a, b) { return hourCounts[b] - hourCounts[a]; })[0];
-          var h = parseInt(peak);
-          document.getElementById('stat-peak').textContent = h === 0 ? '12am' : h < 12 ? h + 'am' : h === 12 ? '12pm' : (h - 12) + 'pm';
-        } else {
-          document.getElementById('stat-peak').textContent = '—';
-        }
-      }).catch(function() {});
-  }
-
-  // --- AUDIO ---
-  function playAlert() {
-    var alertType = settings.alert;
-    if (alertType === 'off') return;
-    if ((alertType === 'vibrate' || alertType === 'both') && navigator.vibrate) navigator.vibrate([150, 80, 150]);
-    if (alertType === 'chime' || alertType === 'double' || alertType === 'both') {
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        function playTone(freq, start, duration) {
-          var osc = ctx.createOscillator();
-          var gain = ctx.createGain();
-          osc.connect(gain); gain.connect(ctx.destination);
-          osc.frequency.value = freq; osc.type = 'sine';
-          gain.gain.setValueAtTime(0, ctx.currentTime + start);
-          gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
-          osc.start(ctx.currentTime + start); osc.stop(ctx.currentTime + start + duration);
-        }
-        if (alertType === 'chime' || alertType === 'both') playTone(880, 0, 0.6);
-        else { playTone(660, 0, 0.15); playTone(660, 0.22, 0.15); }
-      } catch(e) {}
-    }
-  }
-
-  // Visibility change — force update countdown when phone unlocks
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible' && window._countdownStart && window._countdownTimerMs) {
-      var rem = Math.max(0, window._countdownTimerMs - (Date.now() - window._countdownStart));
-      if (rem === 0) {
-        clearInterval(window._countdownInterval);
-        window._countdownInterval = null;
-        document.getElementById('current-table-bar').style.display = 'none';
-      } else {
-        var m = Math.floor(rem / 60000);
-        var s = Math.floor((rem % 60000) / 1000);
-        document.getElementById('current-table-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s + ' remaining';
-      }
-    }
-  });
-
-  // Init
+  // ─── INIT ───────────────────────────────────────────────────────────────────
+  loadVenues();
   if (settings.activeVenue) {
     subscribeToVenue();
     loadStats();
   }
-  // loadVenues() already called above
 </script>
 </body>
 </html>

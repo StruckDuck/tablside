@@ -4,305 +4,93 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>An Evening of Magic</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   :root {
-    --bg: #26060f;
-    --border: #3d5250;
-    --gold: #927b52;
-    --gold-dim: #7a6545;
-    --cream: #eae9d6;
-    --cream-dim: #c4bfa6;
-    --text: #eae9d6;
-    --text-muted: #9aab9a;
-    --teal: #273534;
-    --plum: #6f0f43;
+    --bg:#26060f; --border:#3d5250;
+    --gold:#927b52; --gold-dim:#7a6545;
+    --cream:#eae9d6; --cream-dim:#c4bfa6;
+    --text:#eae9d6; --text-muted:#9aab9a;
+    --teal:#273534; --plum:#6f0f43;
   }
 
   body {
-    font-family: 'Raleway', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
+    font-family:'Raleway',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:2rem 1.5rem;
   }
 
   .container {
-    width: 100%;
-    max-width: 420px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    background: var(--teal);
-    border: 1px solid var(--border);
-    padding: 2.5rem 2rem;
+    width:100%; max-width:420px;
+    display:flex; flex-direction:column; align-items:center; gap:2rem;
+    background:var(--teal);
+    border:1px solid var(--border);
+    padding:2.5rem 2rem;
   }
 
-  .monogram {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3rem;
-    font-weight: 300;
-    color: var(--gold);
-    letter-spacing: 0.15em;
-    line-height: 1;
-  }
+  .monogram { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; color:var(--gold); letter-spacing:0.15em; line-height:1; }
 
-  .rule {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+  .rule { width:100%; display:flex; align-items:center; gap:1rem; }
+  .rule-line { flex:1; height:1px; background:var(--border); }
+  .rule-diamond { width:5px; height:5px; background:var(--gold-dim); transform:rotate(45deg); flex-shrink:0; }
 
-  .rule-line { flex: 1; height: 1px; background: var(--border); }
+  .headline { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:300; color:var(--cream); text-align:center; line-height:1.3; letter-spacing:0.03em; }
+  .subtext { font-size:0.78rem; font-weight:300; color:var(--cream-dim); text-align:center; line-height:1.8; letter-spacing:0.08em; text-transform:uppercase; }
+  .after-headline { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; font-style:italic; color:var(--cream); text-align:center; line-height:1.4; }
 
-  .rule-diamond {
-    width: 5px;
-    height: 5px;
-    background: var(--gold-dim);
-    transform: rotate(45deg);
-    flex-shrink: 0;
-  }
+  .btn-primary { width:100%; padding:1rem 2rem; background:transparent; border:1px solid var(--gold-dim); color:var(--gold); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.3s; -webkit-tap-highlight-color:transparent; }
+  .btn-primary:active { background:var(--plum); color:var(--cream); border-color:var(--plum); }
 
-  .headline {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.6rem;
-    font-weight: 300;
-    color: var(--cream);
-    text-align: center;
-    line-height: 1.3;
-    letter-spacing: 0.03em;
-  }
+  .btn-cancel { background:transparent; border:none; color:var(--text-muted); font-family:'Raleway',sans-serif; font-size:0.7rem; font-weight:300; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-underline-offset:3px; -webkit-tap-highlight-color:transparent; }
 
-  .subtext {
-    font-size: 0.78rem;
-    font-weight: 300;
-    color: var(--cream-dim);
-    text-align: center;
-    line-height: 1.8;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+  .status-card { width:100%; border:1px solid var(--border); background:rgba(0,0,0,0.25); padding:1.5rem; display:flex; flex-direction:column; align-items:center; gap:0.75rem; }
 
-  .btn-primary {
-    width: 100%;
-    padding: 1rem 2rem;
-    background: transparent;
-    border: 1px solid var(--gold-dim);
-    color: var(--gold);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+  .status-ring { width:48px; height:48px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all 0.8s ease; }
+  .status-ring.waiting  { border-color:var(--text-muted); }
+  .status-ring.soon     { border-color:var(--gold-dim); }
+  .status-ring.next     { border-color:var(--gold); }
+  .status-ring.incoming { border-color:var(--cream); animation:ringpulse 1.5s ease-in-out infinite; }
+  @keyframes ringpulse { 0%,100%{box-shadow:0 0 20px rgba(234,233,214,0.2)} 50%{box-shadow:0 0 35px rgba(234,233,214,0.5)} }
 
-  .btn-primary:hover {
-    background: var(--plum);
-    color: var(--cream);
-    border-color: var(--plum);
-  }
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--text-muted); transition:width 0.8s,height 0.8s,background 0.8s; }
+  .waiting  .status-dot { width:8px;  height:8px;  background:var(--text-muted); }
+  .soon     .status-dot { width:18px; height:18px; background:var(--gold-dim); }
+  .next     .status-dot { width:28px; height:28px; background:var(--gold); animation:dotpulse 1.8s ease-in-out infinite; }
+  .incoming .status-dot { width:40px; height:40px; background:var(--cream); animation:dotpulse 0.9s ease-in-out infinite; }
+  @keyframes dotpulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(0.78);opacity:0.6} }
 
-  .btn-secondary {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
-  }
+  .status-label { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; color:var(--cream); text-align:center; font-style:italic; }
+  .status-sub { font-size:0.68rem; font-weight:300; color:var(--text-muted); letter-spacing:0.12em; text-transform:uppercase; text-align:center; }
 
-  .btn-secondary:hover { color: var(--cream-dim); }
+  .links { width:100%; display:flex; flex-direction:column; border:1px solid var(--border); background:rgba(0,0,0,0.25); }
+  .link { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.07); text-decoration:none; color:var(--cream-dim); font-size:0.72rem; font-weight:400; letter-spacing:0.12em; text-transform:uppercase; -webkit-tap-highlight-color:transparent; }
+  .link:last-child { border-bottom:none; }
+  .link.tapped { animation:tapflash 0.4s ease forwards; }
+  @keyframes tapflash { 0%{background:var(--plum);color:var(--cream)} 100%{background:transparent;color:var(--cream-dim)} }
+  .link .arrow { font-size:0.65rem; color:var(--text-muted); }
+  .link.expandable { cursor:pointer; }
+  .link.expandable.open .arrow { transform:rotate(90deg); }
+  .link.sub { padding-left:2rem; background:rgba(0,0,0,0.15); font-size:0.68rem; }
 
-  .status-card {
-    width: 100%;
-    border: 1px solid var(--border);
-    background: rgba(0,0,0,0.25);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
+  .tip-btn { width:100%; padding:1.1rem 2rem; background:var(--plum); border:1px solid var(--plum); color:var(--cream); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; text-decoration:none; display:block; text-align:center; transition:opacity 0.2s; -webkit-tap-highlight-color:transparent; }
+  .tip-btn:active { opacity:0.85; }
+  .tip-btn.soft { background:transparent; border:1px solid rgba(234,233,214,0.35); color:var(--cream-dim); font-weight:300; letter-spacing:0.12em; }
 
-  .status-indicator {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.8s ease;
-  }
+  .footer-name { font-family:'Cormorant Garamond',serif; font-size:0.75rem; font-weight:300; color:var(--text-muted); letter-spacing:0.2em; text-transform:uppercase; text-align:center; }
 
-  .status-indicator.waiting  { border-color: var(--text-muted); }
-  .status-indicator.soon     { border-color: var(--gold-dim); box-shadow: 0 0 12px rgba(146,123,82,0.2); }
-  .status-indicator.next     { border-color: var(--gold); box-shadow: 0 0 20px rgba(146,123,82,0.35); }
-  .status-indicator.incoming { border-color: var(--cream); box-shadow: 0 0 28px rgba(234,233,214,0.35); animation: pulse 1.5s ease-in-out infinite; }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(234,233,214,0.2); }
-    50%       { box-shadow: 0 0 35px rgba(234,233,214,0.5); }
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    transition: width 0.8s ease, height 0.8s ease, background 0.8s ease;
-  }
-
-  .waiting  .status-dot { width: 8px;  height: 8px;  background: var(--text-muted); }
-  .soon     .status-dot { width: 18px; height: 18px; background: var(--gold-dim); }
-  .next     .status-dot { width: 28px; height: 28px; background: var(--gold); animation: dotpulse 1.8s ease-in-out infinite; }
-  .incoming .status-dot { width: 40px; height: 40px; background: var(--cream); animation: dotpulse 0.9s ease-in-out infinite; }
-
-  @keyframes dotpulse {
-    0%, 100% { transform: scale(1);    opacity: 1; }
-    50%       { transform: scale(0.78); opacity: 0.6; }
-  }
-
-  .status-label {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-weight: 300;
-    color: var(--cream);
-    text-align: center;
-    font-style: italic;
-  }
-
-  .status-sublabel {
-    font-size: 0.68rem;
-    font-weight: 300;
-    color: var(--text-muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-align: center;
-  }
-
-  .links-section {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border);
-    background: rgba(0,0,0,0.25);
-  }
-
-  .link-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.9rem 1.25rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    text-decoration: none;
-    color: var(--cream-dim);
-    font-size: 0.72rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: all 0.2s;
-  }
-
-  .link-item:last-child { border-bottom: none; }
-
-  .link-item:active { background: var(--plum); color: var(--cream); }
-
-  .link-item.tapped {
-    animation: tap-flash 0.4s ease forwards;
-  }
-
-  @keyframes tap-flash {
-    0%   { background: var(--plum); color: var(--cream); }
-    100% { background: transparent; color: var(--cream-dim); }
-  }
-
-  .link-item.highlight { color: var(--gold); }
-
-  .link-item .arrow {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    transition: transform 0.2s, color 0.2s;
-  }
-
-  .link-item--expandable { cursor: pointer; }
-  .link-item--expandable .arrow { transition: transform 0.2s; }
-  .link-item--expandable.open .arrow { transform: rotate(90deg); }
-  .link-item--sub {
-    padding-left: 2rem;
-    background: rgba(0,0,0,0.15);
-    font-size: 0.68rem;
-  }
-
-  .footer-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.75rem;
-    font-weight: 300;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-align: center;
-  }
-
-  .after-headline {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--cream);
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  .tip-btn {
-    width: 100%;
-    padding: 1.1rem 2rem;
-    background: var(--plum);
-    border: 1px solid var(--plum);
-    color: var(--cream);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-    transition: opacity 0.2s;
-  }
-
-  .tip-btn:hover { opacity: 0.85; }
-
-  .tip-btn--soft {
-    background: transparent;
-    border: 1px solid rgba(234,233,214,0.35);
-    color: var(--cream-dim);
-    font-weight: 300;
-    letter-spacing: 0.12em;
-  }
-
-  .tip-btn--soft:hover { opacity: 0.75; }
-
-  .screen { display: none; width: 100%; flex-direction: column; align-items: center; gap: 2rem; }
-  .screen.active { display: flex; }
+  .screen { display:none; width:100%; flex-direction:column; align-items:center; gap:2rem; }
+  .screen.active { display:flex; }
 </style>
 </head>
 <body>
@@ -316,20 +104,12 @@
     <div class="subtext">Request a performance for your table,<br>and he'll be with you shortly.</div>
     <button class="btn-primary" id="btn-request">Yes — come to our table</button>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
-    <div class="links-section" id="links-landing">
-      <a class="link-item" id="venue-link" href="#" target="_blank">
-        <span id="venue-link-label">More evenings at Lady Slipper</span><span class="arrow">›</span>
-      </a>
-      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
-        <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </div>
+    <div class="links" id="links-landing">
+      <a class="link" id="venue-link" href="#" target="_blank"><span id="venue-link-label">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
+      <div class="link expandable" id="joshua-toggle-1"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
       <div class="joshua-links" style="display:none;">
-        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
-          <span>Website</span><span class="arrow">›</span>
-        </a>
-        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
-          <span>Instagram</span><span class="arrow">›</span>
-        </a>
+        <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
+        <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
@@ -340,28 +120,18 @@
     <div class="monogram">JS</div>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
     <div class="status-card">
-      <div class="status-indicator waiting" id="status-indicator">
-        <div class="status-dot"></div>
-      </div>
+      <div class="status-ring waiting" id="status-ring"><div class="status-dot"></div></div>
       <div class="status-label" id="status-label">You're on the list.</div>
-      <div class="status-sublabel" id="status-sublabel">The magician will be with you soon</div>
+      <div class="status-sub" id="status-sub">The magician will be with you soon</div>
     </div>
-    <button class="btn-secondary" id="btn-cancel">Never mind — cancel our request</button>
+    <button class="btn-cancel" id="btn-cancel">Never mind — cancel our request</button>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
-    <div class="links-section">
-      <a class="link-item" id="venue-link-queue" href="#" target="_blank">
-        <span id="venue-link-label-queue">More evenings at Lady Slipper</span><span class="arrow">›</span>
-      </a>
-      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
-        <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </div>
+    <div class="links">
+      <a class="link" id="venue-link-queue" href="#" target="_blank"><span id="venue-link-label-queue">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
+      <div class="link expandable" id="joshua-toggle-2"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
       <div class="joshua-links" style="display:none;">
-        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
-          <span>Website</span><span class="arrow">›</span>
-        </a>
-        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
-          <span>Instagram</span><span class="arrow">›</span>
-        </a>
+        <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
+        <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
@@ -373,234 +143,214 @@
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
     <div class="after-headline">Thank you for having me.</div>
     <a class="tip-btn" href="https://g.page/r/CT8uYeXujDHFEBM/review" target="_blank">Leave a kind word</a>
-    <a class="tip-btn tip-btn--soft" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
-    <div class="links-section">
-      <a class="link-item" id="venue-link-after" href="#" target="_blank">
-        <span id="venue-link-label-after">More evenings at Lady Slipper</span><span class="arrow">›</span>
-      </a>
-      <div class="link-item link-item--expandable" onclick="toggleJoshuaLinks(this)">
-        <span>Keep up with Joshua</span><span class="arrow">›</span>
-      </div>
+    <a class="tip-btn soft" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
+    <div class="links">
+      <a class="link" id="venue-link-after" href="#" target="_blank"><span id="venue-link-label-after">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
+      <div class="link expandable" id="joshua-toggle-3"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
       <div class="joshua-links" style="display:none;">
-        <a class="link-item link-item--sub" href="https://joshuastacyupclose.com" target="_blank">
-          <span>Website</span><span class="arrow">›</span>
-        </a>
-        <a class="link-item link-item--sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank">
-          <span>Instagram</span><span class="arrow">›</span>
-        </a>
+        <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
+        <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
-      <a class="link-item" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank">
-        <span>Stay in the loop</span><span class="arrow">›</span>
-      </a>
+      <a class="link" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank"><span>Stay in the loop</span><span class="arrow">›</span></a>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
 
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
+<script>
+  // ─── FIREBASE ───────────────────────────────────────────────────────────────
+  firebase.initializeApp({
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
     authDomain: "tableside-e94a6.firebaseapp.com",
     projectId: "tableside-e94a6",
     storageBucket: "tableside-e94a6.firebasestorage.app",
     messagingSenderId: "899595202591",
     appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const params = new URLSearchParams(window.location.search);
-  const venue = params.get('venue') || 'unknown';
-  const table = params.get('table') || '?';
-
-  const tableRef = doc(db, 'venues', venue, 'tables', `table_${table}`);
-  const configRef = doc(db, 'venueConfigs', venue);
-  let unsubscribe = null;
-
-  // Load venue config and apply colors/links
-  async function loadVenueConfig() {
-    try {
-      const snap = await getDoc(configRef);
-      if (!snap.exists()) return;
-      const cfg = snap.data();
-
-      const root = document.documentElement;
-      if (cfg.colorBg)        root.style.setProperty('--bg', cfg.colorBg);
-      if (cfg.colorBox)       root.style.setProperty('--teal', cfg.colorBox);
-      if (cfg.colorAccent)    root.style.setProperty('--plum', cfg.colorAccent);
-      if (cfg.colorHighlight) { root.style.setProperty('--gold', cfg.colorHighlight); root.style.setProperty('--gold-dim', cfg.colorHighlight); }
-      if (cfg.colorText)      { root.style.setProperty('--cream', cfg.colorText); root.style.setProperty('--text', cfg.colorText); }
-      if (cfg.colorMuted)     { root.style.setProperty('--cream-dim', cfg.colorMuted); root.style.setProperty('--text-muted', cfg.colorMuted); }
-
-      const venueLabel = cfg.venueLinkLabel || 'More evenings here';
-      const venueUrl   = cfg.venueLinkUrl   || '#';
-
-      ['venue-link', 'venue-link-queue', 'venue-link-after'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.href = venueUrl;
-      });
-      ['venue-link-label', 'venue-link-label-queue', 'venue-link-label-after'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = venueLabel;
-      });
-    } catch(e) {}
-  }
-
-  document.getElementById('btn-request').addEventListener('click', async () => {
-    const snap = await getDoc(tableRef);
-    const status = snap.exists() ? snap.data().status : null;
-    if (status === 'requested' || status === 'on_my_way') return;
-    await setDoc(tableRef, {
-      table, venue,
-      status: 'requested',
-      requestedAt: serverTimestamp(),
-      performedAt: null
-    });
-    // Log event for stats
-    await logEvent('request');
-    showScreen('screen-queue');
-    listenForUpdates();
   });
+  var db = firebase.firestore();
+  var FS = firebase.firestore.FieldValue;
 
-  document.getElementById('btn-cancel').addEventListener('click', async () => {
-    await setDoc(tableRef, { status: 'cancelled', cancelledAt: serverTimestamp() }, { merge: true });
-    await logEvent('cancellation');
-    if (unsubscribe) unsubscribe();
-    showScreen('screen-landing');
-  });
-
-  async function logEvent(type) {
-    try {
-      const evRef = doc(db, 'venueEvents', venue, 'events', `${Date.now()}_${table}_${type}`);
-      await setDoc(evRef, {
-        type,
-        table,
-        venue,
-        timestamp: serverTimestamp(),
-        date: new Date().toISOString().split('T')[0]
-      });
-    } catch(e) {}
-  }
-
+  // ─── PARAMS ─────────────────────────────────────────────────────────────────
+  var params = new URLSearchParams(window.location.search);
+  var venue = params.get('venue') || 'unknown';
+  var table = params.get('table') || '?';
+  var tableRef = db.collection('venues').doc(venue).collection('tables').doc('table_' + table);
+  var configRef = db.collection('venueConfigs').doc(venue);
+  var unsubscribe = null;
   var performedTimer = null;
 
-  function schedulePerformedTransition(onMyWayAt, timerMins) {
-    if (performedTimer) clearTimeout(performedTimer);
-    var timerMs = (timerMins || 3) * 60 * 1000;
-    var elapsed = Date.now() - onMyWayAt;
-    var remaining = timerMs - elapsed;
-    if (remaining <= 0) {
-      showScreen('screen-after');
-      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-      return;
-    }
-    performedTimer = setTimeout(() => {
-      showScreen('screen-after');
-      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-    }, remaining);
+  // ─── VENUE CONFIG ───────────────────────────────────────────────────────────
+  function loadConfig() {
+    configRef.get().then(function(snap) {
+      if (!snap.exists) return;
+      var cfg = snap.data();
+      var r = document.documentElement;
+      if (cfg.colorBg)        r.style.setProperty('--bg', cfg.colorBg);
+      if (cfg.colorBox)       r.style.setProperty('--teal', cfg.colorBox);
+      if (cfg.colorAccent)    r.style.setProperty('--plum', cfg.colorAccent);
+      if (cfg.colorHighlight) { r.style.setProperty('--gold', cfg.colorHighlight); r.style.setProperty('--gold-dim', cfg.colorHighlight); }
+      if (cfg.colorText)      { r.style.setProperty('--cream', cfg.colorText); r.style.setProperty('--text', cfg.colorText); }
+      if (cfg.colorMuted)     { r.style.setProperty('--cream-dim', cfg.colorMuted); r.style.setProperty('--text-muted', cfg.colorMuted); }
+
+      var label = cfg.venueLinkLabel || 'More evenings here';
+      var url   = cfg.venueLinkUrl   || '#';
+      ['venue-link','venue-link-queue','venue-link-after'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.href = url;
+      });
+      ['venue-link-label','venue-link-label-queue','venue-link-label-after'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.textContent = label;
+      });
+    }).catch(function() {});
   }
 
-  function listenForUpdates() {
-    if (unsubscribe) unsubscribe();
-    unsubscribe = onSnapshot(tableRef, (snap) => {
-      if (!snap.exists()) return;
-      const data = snap.data();
-
-      if (data.status === 'performed') {
-        if (performedTimer) clearTimeout(performedTimer);
-        showScreen('screen-after');
-        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-        return;
-      }
-
-      if (data.status === 'on_my_way') {
-        updateQueueStatus('incoming', 'On the way.', 'Your magician is headed to your table');
-        // Schedule our own transition based on timestamp
-        const onMyWayAt = data.onMyWayAt ? data.onMyWayAt.toMillis() : Date.now();
-        const timerMins = data.timerMins || 3;
-        schedulePerformedTransition(onMyWayAt, timerMins);
-        return;
-      }
-
-      const position = data.queuePosition || 1;
-      if (position <= 1) {
-        updateQueueStatus('next', "You're next.", 'The magician will be with you shortly');
-      } else if (position === 2) {
-        updateQueueStatus('soon', 'Almost time.', 'One table ahead of you');
-      } else {
-        updateQueueStatus('waiting', "You're on the list.", `${position - 1} table${position - 1 > 1 ? 's' : ''} ahead of you`);
-      }
-    });
-  }
-
-  function updateQueueStatus(state, label, sublabel) {
-    document.getElementById('status-indicator').className = `status-indicator ${state}`;
-    document.getElementById('status-label').textContent = label;
-    document.getElementById('status-sublabel').textContent = sublabel;
-  }
-
+  // ─── SCREEN MANAGEMENT ──────────────────────────────────────────────────────
   function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
   }
 
-  async function checkExistingStatus() {
-    const snap = await getDoc(tableRef);
-    const prevStatus = snap.exists() ? snap.data().status : null;
+  function setStatus(state, label, sub) {
+    document.getElementById('status-ring').className = 'status-ring ' + state;
+    document.getElementById('status-label').textContent = label;
+    document.getElementById('status-sub').textContent = sub;
+  }
 
-    if (prevStatus === 'performed') {
-      await setDoc(tableRef, {
-        table, venue,
-        status: 'scanned',
-        scannedAt: serverTimestamp(),
-        requestedAt: null,
-        performedAt: null,
-        queuePosition: null
-      });
-      await logEvent('scan');
-      showScreen('screen-landing');
-      return;
-    }
-
-    await setDoc(tableRef, {
-      table, venue,
-      status: 'scanned',
-      scannedAt: serverTimestamp()
-    }, { merge: true });
-    await logEvent('scan');
-
-    if (!snap.exists()) return;
-    if (['requested', 'on_my_way'].includes(prevStatus)) {
-      showScreen('screen-queue');
-      listenForUpdates();
+  // ─── TRANSITION TIMER ───────────────────────────────────────────────────────
+  // Diner page handles its own transition using onMyWayAt timestamp
+  function scheduleTransition(onMyWayAt, timerMins) {
+    if (performedTimer) clearTimeout(performedTimer);
+    var timerMs = (timerMins || 3) * 60 * 1000;
+    var remaining = timerMs - (Date.now() - onMyWayAt);
+    if (remaining <= 0) {
+      doTransition();
+    } else {
+      performedTimer = setTimeout(doTransition, remaining);
     }
   }
 
-  // Tap flash
-  document.querySelectorAll('.link-item:not(.link-item--expandable)').forEach(link => {
-    link.addEventListener('click', function() {
-      this.classList.remove('tapped');
-      void this.offsetWidth;
-      this.classList.add('tapped');
-      setTimeout(() => this.classList.remove('tapped'), 400);
+  function doTransition() {
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    showScreen('screen-after');
+  }
+
+  // ─── FIREBASE LISTENER ──────────────────────────────────────────────────────
+  function listenForUpdates() {
+    if (unsubscribe) unsubscribe();
+    unsubscribe = tableRef.onSnapshot(function(snap) {
+      if (!snap.exists) return;
+      var data = snap.data();
+
+      if (data.status === 'performed') {
+        if (performedTimer) clearTimeout(performedTimer);
+        doTransition(); return;
+      }
+
+      if (data.status === 'on_my_way') {
+        setStatus('incoming', 'On the way.', 'Your magician is headed to your table');
+        var onMyWayAt = data.onMyWayAt ? data.onMyWayAt.toMillis() : Date.now();
+        scheduleTransition(onMyWayAt, data.timerMins || 3);
+        return;
+      }
+
+      var pos = data.queuePosition || 1;
+      if (pos <= 1)      setStatus('next',    "You're next.",   'The magician will be with you shortly');
+      else if (pos === 2) setStatus('soon',   'Almost time.',   'One table ahead of you');
+      else                setStatus('waiting', "You're on the list.", (pos - 1) + ' table' + (pos > 2 ? 's' : '') + ' ahead of you');
+    });
+  }
+
+  // ─── EVENTS ─────────────────────────────────────────────────────────────────
+  function logEvent(type) {
+    db.collection('venueEvents').doc(venue).collection('events')
+      .doc(Date.now() + '_' + table + '_' + type)
+      .set({
+        type: type, table: table, venue: venue,
+        timestamp: FS.serverTimestamp(),
+        date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
+        hour: new Date().getHours()
+      }).catch(function() {});
+  }
+
+  // ─── BUTTONS ────────────────────────────────────────────────────────────────
+  document.getElementById('btn-request').addEventListener('click', function() {
+    tableRef.get().then(function(snap) {
+      var status = snap.exists ? snap.data().status : null;
+      if (status === 'requested' || status === 'on_my_way') return;
+      tableRef.set({ table: table, venue: venue, status: 'requested', requestedAt: FS.serverTimestamp(), performedAt: null });
+      logEvent('request');
+      showScreen('screen-queue');
+      listenForUpdates();
     });
   });
 
-  window.toggleJoshuaLinks = function(el) {
-    el.classList.toggle('open');
-    const next = el.nextElementSibling;
-    if (next && next.classList.contains('joshua-links')) {
-      next.style.display = next.style.display === 'none' ? 'block' : 'none';
-    }
+  document.getElementById('btn-cancel').addEventListener('click', function() {
+    tableRef.set({ status: 'cancelled', cancelledAt: FS.serverTimestamp() }, { merge: true });
+    logEvent('cancellation');
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    showScreen('screen-landing');
+  });
+
+  // ─── JOSHUA LINKS TOGGLE ────────────────────────────────────────────────────
+  ['joshua-toggle-1','joshua-toggle-2','joshua-toggle-3'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', function() {
+      this.classList.toggle('open');
+      var next = this.nextElementSibling;
+      if (next && next.classList.contains('joshua-links')) {
+        next.style.display = next.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+  });
+
+  // Tap flash on regular links
+  document.querySelectorAll('.link:not(.expandable)').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var self = this;
+      self.classList.remove('tapped');
+      void self.offsetWidth;
+      self.classList.add('tapped');
+      setTimeout(function() { self.classList.remove('tapped'); }, 400);
+    });
+  });
+
+  // ─── INIT ───────────────────────────────────────────────────────────────────
+  function init() {
+    loadConfig();
+    tableRef.get().then(function(snap) {
+      var prevStatus = snap.exists ? snap.data().status : null;
+
+      if (prevStatus === 'performed') {
+        // New group at this table — reset to fresh
+        tableRef.set({ table: table, venue: venue, status: 'scanned', scannedAt: FS.serverTimestamp(), requestedAt: null, performedAt: null, queuePosition: null });
+        logEvent('scan');
+        showScreen('screen-landing');
+        return;
+      }
+
+      // Log the scan
+      tableRef.set({ table: table, venue: venue, status: 'scanned', scannedAt: FS.serverTimestamp() }, { merge: true });
+      logEvent('scan');
+
+      if (prevStatus === 'requested') {
+        showScreen('screen-queue');
+        listenForUpdates();
+      } else if (prevStatus === 'on_my_way') {
+        showScreen('screen-queue');
+        snap.ref.get().then(function(fresh) {
+          var d = fresh.data();
+          setStatus('incoming', 'On the way.', 'Your magician is headed to your table');
+          var onMyWayAt = d.onMyWayAt ? d.onMyWayAt.toMillis() : Date.now();
+          scheduleTransition(onMyWayAt, d.timerMins || 3);
+          listenForUpdates();
+        });
+      }
+    });
   }
 
-  loadVenueConfig();
-  checkExistingStatus();
+  init();
 </script>
 </body>
 </html>
