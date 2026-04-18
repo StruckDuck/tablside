@@ -430,8 +430,12 @@
       const cfg = snap.data();
 
       const root = document.documentElement;
-      if (cfg.colorBox)    root.style.setProperty('--teal', cfg.colorBox);
-      if (cfg.colorAccent) root.style.setProperty('--plum', cfg.colorAccent);
+      if (cfg.colorBg)        root.style.setProperty('--bg', cfg.colorBg);
+      if (cfg.colorBox)       root.style.setProperty('--teal', cfg.colorBox);
+      if (cfg.colorAccent)    root.style.setProperty('--plum', cfg.colorAccent);
+      if (cfg.colorHighlight) { root.style.setProperty('--gold', cfg.colorHighlight); root.style.setProperty('--gold-dim', cfg.colorHighlight); }
+      if (cfg.colorText)      { root.style.setProperty('--cream', cfg.colorText); root.style.setProperty('--text', cfg.colorText); }
+      if (cfg.colorMuted)     { root.style.setProperty('--cream-dim', cfg.colorMuted); root.style.setProperty('--text-muted', cfg.colorMuted); }
 
       const venueLabel = cfg.venueLinkLabel || 'More evenings here';
       const venueUrl   = cfg.venueLinkUrl   || '#';
@@ -464,7 +468,7 @@
   });
 
   document.getElementById('btn-cancel').addEventListener('click', async () => {
-    await setDoc(tableRef, { status: 'cancelled' }, { merge: true });
+    await setDoc(tableRef, { status: 'cancelled', cancelledAt: serverTimestamp() }, { merge: true });
     await logEvent('cancellation');
     if (unsubscribe) unsubscribe();
     showScreen('screen-landing');

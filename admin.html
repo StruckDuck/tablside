@@ -617,16 +617,8 @@
 
     if (data.status === 'scanned') {
       if (!existing) {
-        var scanEntry = { id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null, scannedAt: Date.now() };
-        entries.push(scanEntry);
-        // Auto-remove scan after 5 minutes if not converted
-        setTimeout(function() {
-          var e = entries.find(function(e) { return e.id === data.id; });
-          if (e && e.type === 'scan') {
-            entries = entries.filter(function(e) { return e.id !== data.id; });
-            renderQueue();
-          }
-        }, 5 * 60 * 1000);
+        var scannedAt = data.scannedAt ? data.scannedAt.toMillis() : Date.now();
+        entries.push({ id: data.id, table: data.table, label: label, type: 'scan', requestedAt: null, scannedAt: scannedAt });
       }
     } else if (data.status === 'requested') {
       if (existing && existing.type === 'scan') {
@@ -642,9 +634,17 @@
       }
       updateQueuePositions();
     } else if (data.status === 'cancelled') {
-      // Remove from list entirely, show timed notification
+      var cancelledAt = data.cancelledAt ? data.cancelledAt.toMillis() : Date.now();
+      var age = Date.now() - cancelledAt;
+      // Remove from active entries
       entries = entries.filter(function(e) { return e.id !== data.id; });
-      showCancelNotice(label);
+      // Only show notice if cancelled recently (within 5 minutes)
+      if (age < 5 * 60 * 1000) {
+        var existingNotice = document.querySelector('[data-cancel-id="' + data.id + '"]');
+        if (!existingNotice) {
+          showCancelNotice(label, data.id, 5 * 60 * 1000 - age);
+        }
+      }
       updateQueuePositions();
     } else if (data.status === 'on_my_way' || data.status === 'performed') {
       entries = entries.filter(function(e) { return e.id !== data.id; });
@@ -652,16 +652,17 @@
     }
   }
 
-  function showCancelNotice(label) {
+  function showCancelNotice(label, id, remainingMs) {
     var container = document.getElementById('cancel-notices');
     var notice = document.createElement('div');
     notice.style.cssText = 'font-size:0.65rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0.75rem;background:#fff5f5;border:1px solid #f5c0c0;opacity:1;transition:opacity 0.5s;';
+    notice.setAttribute('data-cancel-id', id);
     notice.textContent = label + ' — Cancelled Request';
     container.appendChild(notice);
     setTimeout(function() {
       notice.style.opacity = '0';
       setTimeout(function() { if (notice.parentNode) notice.parentNode.removeChild(notice); }, 500);
-    }, 5 * 60 * 1000);
+    }, remainingMs);
   }
 
   function updateQueuePositions() {
@@ -687,6 +688,13 @@
     }
 
     listEl.innerHTML = '';
+    // Filter out scans older than 5 minutes
+    var fiveMin = 5 * 60 * 1000;
+    entries = entries.filter(function(e) {
+      if (e.type === 'scan' && e.scannedAt && (Date.now() - e.scannedAt) > fiveMin) return false;
+      return true;
+    });
+
     // Sort: requests first (in order), scans at bottom
     var requests = entries.filter(function(e) { return e.type === 'request'; });
     var scans = entries.filter(function(e) { return e.type === 'scan'; });
