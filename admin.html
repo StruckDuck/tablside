@@ -281,6 +281,10 @@
     settings.alert = document.getElementById('alert-select').value;
     localStorage.setItem('timer', settings.timer);
     localStorage.setItem('alert', settings.alert);
+    // Save timer to Firebase so diner page can read it
+    if (settings.activeVenue) {
+      db.collection('venueConfigs').doc(settings.activeVenue).set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
+    }
     var msg = document.getElementById('saved-msg');
     msg.classList.add('show');
     setTimeout(function() { msg.classList.remove('show'); }, 2000);
@@ -442,6 +446,8 @@
       if (venue.map) showMap(venue.map, venue.slug);
       else document.getElementById('map-container').innerHTML = '<div class="map-placeholder" id="map-placeholder"><div class="map-placeholder-text">No floor plan for this venue</div></div>';
     }
+    // Sync timer to Firebase for this venue
+    db.collection('venueConfigs').doc(slug).set({ timerMins: settings.timer }, { merge: true }).catch(function() {});
     closeVenueModal();
     subscribeToVenue();
     loadStats();
@@ -728,20 +734,26 @@
         var entry = entries.find(function(e) { return e.id === id; });
         if (!entry) return;
 
+        var onMyWayAt = Date.now();
         db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
-          .update({ status: 'on_my_way', onMyWayAt: firebase.firestore.FieldValue.serverTimestamp() });
+          .update({
+            status: 'on_my_way',
+            onMyWayAt: firebase.firestore.FieldValue.serverTimestamp(),
+            timerMins: settings.timer
+          });
 
         logEvent('performance', entry.table, entry.requestedAt);
 
+        // Show countdown on admin page (cosmetic only - diner page handles its own transition)
         var bar = document.getElementById('current-table-bar');
         bar.style.display = 'flex';
         document.getElementById('current-table-label').textContent = entryLabel;
         var secondsLeft = settings.timer * 60;
         document.getElementById('current-table-timer').textContent = settings.timer + ':00 remaining';
-        var countdown = setInterval(function() {
+        var countdownInterval = setInterval(function() {
           secondsLeft--;
           if (secondsLeft <= 0) {
-            clearInterval(countdown);
+            clearInterval(countdownInterval);
             bar.style.display = 'none';
           } else {
             var m = Math.floor(secondsLeft / 60);
@@ -750,10 +762,12 @@
           }
         }, 1000);
 
+        // Also set performed after timer as a fallback (in case diner page is closed)
         var timerMs = settings.timer * 60 * 1000;
         var tableId = id;
+        var venueId = settings.activeVenue;
         setTimeout(function() {
-          db.collection('venues').doc(settings.activeVenue).collection('tables').doc(tableId)
+          db.collection('venues').doc(venueId).collection('tables').doc(tableId)
             .update({ status: 'performed', performedAt: firebase.firestore.FieldValue.serverTimestamp() })
             .catch(function() {});
           loadStats();

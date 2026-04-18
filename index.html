@@ -487,6 +487,24 @@
     } catch(e) {}
   }
 
+  var performedTimer = null;
+
+  function schedulePerformedTransition(onMyWayAt, timerMins) {
+    if (performedTimer) clearTimeout(performedTimer);
+    var timerMs = (timerMins || 3) * 60 * 1000;
+    var elapsed = Date.now() - onMyWayAt;
+    var remaining = timerMs - elapsed;
+    if (remaining <= 0) {
+      showScreen('screen-after');
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+      return;
+    }
+    performedTimer = setTimeout(() => {
+      showScreen('screen-after');
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    }, remaining);
+  }
+
   function listenForUpdates() {
     if (unsubscribe) unsubscribe();
     unsubscribe = onSnapshot(tableRef, (snap) => {
@@ -494,13 +512,18 @@
       const data = snap.data();
 
       if (data.status === 'performed') {
+        if (performedTimer) clearTimeout(performedTimer);
         showScreen('screen-after');
-        if (unsubscribe) unsubscribe();
+        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
         return;
       }
 
       if (data.status === 'on_my_way') {
         updateQueueStatus('incoming', 'On the way.', 'Your magician is headed to your table');
+        // Schedule our own transition based on timestamp
+        const onMyWayAt = data.onMyWayAt ? data.onMyWayAt.toMillis() : Date.now();
+        const timerMins = data.timerMins || 3;
+        schedulePerformedTransition(onMyWayAt, timerMins);
         return;
       }
 
