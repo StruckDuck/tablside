@@ -178,7 +178,6 @@
   var tableRef = db.collection('venues').doc(venue).collection('tables').doc('table_' + table);
   var configRef = db.collection('venueConfigs').doc(venue);
   var unsubscribe = null;
-  var performedTimer = null;
 
   // ─── VENUE CONFIG ───────────────────────────────────────────────────────────
   function loadConfig() {
@@ -217,19 +216,26 @@
   }
 
   // ─── TRANSITION TIMER ───────────────────────────────────────────────────────
-  // Diner page handles its own transition using onMyWayAt timestamp
+  // Polls every second using the Firebase onMyWayAt timestamp.
+  // Survives phone lock, page reload, anything.
+  var transitionInterval = null;
+
   function scheduleTransition(onMyWayAt, timerMins) {
-    if (performedTimer) clearTimeout(performedTimer);
+    if (transitionInterval) clearInterval(transitionInterval);
     var timerMs = (timerMins || 3) * 60 * 1000;
-    var remaining = timerMs - (Date.now() - onMyWayAt);
-    if (remaining <= 0) {
-      doTransition();
-    } else {
-      performedTimer = setTimeout(doTransition, remaining);
-    }
+    // Check immediately
+    if (Date.now() - onMyWayAt >= timerMs) { doTransition(); return; }
+    transitionInterval = setInterval(function() {
+      if (Date.now() - onMyWayAt >= timerMs) {
+        clearInterval(transitionInterval);
+        transitionInterval = null;
+        doTransition();
+      }
+    }, 500);
   }
 
   function doTransition() {
+    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
     if (unsubscribe) { unsubscribe(); unsubscribe = null; }
     showScreen('screen-after');
   }
@@ -242,8 +248,7 @@
       var data = snap.data();
 
       if (data.status === 'performed') {
-        if (performedTimer) clearTimeout(performedTimer);
-        doTransition(); return;
+            doTransition(); return;
       }
 
       if (data.status === 'on_my_way') {

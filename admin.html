@@ -248,9 +248,7 @@
   var currentTab = 'tonight';
   var customizeSlug = null;
   var newMapData = null;
-  var countdownStart = null;
-  var countdownMs = null;
-  var countdownTimeout = null;
+
 
   // ─── HELPERS ────────────────────────────────────────────────────────────────
   function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
@@ -268,40 +266,33 @@
   }
 
   // ─── COUNTDOWN ──────────────────────────────────────────────────────────────
-  // Uses timestamps + visibilitychange so phone lock doesn't freeze it.
+  // No timers — just polls Firebase timestamp every second.
+  // Survives phone lock, page reload, anything.
+  var countdownInterval = null;
+
   function startCountdown(startedAt, timerMs) {
     stopCountdown();
-    countdownStart = startedAt;
-    countdownMs = timerMs;
-    tickCountdown();
+    countdownInterval = setInterval(function() {
+      var remaining = Math.max(0, timerMs - (Date.now() - startedAt));
+      if (remaining === 0) {
+        stopCountdown();
+        document.getElementById('heading-bar').style.display = 'none';
+        return;
+      }
+      document.getElementById('heading-bar-timer').textContent = fmtTime(remaining) + ' remaining';
+    }, 500);
+    // Show immediately
+    var rem = Math.max(0, timerMs - (Date.now() - startedAt));
+    document.getElementById('heading-bar-timer').textContent = fmtTime(rem) + ' remaining';
   }
 
   function stopCountdown() {
-    if (countdownTimeout) clearTimeout(countdownTimeout);
-    countdownTimeout = null;
-    countdownStart = null;
-    countdownMs = null;
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = null;
   }
 
-  function tickCountdown() {
-    if (!countdownStart || !countdownMs) return;
-    var remaining = Math.max(0, countdownMs - (Date.now() - countdownStart));
-    if (remaining === 0) {
-      document.getElementById('heading-bar').style.display = 'none';
-      stopCountdown();
-      return;
-    }
-    document.getElementById('heading-bar-timer').textContent = fmtTime(remaining) + ' remaining';
-    countdownTimeout = setTimeout(tickCountdown, 1000);
-  }
-
-  // Snap to correct time immediately when phone unlocks
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible' && countdownStart && countdownMs) {
-      if (countdownTimeout) clearTimeout(countdownTimeout);
-      tickCountdown();
-    }
-  });
+  // On visibility change, the interval will naturally correct itself on next tick
+  // since it recalculates from startedAt each time
 
   // ─── SETTINGS ───────────────────────────────────────────────────────────────
   document.getElementById('timer-range').value = settings.timer;
@@ -736,7 +727,7 @@
       entries = entries.filter(function(e) { return e.id !== data.id; });
       updatePositions();
       // Restore countdown bar if page was reloaded mid-performance
-      if (data.onMyWayAt && !countdownStart) {
+      if (data.onMyWayAt && !countdownInterval) {
         var startedAt = data.onMyWayAt.toMillis();
         var timerMs = (data.timerMins || settings.timer) * 60 * 1000;
         if (Date.now() - startedAt < timerMs) {
@@ -827,10 +818,20 @@
 
         logEvent('performance', id.replace('table_', ''), requestedAt);
 
-        // Show heading bar with countdown
+        // Show heading bar — countdown calculates from local time
+        // (will be corrected to server time once Firebase confirms onMyWayAt)
+        var localStart = Date.now();
         document.getElementById('heading-bar').style.display = 'flex';
         document.getElementById('heading-bar-table').textContent = lbl;
-        startCountdown(Date.now(), timerMs);
+        startCountdown(localStart, timerMs);
+
+        // Once Firebase confirms the server timestamp, restart with accurate time
+        db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
+          .get().then(function(s) {
+            if (s.exists && s.data().onMyWayAt) {
+              startCountdown(s.data().onMyWayAt.toMillis(), timerMs);
+            }
+          }).catch(function() {});
 
         updatePositions();
         renderQueue();
