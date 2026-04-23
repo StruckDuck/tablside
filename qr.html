@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QR Generator — Tablside</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -200,9 +202,9 @@
 </div>
 
 <div class="section-label">Options</div>
-<div class="setting-row">
-  <div class="setting-label">Number of tables</div>
-  <input type="number" id="table-count" min="1" max="100" value="10">
+<div class="setting-row" style="margin-bottom:1px;">
+  <div class="setting-label">Tables to generate</div>
+  <div id="table-count-display" style="font-size:0.7rem;color:var(--teal);font-weight:500;">—</div>
 </div>
 <div class="setting-row" style="margin-bottom:1.5rem;">
   <div class="setting-label">Layout</div>
@@ -219,44 +221,66 @@
 <div id="qr-scratch"></div>
 
 <script>
-  const BASE_URL = 'https://struckduck.github.io/tablside/';
+  const BASE_URL = 'https://struckduck.github.io/tablside/enter.html';
 
-  // Load venues from localStorage (shared with admin page)
-  let venues = JSON.parse(localStorage.getItem('venues') || '[]');
-  let selectedVenue = null;
+  // Load venues from Firebase
+  var venues = [];
+  var selectedVenue = null;
+
+  firebase.initializeApp({
+    apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
+    authDomain: "tableside-e94a6.firebaseapp.com",
+    projectId: "tableside-e94a6",
+    storageBucket: "tableside-e94a6.firebasestorage.app",
+    messagingSenderId: "899595202591",
+    appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
+  });
+  var db = firebase.firestore();
+
+  db.collection('venuePresets').get().then(function(snap) {
+    venues = snap.docs.map(function(d) { return d.data(); });
+    var preselect = localStorage.getItem('qr_preselect');
+    if (preselect) localStorage.removeItem('qr_preselect');
+    renderVenueSelect(preselect);
+  }).catch(function() {
+    renderVenueSelect(null);
+  });
 
   function renderVenueSelect(preselect) {
-    const area = document.getElementById('venue-select-area');
-    if (venues.length === 0) {
+    var area = document.getElementById('venue-select-area');
+    if (!venues.length) {
       area.innerHTML = '<div class="no-venues-msg">No venues found. Add venues in the admin page first.</div>';
       return;
     }
-    area.innerHTML = `<select class="full-select" id="venue-select" onchange="onVenueChange()">
-      <option value="">— Select a venue —</option>
-      ${venues.map(v => `<option value="${v.slug}"${preselect === v.slug ? ' selected' : ''}>${v.name}</option>`).join('')}
-    </select>`;
+    area.innerHTML = '<select class="full-select" id="venue-select">' +
+      '<option value="">— Select a venue —</option>' +
+      venues.map(function(v) {
+        return '<option value="' + v.slug + '"' + (preselect === v.slug ? ' selected' : '') + '>' + v.name + '</option>';
+      }).join('') +
+      '</select>';
+    document.getElementById('venue-select').addEventListener('change', onVenueChange);
   }
 
   function onVenueChange() {
-    const slug = document.getElementById('venue-select').value;
+    var slug = document.getElementById('venue-select').value;
     selectedVenue = slug || null;
-    const count = document.getElementById('table-count').value;
-    updatePreview(slug, count);
-    document.getElementById('generate-btn').disabled = !slug;
+    var venue = venues.find(function(v) { return v.slug === slug; });
+    var tables = (venue && venue.tables && venue.tables.length) ? venue.tables : [];
+    var countEl = document.getElementById('table-count-display');
+    countEl.textContent = tables.length ? tables.length + ' tables' : 'No tables defined — add them in venue settings';
+    countEl.style.color = tables.length ? 'var(--teal)' : 'var(--red, #a01a1a)';
+    updatePreview(slug, tables);
+    document.getElementById('generate-btn').disabled = !slug || !tables.length;
   }
 
-  function updatePreview(slug, count) {
-    const preview = document.getElementById('url-preview');
-    if (!slug) {
-      preview.innerHTML = 'Select a venue to preview the QR code URL';
+  function updatePreview(slug, tables) {
+    var preview = document.getElementById('url-preview');
+    if (!slug || !tables || !tables.length) {
+      preview.innerHTML = slug ? 'No table numbers defined for this venue. Add them in venue settings.' : 'Select a venue to preview the QR code URL';
       return;
     }
-    preview.innerHTML = `Sample URL for table 1:<br><span>${BASE_URL}?venue=${slug}&table=1</span><br><br>Each code will increment the table number up to <span>${count}</span>.`;
+    preview.innerHTML = 'Sample URL for table ' + tables[0] + ':<br><span>' + BASE_URL + '?venue=' + slug + '&table=' + tables[0] + '</span><br><br>Will generate <span>' + tables.length + '</span> codes for tables: <span>' + tables.join(', ') + '</span>.';
   }
-
-  document.getElementById('table-count').addEventListener('input', () => {
-    if (selectedVenue) updatePreview(selectedVenue, document.getElementById('table-count').value);
-  });
 
   function makeQRDataURL(text) {
     return new Promise((resolve) => {
@@ -287,108 +311,91 @@
 
   window.generatePDF = async function() {
     if (!selectedVenue) return;
+    var venue = venues.find(function(v) { return v.slug === selectedVenue; });
+    var tables = (venue && venue.tables && venue.tables.length) ? venue.tables : [];
+    if (!tables.length) return;
 
-    const tableCount = parseInt(document.getElementById('table-count').value);
-    const layout = parseInt(document.getElementById('layout-select').value);
-    const venueName = venues.find(v => v.slug === selectedVenue)?.name || selectedVenue;
-    const statusEl = document.getElementById('status-msg');
+    var layout = parseInt(document.getElementById('layout-select').value);
+    var venueName = venue ? venue.name : selectedVenue;
+    var statusEl = document.getElementById('status-msg');
 
     statusEl.textContent = 'Generating QR codes...';
     document.getElementById('generate-btn').disabled = true;
-    document.getElementById('generate-btn-2').disabled = true;
 
-    const { jsPDF } = window.jspdf;
-
-    // Page size: Letter
-    const pageW = 215.9;
-    const pageH = 279.4;
-
-    const doc = new jsPDF({ unit: 'mm', format: 'letter' });
+    var { jsPDF } = window.jspdf;
+    var pageW = 215.9;
+    var pageH = 279.4;
+    var doc = new jsPDF({ unit: 'mm', format: 'letter' });
 
     if (layout === 1) {
-      // One per page — large QR with label
-      for (let i = 1; i <= tableCount; i++) {
-        statusEl.textContent = `Generating table ${i} of ${tableCount}...`;
-        if (i > 1) doc.addPage();
+      for (var i = 0; i < tables.length; i++) {
+        var tableNum = tables[i];
+        statusEl.textContent = 'Generating table ' + tableNum + ' (' + (i + 1) + ' of ' + tables.length + ')...';
+        if (i > 0) doc.addPage();
 
-        const url = `${BASE_URL}?venue=${selectedVenue}&table=${i}`;
-        const qrData = await makeQRDataURL(url);
+        var url = BASE_URL + '?venue=' + selectedVenue + '&table=' + tableNum;
+        var qrData = await makeQRDataURL(url);
 
         if (qrData) {
-          const qrSize = 120;
-          const x = (pageW - qrSize) / 2;
-          const y = (pageH - qrSize) / 2 - 15;
+          var qrSize = 120;
+          var x = (pageW - qrSize) / 2;
+          var y = (pageH - qrSize) / 2 - 15;
           doc.addImage(qrData, 'PNG', x, y, qrSize, qrSize);
         }
 
-        // Table label below QR
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(11);
         doc.setTextColor(100, 100, 100);
-        doc.text(`${venueName} — Table ${i}`, pageW / 2, pageH / 2 + 80, { align: 'center' });
+        doc.text(venueName + ' — Table ' + tableNum, pageW / 2, pageH / 2 + 80, { align: 'center' });
 
-        // Small URL below label
         doc.setFontSize(7);
         doc.setTextColor(180, 180, 180);
-        const url_display = `${BASE_URL}?venue=${selectedVenue}&table=${i}`;
-        doc.text(url_display, pageW / 2, pageH / 2 + 87, { align: 'center' });
+        doc.text(url, pageW / 2, pageH / 2 + 87, { align: 'center' });
       }
     } else {
-      // 20 per page — 4 columns x 5 rows
-      const cols = 4;
-      const rows = 5;
-      const perPage = cols * rows;
-      const margin = 10;
-      const cellW = (pageW - margin * 2) / cols;
-      const cellH = (pageH - margin * 2) / rows;
-      const qrSize = Math.min(cellW, cellH) - 18;
+      var cols = 4, rows = 5;
+      var margin = 10;
+      var cellW = (pageW - margin * 2) / cols;
+      var cellH = (pageH - margin * 2) / rows;
+      var qrSize = Math.min(cellW, cellH) - 18;
+      var pageNum = 0;
+      var idx = 0;
 
-      let tableNum = 1;
-      let pageNum = 0;
-
-      while (tableNum <= tableCount) {
+      while (idx < tables.length) {
         if (pageNum > 0) doc.addPage();
         pageNum++;
 
-        for (let row = 0; row < rows && tableNum <= tableCount; row++) {
-          for (let col = 0; col < cols && tableNum <= tableCount; col++) {
-            statusEl.textContent = `Generating table ${tableNum} of ${tableCount}...`;
+        for (var row = 0; row < rows && idx < tables.length; row++) {
+          for (var col = 0; col < cols && idx < tables.length; col++) {
+            var tableNum = tables[idx];
+            statusEl.textContent = 'Generating table ' + tableNum + ' (' + (idx + 1) + ' of ' + tables.length + ')...';
 
-            const cellX = margin + col * cellW;
-            const cellY = margin + row * cellH;
-            const qrX = cellX + (cellW - qrSize) / 2;
-            const qrY = cellY + 2;
+            var cellX = margin + col * cellW;
+            var cellY = margin + row * cellH;
+            var qrX = cellX + (cellW - qrSize) / 2;
+            var qrY = cellY + 2;
 
-            const url = `${BASE_URL}?venue=${selectedVenue}&table=${tableNum}`;
-            const qrData = await makeQRDataURL(url);
+            var url = BASE_URL + '?venue=' + selectedVenue + '&table=' + tableNum;
+            var qrData = await makeQRDataURL(url);
 
-            if (qrData) {
-              doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
-            }
+            if (qrData) doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
 
-            // Label under QR
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(7);
             doc.setTextColor(80, 80, 80);
-            doc.text(`Table ${tableNum}`, cellX + cellW / 2, qrY + qrSize + 8, { align: 'center' });
+            doc.text('Table ' + tableNum, cellX + cellW / 2, qrY + qrSize + 8, { align: 'center' });
 
-            // No border — clean cut guides only via spacing
-
-            tableNum++;
+            idx++;
           }
         }
       }
     }
 
-    const filename = `qr-${selectedVenue}-${tableCount}tables.pdf`;
+    var filename = 'qr-' + selectedVenue + '-' + tables.length + 'tables.pdf';
     doc.save(filename);
-    statusEl.textContent = `✓ Downloaded: ${filename}`;
+    statusEl.textContent = '✓ Downloaded: ' + filename;
     document.getElementById('generate-btn').disabled = false;
   }
-
-  const preselect = localStorage.getItem('qr_preselect');
-  if (preselect) localStorage.removeItem('qr_preselect');
-  renderVenueSelect(preselect);
 </script>
 </body>
 </html>
