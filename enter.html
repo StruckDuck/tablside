@@ -120,6 +120,22 @@
   var venue = params.get('venue') || 'unknown';
   var validTables = [];
 
+  // Log entry page landing
+  function logEntryEvent(type) {
+    db.collection('venueEvents').doc(venue).collection('events')
+      .doc(Date.now() + '_entry_' + type)
+      .set({
+        type: 'entry_' + type,
+        venue: venue,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
+        hour: new Date().getHours()
+      }).catch(function() {});
+  }
+
+  logEntryEvent('landed');
+
   // Load venue colors
   db.collection('venueConfigs').doc(venue).get().then(function(snap) {
     if (!snap.exists) return;
@@ -150,6 +166,7 @@
       errorEl.textContent = 'Check the number and try again';
       return;
     }
+    logEntryEvent('proceeded');
     window.location.href = 'index.html?venue=' + encodeURIComponent(venue) + '&table=' + encodeURIComponent(input);
   }
 

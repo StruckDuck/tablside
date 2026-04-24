@@ -172,6 +172,13 @@
   var FS = firebase.firestore.FieldValue;
 
   // ─── PARAMS ─────────────────────────────────────────────────────────────────
+  // Visitor token — persists in localStorage to track returning visitors
+  var visitorToken = localStorage.getItem('tablside_visitor_token');
+  if (!visitorToken) {
+    visitorToken = 'vst_' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem('tablside_visitor_token', visitorToken);
+  }
+
   var params = new URLSearchParams(window.location.search);
   var venue = params.get('venue') || 'unknown';
   var table = params.get('table') || '?';
@@ -267,6 +274,11 @@
 
   // ─── EVENTS ─────────────────────────────────────────────────────────────────
   function logEvent(type) {
+    // Check if this token has visited this venue before
+    var tokenKey = 'tablside_seen_' + venue;
+    var isReturning = !!localStorage.getItem(tokenKey);
+    if (type === 'scan') localStorage.setItem(tokenKey, '1');
+
     db.collection('venueEvents').doc(venue).collection('events')
       .doc(Date.now() + '_' + table + '_' + type)
       .set({
@@ -274,7 +286,9 @@
         timestamp: FS.serverTimestamp(),
         date: new Date().toISOString().split('T')[0],
         month: new Date().toISOString().slice(0, 7),
-        hour: new Date().getHours()
+        hour: new Date().getHours(),
+        visitorToken: visitorToken,
+        returning: isReturning
       }).catch(function() {});
   }
 
@@ -310,7 +324,7 @@
     });
   });
 
-  // Tap flash on regular links
+  // Tap flash and click tracking on regular links
   document.querySelectorAll('.link:not(.expandable)').forEach(function(el) {
     el.addEventListener('click', function() {
       var self = this;
@@ -318,6 +332,29 @@
       void self.offsetWidth;
       self.classList.add('tapped');
       setTimeout(function() { self.classList.remove('tapped'); }, 400);
+    });
+  });
+
+  // Link click tracking — only fires on after-performance screen links
+  function trackClick(type) {
+    logEvent('click_' + type);
+  }
+
+  document.querySelectorAll('.tip-btn').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var href = this.href || '';
+      if (href.indexOf('venmo') > -1) trackClick('venmo');
+      else if (href.indexOf('google') > -1) trackClick('review');
+    });
+  });
+
+  document.querySelectorAll('#screen-after .link').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var href = this.href || '';
+      if (href.indexOf('instagram') > -1) trackClick('instagram');
+      else if (href.indexOf('joshuastacyupclose.com') > -1) trackClick('website');
+      else if (href.indexOf('google.com/forms') > -1) trackClick('mailing_list');
+      else if (href.indexOf('ladyslipper') > -1 || href.indexOf('preachersson') > -1) trackClick('venue_link');
     });
   });
 

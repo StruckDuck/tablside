@@ -17,66 +17,97 @@
     --red:#a01a1a;
   }
 
-  body { font-family:'Raleway',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:1.5rem 1rem 3rem; max-width:500px; margin:0 auto; }
+  body { font-family:'Raleway',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:1.5rem 1rem 3rem; max-width:540px; margin:0 auto; }
 
-  .header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.5rem; }
+  .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
   .header-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:400; color:var(--teal); letter-spacing:0.15em; text-transform:uppercase; }
-  .header-venue { font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+  .header-sub { font-size:0.62rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
 
-  /* PASSWORD SCREEN */
+  /* PASSWORD */
   .password-screen { display:flex; flex-direction:column; align-items:center; gap:1.5rem; padding:3rem 0; }
-  .password-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; text-align:center; }
+  .password-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; text-align:center; line-height:1.8; }
   .password-input { width:100%; max-width:280px; padding:0.85rem 1rem; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.9rem; text-align:center; outline:none; letter-spacing:0.1em; }
   .password-input:focus { border-color:var(--teal); }
   .password-btn { padding:0.75rem 2rem; background:var(--teal); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .password-error { font-size:0.65rem; color:var(--red); letter-spacing:0.1em; text-transform:uppercase; min-height:1rem; }
 
-  /* STATS */
+  /* VENUE SELECTOR (admin only) */
+  .venue-selector { margin-bottom:1.25rem; }
+  .venue-select { width:100%; padding:0.85rem 1rem; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.82rem; outline:none; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8278'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 1rem center; }
+
+  /* TABS */
   .stats-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:1rem; }
-  .stats-tab { flex:1; padding:0.6rem; font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-align:center; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; -webkit-tap-highlight-color:transparent; }
+  .stats-tab { flex:1; padding:0.6rem; font-size:0.6rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-align:center; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; -webkit-tap-highlight-color:transparent; }
   .stats-tab.active { color:var(--teal); border-bottom-color:var(--teal); }
   .month-row { display:none; padding:0.6rem 0; margin-bottom:0.5rem; }
   .month-row.visible { display:block; }
   .month-row select { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.7rem; padding:6px 8px; outline:none; }
 
-  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); padding:1rem; display:flex; flex-direction:column; gap:0.25rem; }
-  .stat-value { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400; color:var(--teal); line-height:1; }
-  .stat-label { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; line-height:1.4; }
+  /* SECTION LABELS */
+  .section-title { font-size:0.62rem; font-weight:500; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.6rem; margin-top:1.25rem; }
+  .section-title:first-child { margin-top:0; }
 
-  .table-breakdown { background:var(--surface); border:1px solid var(--border); padding:1rem; }
-  .breakdown-header { font-size:0.65rem; font-weight:500; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1rem; }
-  .breakdown-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  /* STAT CARDS */
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.5rem; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); padding:0.85rem; display:flex; flex-direction:column; gap:0.2rem; }
+  .stat-value { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:400; color:var(--teal); line-height:1; }
+  .stat-label { font-size:0.58rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; line-height:1.4; }
+
+  /* CLICK STATS */
+  .click-grid { display:flex; flex-direction:column; gap:1px; margin-bottom:0.5rem; }
+  .click-row { display:flex; align-items:center; justify-content:space-between; padding:0.7rem 0.85rem; background:var(--surface); border:1px solid var(--border); }
+  .click-label { font-size:0.68rem; color:var(--text); letter-spacing:0.04em; }
+  .click-right { display:flex; align-items:center; gap:0.75rem; flex-shrink:0; }
+  .click-count { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--teal); }
+  .click-rate { font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; }
+
+  /* TABLE BREAKDOWN */
+  .table-breakdown { background:var(--surface); border:1px solid var(--border); padding:1rem; margin-bottom:0.5rem; }
+  .breakdown-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:0.75rem; }
   .breakdown-section-title { font-size:0.6rem; font-weight:500; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.6rem; }
-  .table-row { margin-bottom:0.5rem; }
-  .table-row-header { display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text); margin-bottom:3px; }
+  .table-row { margin-bottom:0.45rem; }
+  .table-row-header { display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text); margin-bottom:2px; }
   .table-row-count { color:var(--muted); }
   .bar-track { height:3px; background:var(--border); border-radius:2px; }
   .bar-fill { height:3px; background:var(--teal); border-radius:2px; }
   .bar-fill.low { background:var(--gold); }
 
-  .no-data { text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--muted); padding:2rem 0; }
+  /* VENUE COMPARISON */
+  .venue-compare { display:flex; flex-direction:column; gap:1px; margin-bottom:0.5rem; }
+  .venue-compare-row { display:flex; align-items:center; justify-content:space-between; padding:0.7rem 0.85rem; background:var(--surface); border:1px solid var(--border); }
+  .venue-name { font-size:0.75rem; font-weight:500; color:var(--text); }
+  .venue-metrics { display:flex; gap:1rem; }
+  .venue-metric { text-align:right; }
+  .venue-metric-value { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--teal); display:block; }
+  .venue-metric-label { font-size:0.55rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
 
-  .footer { text-align:center; margin-top:2rem; font-size:0.62rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+  .no-data { text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--muted); padding:2rem 0; }
+  .loading { text-align:center; font-size:0.68rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; padding:2rem 0; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-title">TablSide</div>
-  <div class="header-venue" id="header-venue"></div>
+  <div class="header-sub" id="header-sub">Stats</div>
 </div>
 
-<!-- PASSWORD SCREEN -->
+<!-- PASSWORD -->
 <div id="password-screen" class="password-screen">
-  <div class="password-label">Enter the password to view stats</div>
+  <div class="password-label" id="password-label">Enter the password to view stats</div>
   <input type="password" class="password-input" id="password-input" placeholder="Password">
   <div class="password-error" id="password-error"></div>
   <button class="password-btn" id="password-btn">View Stats</button>
 </div>
 
-<!-- STATS SCREEN -->
-<div id="stats-screen" style="display:none;">
+<!-- MAIN -->
+<div id="main-screen" style="display:none;">
+  <div class="venue-selector" id="venue-selector" style="display:none;">
+    <select class="venue-select" id="venue-select">
+      <option value="all">All Venues</option>
+    </select>
+  </div>
+
   <div class="stats-tabs">
     <div class="stats-tab active" id="tab-tonight">Tonight</div>
     <div class="stats-tab" id="tab-month">By Month</div>
@@ -86,36 +117,12 @@
     <select id="month-select"></select>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-value" id="stat-performances">0</div><div class="stat-label">Tables performed</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-conversion">—</div><div class="stat-label">Scan to request rate</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-cancellations">0</div><div class="stat-label">Cancellations</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-avg-wait">—</div><div class="stat-label">Avg wait time</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-total-scans">0</div><div class="stat-label">Total scans</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-peak">—</div><div class="stat-label">Peak request hour</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-returning">—</div><div class="stat-label">Return visitor rate</div></div>
-  </div>
-
-  <div class="table-breakdown" id="table-breakdown" style="display:none;">
-    <div class="breakdown-header">Table Activity</div>
-    <div class="breakdown-grid">
-      <div>
-        <div class="breakdown-section-title">Most Active</div>
-        <div id="top-tables"></div>
-      </div>
-      <div>
-        <div class="breakdown-section-title">Least Active</div>
-        <div id="bottom-tables"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="no-data" id="no-data" style="display:none;">No data for this period yet.</div>
+  <div id="stats-content"><div class="loading">Loading...</div></div>
 </div>
 
-<div class="footer">Joshua Stacy — Close-Up Magic</div>
-
 <script>
+  var ADMIN_PASSWORD = 'StruckDuckAdmin';
+
   firebase.initializeApp({
     apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
     authDomain: "tableside-e94a6.firebaseapp.com",
@@ -127,71 +134,71 @@
   var db = firebase.firestore();
 
   var params = new URLSearchParams(window.location.search);
-  var venue = params.get('venue') || '';
-  var correctPassword = null;
+  var venueSlug = params.get('venue') || null;
+  var isAdminMode = !venueSlug;
   var currentTab = 'tonight';
+  var venues = [];
+  var allEvents = {};
+  var correctPassword = null;
 
-  // Load venue name and password from Firebase
-  if (venue) {
-    document.getElementById('header-venue').textContent = venue;
-    db.collection('venueConfigs').doc(venue).get().then(function(snap) {
+  // Setup based on mode
+  if (isAdminMode) {
+    document.getElementById('header-sub').textContent = 'Admin';
+    document.getElementById('password-label').textContent = 'Admin access required';
+    correctPassword = ADMIN_PASSWORD;
+    document.getElementById('password-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+    document.getElementById('password-btn').addEventListener('click', checkPassword);
+  } else {
+    document.getElementById('header-sub').textContent = venueSlug;
+    document.getElementById('password-label').textContent = 'Enter the password to view stats';
+    // Load venue password and name from Firebase
+    db.collection('venueConfigs').doc(venueSlug).get().then(function(snap) {
       if (snap.exists) {
+        correctPassword = snap.data().statsPassword || null;
+        // Apply venue colors
         var cfg = snap.data();
-        correctPassword = cfg.statsPassword || null;
-        if (cfg.colorBox) document.documentElement.style.setProperty('--teal', cfg.colorBox);
-        // Show venue name from presets
+        var r = document.documentElement;
+        if (cfg.colorBox) r.style.setProperty('--teal', cfg.colorBox);
       }
     }).catch(function() {});
-
-    db.collection('venuePresets').doc(venue).get().then(function(snap) {
-      if (snap.exists) {
-        document.getElementById('header-venue').textContent = snap.data().name || venue;
-      }
+    db.collection('venuePresets').doc(venueSlug).get().then(function(snap) {
+      if (snap.exists) document.getElementById('header-sub').textContent = snap.data().name || venueSlug;
     }).catch(function() {});
+    document.getElementById('password-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+    document.getElementById('password-btn').addEventListener('click', checkPassword);
   }
-
-  // Password check
-  document.getElementById('password-btn').addEventListener('click', checkPassword);
-  document.getElementById('password-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') checkPassword();
-  });
 
   function checkPassword() {
     var input = document.getElementById('password-input').value;
     var errorEl = document.getElementById('password-error');
     errorEl.textContent = '';
-
-    // If no password is set, let anyone in
-    if (!correctPassword) {
-      showStats(); return;
-    }
-
-    if (input === correctPassword) {
-      showStats();
+    if (!correctPassword || input === correctPassword) {
+      document.getElementById('password-screen').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'block';
+      if (isAdminMode) {
+        document.getElementById('venue-selector').style.display = 'block';
+        loadAllVenues();
+      } else {
+        loadVenueEvents(venueSlug).then(function() { renderStats(); });
+      }
     } else {
       errorEl.textContent = 'Incorrect password';
       document.getElementById('password-input').value = '';
     }
   }
 
-  function showStats() {
-    document.getElementById('password-screen').style.display = 'none';
-    document.getElementById('stats-screen').style.display = 'block';
-    loadStats();
-  }
-
   // Tabs
   document.getElementById('tab-tonight').addEventListener('click', function() { switchTab('tonight'); });
   document.getElementById('tab-month').addEventListener('click', function() { switchTab('month'); });
   document.getElementById('tab-alltime').addEventListener('click', function() { switchTab('alltime'); });
-  document.getElementById('month-select').addEventListener('change', function() { loadStats(); });
+  document.getElementById('month-select').addEventListener('change', function() { renderStats(); });
 
   function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.stats-tab').forEach(function(t) { t.classList.remove('active'); });
     document.getElementById('tab-' + tab).classList.add('active');
     document.getElementById('month-row').className = 'month-row' + (tab === 'month' ? ' visible' : '');
-    loadStats();
+    renderStats();
   }
 
   function fmtTime(ms) {
@@ -200,97 +207,194 @@
     return m + ':' + (s < 10 ? '0' : '') + s;
   }
 
-  function loadStats() {
-    if (!venue) return;
-    db.collection('venueEvents').doc(venue).collection('events').get().then(function(snap) {
-      var all = snap.docs.map(function(d) { return d.data(); });
-      var today = new Date().toISOString().split('T')[0];
+  function loadVenueEvents(slug) {
+    return db.collection('venueEvents').doc(slug).collection('events').get()
+      .then(function(snap) { allEvents[slug] = snap.docs.map(function(d) { return d.data(); }); })
+      .catch(function() { allEvents[slug] = []; });
+  }
 
-      // Populate month dropdown
-      var months = [];
-      all.forEach(function(e) { if (e.month && months.indexOf(e.month) < 0) months.push(e.month); });
-      months.sort().reverse();
-      var sel = document.getElementById('month-select');
-      if (months.length) {
-        var cur = sel.value;
-        sel.innerHTML = months.map(function(m) {
-          var d = new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]) - 1);
-          var lbl = d.toLocaleString('default', { month: 'long', year: 'numeric' });
-          return '<option value="' + m + '"' + (m === cur ? ' selected' : '') + '>' + lbl + '</option>';
-        }).join('');
-      }
+  function loadAllVenues() {
+    db.collection('venuePresets').get().then(function(snap) {
+      venues = snap.docs.map(function(d) { return d.data(); });
+      var sel = document.getElementById('venue-select');
+      sel.innerHTML = '<option value="all">All Venues</option>' +
+        venues.map(function(v) { return '<option value="' + v.slug + '">' + v.name + '</option>'; }).join('');
+      sel.addEventListener('change', function() { renderStats(); });
 
-      // Filter by tab
-      var events = all;
-      if (currentTab === 'tonight') events = all.filter(function(e) { return e.date === today; });
-      else if (currentTab === 'month') {
-        var m = sel.value || months[0];
-        events = all.filter(function(e) { return e.month === m; });
-      }
-
-      var scans = events.filter(function(e) { return e.type === 'scan'; }).length;
-      var reqs  = events.filter(function(e) { return e.type === 'request'; }).length;
-      var perfs = events.filter(function(e) { return e.type === 'performance'; }).length;
-      var cxls  = events.filter(function(e) { return e.type === 'cancellation'; }).length;
-      var waits = events.filter(function(e) { return e.type === 'performance' && e.waitMs; }).map(function(e) { return e.waitMs; });
-
-      var hasData = events.length > 0;
-      document.getElementById('no-data').style.display = hasData ? 'none' : 'block';
-      document.getElementById('stats-screen').querySelectorAll('.stats-grid, .table-breakdown').forEach(function(el) {
-        el.style.display = hasData ? '' : 'none';
-      });
-
-      document.getElementById('stat-performances').textContent = perfs;
-      document.getElementById('stat-total-scans').textContent = scans;
-      document.getElementById('stat-cancellations').textContent = cxls;
-      document.getElementById('stat-conversion').textContent = scans > 0 ? Math.round(reqs / scans * 100) + '%' : '—';
-
-      if (waits.length) {
-        var avg = waits.reduce(function(a, b) { return a + b; }, 0) / waits.length;
-        document.getElementById('stat-avg-wait').textContent = fmtTime(avg);
-      } else document.getElementById('stat-avg-wait').textContent = '—';
-
-      var reqHours = events.filter(function(e) { return e.type === 'request' && e.hour != null; });
-      if (reqHours.length) {
-        var hc = {};
-        reqHours.forEach(function(e) { hc[e.hour] = (hc[e.hour] || 0) + 1; });
-        var ph = parseInt(Object.keys(hc).sort(function(a,b){return hc[b]-hc[a];})[0]);
-        document.getElementById('stat-peak').textContent = ph === 0 ? '12am' : ph < 12 ? ph+'am' : ph === 12 ? '12pm' : (ph-12)+'pm';
-      } else document.getElementById('stat-peak').textContent = '—';
-
-      // Table breakdown
-      var tableScanMap = {};
-      events.filter(function(e) { return e.type === 'scan' && e.table; }).forEach(function(e) {
-        tableScanMap[e.table] = (tableScanMap[e.table] || 0) + 1;
-      });
-      var tableEntries = Object.keys(tableScanMap).map(function(t) { return { table: t, count: tableScanMap[t] }; });
-      tableEntries.sort(function(a, b) { return b.count - a.count; });
-
-      var breakdown = document.getElementById('table-breakdown');
-      if (tableEntries.length > 0) {
-        breakdown.style.display = 'block';
-        var top = tableEntries.slice(0, 10);
-        var bottom = tableEntries.slice(-10).reverse();
-        var maxCount = top[0] ? top[0].count : 1;
-
-        function renderList(entries, elId, isLow) {
-          var el = document.getElementById(elId);
-          if (!entries.length) { el.innerHTML = '<div style="font-size:0.65rem;color:var(--muted);font-style:italic;">No data</div>'; return; }
-          el.innerHTML = entries.map(function(e) {
-            var pct = Math.round((e.count / maxCount) * 100);
-            return '<div class="table-row">' +
-              '<div class="table-row-header"><span>Table ' + e.table + '</span><span class="table-row-count">' + e.count + '</span></div>' +
-              '<div class="bar-track"><div class="bar-fill' + (isLow ? ' low' : '') + '" style="width:' + pct + '%;"></div></div>' +
-            '</div>';
-          }).join('');
-        }
-
-        renderList(top, 'top-tables', false);
-        renderList(bottom, 'bottom-tables', true);
-      } else {
-        breakdown.style.display = 'none';
-      }
+      var promises = venues.map(function(v) { return loadVenueEvents(v.slug); });
+      Promise.all(promises).then(function() { renderStats(); });
     }).catch(function() {});
+  }
+
+  function getEvents() {
+    var today = new Date().toISOString().split('T')[0];
+    var slug = isAdminMode ? (document.getElementById('venue-select').value) : venueSlug;
+    var events;
+
+    if (slug === 'all') {
+      events = [];
+      Object.keys(allEvents).forEach(function(s) {
+        allEvents[s].forEach(function(e) { events.push(Object.assign({ venueSlug: s }, e)); });
+      });
+    } else {
+      events = (allEvents[slug] || []).slice();
+    }
+
+    var sel = document.getElementById('month-select');
+    if (currentTab === 'tonight') return events.filter(function(e) { return e.date === today; });
+    if (currentTab === 'month') { var m = sel.value; return events.filter(function(e) { return e.month === m; }); }
+    return events;
+  }
+
+  function getVenueEventsFiltered(slug) {
+    var today = new Date().toISOString().split('T')[0];
+    var events = allEvents[slug] || [];
+    var sel = document.getElementById('month-select');
+    if (currentTab === 'tonight') return events.filter(function(e) { return e.date === today; });
+    if (currentTab === 'month') { var m = sel.value; return events.filter(function(e) { return e.month === m; }); }
+    return events;
+  }
+
+  function renderStats() {
+    var events = getEvents();
+
+    // Populate month dropdown
+    var allFlat = [];
+    Object.keys(allEvents).forEach(function(s) { allEvents[s].forEach(function(e) { allFlat.push(e); }); });
+    var months = [];
+    allFlat.forEach(function(e) { if (e.month && months.indexOf(e.month) < 0) months.push(e.month); });
+    months.sort().reverse();
+    var sel = document.getElementById('month-select');
+    if (months.length) {
+      var cur = sel.value;
+      sel.innerHTML = months.map(function(m) {
+        var d = new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]) - 1);
+        return '<option value="' + m + '"' + (m === cur ? ' selected' : '') + '>' + d.toLocaleString('default', { month: 'long', year: 'numeric' }) + '</option>';
+      }).join('');
+    }
+
+    var scans      = events.filter(function(e) { return e.type === 'scan'; });
+    var requests   = events.filter(function(e) { return e.type === 'request'; });
+    var perfs      = events.filter(function(e) { return e.type === 'performance'; });
+    var cxls       = events.filter(function(e) { return e.type === 'cancellation'; });
+    var waits      = perfs.filter(function(e) { return e.waitMs; }).map(function(e) { return e.waitMs; });
+    var entryLands = events.filter(function(e) { return e.type === 'entry_landed'; });
+    var entryProcs = events.filter(function(e) { return e.type === 'entry_proceeded'; });
+
+    var convRate = scans.length > 0 ? Math.round(requests.length / scans.length * 100) + '%' : '—';
+    var avgWait  = waits.length > 0 ? fmtTime(waits.reduce(function(a,b){return a+b;},0)/waits.length) : '—';
+
+    var reqHours = requests.filter(function(e) { return e.hour != null; });
+    var peakLabel = '—';
+    if (reqHours.length) {
+      var hc = {};
+      reqHours.forEach(function(e) { hc[e.hour] = (hc[e.hour] || 0) + 1; });
+      var ph = parseInt(Object.keys(hc).sort(function(a,b){return hc[b]-hc[a];})[0]);
+      peakLabel = ph === 0 ? '12am' : ph < 12 ? ph+'am' : ph === 12 ? '12pm' : (ph-12)+'pm';
+    }
+
+    var returningScans = scans.filter(function(e) { return e.returning; });
+    var returnRate = scans.length > 0 ? Math.round(returningScans.length / scans.length * 100) + '%' : '—';
+    var entryConv  = entryLands.length > 0 ? Math.round(entryProcs.length / entryLands.length * 100) + '%' : '—';
+
+    function clickRate(clicks) {
+      return perfs.length > 0 ? Math.round(clicks.length / perfs.length * 100) + '%' : '—';
+    }
+
+    // Table breakdown
+    var tableScanMap = {};
+    scans.filter(function(e) { return e.table; }).forEach(function(e) {
+      tableScanMap[e.table] = (tableScanMap[e.table] || 0) + 1;
+    });
+    var tableEntries = Object.keys(tableScanMap).map(function(t) { return { table: t, count: tableScanMap[t] }; });
+    tableEntries.sort(function(a,b) { return b.count - a.count; });
+    var topTables    = tableEntries.slice(0, 10);
+    var bottomTables = tableEntries.slice(-10).reverse();
+    var maxCount     = topTables[0] ? topTables[0].count : 1;
+
+    function tableListHTML(entries, isLow) {
+      if (!entries.length) return '<div style="font-size:0.65rem;color:var(--muted);font-style:italic;">No data</div>';
+      return entries.map(function(e) {
+        var pct = Math.round((e.count / maxCount) * 100);
+        return '<div class="table-row">' +
+          '<div class="table-row-header"><span>Table ' + e.table + '</span><span class="table-row-count">' + e.count + '</span></div>' +
+          '<div class="bar-track"><div class="bar-fill' + (isLow ? ' low' : '') + '" style="width:' + pct + '%;"></div></div>' +
+        '</div>';
+      }).join('');
+    }
+
+    var html = '';
+
+    // Core stats
+    html += '<div class="section-title">Performance</div>';
+    html += '<div class="stats-grid">';
+    html += '<div class="stat-card"><div class="stat-value">' + perfs.length + '</div><div class="stat-label">Tables performed</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + scans.length + '</div><div class="stat-label">Total scans</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + convRate + '</div><div class="stat-label">Scan to request rate</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + cxls.length + '</div><div class="stat-label">Cancellations</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + avgWait + '</div><div class="stat-label">Avg wait time</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + peakLabel + '</div><div class="stat-label">Peak request hour</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + returnRate + '</div><div class="stat-label">Return visitor rate</div></div>';
+    html += '<div class="stat-card"><div class="stat-value">' + entryConv + '</div><div class="stat-label">Entry page conversion</div></div>';
+    html += '</div>';
+
+    // Admin-only sections
+    if (isAdminMode) {
+      // Link clicks
+      var clickData = [
+        { label: 'Leave a kind word (Review)', clicks: events.filter(function(e) { return e.type === 'click_review'; }) },
+        { label: 'Find me on Venmo (Tip)', clicks: events.filter(function(e) { return e.type === 'click_venmo'; }) },
+        { label: 'Instagram', clicks: events.filter(function(e) { return e.type === 'click_instagram'; }) },
+        { label: 'Website', clicks: events.filter(function(e) { return e.type === 'click_website'; }) },
+        { label: 'Venue events link', clicks: events.filter(function(e) { return e.type === 'click_venue_link'; }) },
+        { label: 'Mailing list', clicks: events.filter(function(e) { return e.type === 'click_mailing_list'; }) }
+      ];
+
+      html += '<div class="section-title">Link Clicks</div><div class="click-grid">';
+      clickData.forEach(function(item) {
+        html += '<div class="click-row">' +
+          '<div class="click-label">' + item.label + '</div>' +
+          '<div class="click-right">' +
+            '<div class="click-count">' + item.clicks.length + '</div>' +
+            '<div class="click-rate">' + clickRate(item.clicks) + ' of perfs</div>' +
+          '</div></div>';
+      });
+      html += '</div>';
+
+      // Venue comparison (when all venues selected)
+      var slug = document.getElementById('venue-select').value;
+      if (slug === 'all' && venues.length > 1) {
+        html += '<div class="section-title">Venue Comparison</div><div class="venue-compare">';
+        venues.forEach(function(v) {
+          var ve = getVenueEventsFiltered(v.slug);
+          var vs = ve.filter(function(e) { return e.type === 'scan'; }).length;
+          var vr = ve.filter(function(e) { return e.type === 'request'; }).length;
+          var vp = ve.filter(function(e) { return e.type === 'performance'; }).length;
+          var vc = vs > 0 ? Math.round(vr / vs * 100) + '%' : '—';
+          html += '<div class="venue-compare-row">' +
+            '<div class="venue-name">' + v.name + '</div>' +
+            '<div class="venue-metrics">' +
+              '<div class="venue-metric"><span class="venue-metric-value">' + vs + '</span><span class="venue-metric-label">Scans</span></div>' +
+              '<div class="venue-metric"><span class="venue-metric-value">' + vc + '</span><span class="venue-metric-label">Conv.</span></div>' +
+              '<div class="venue-metric"><span class="venue-metric-value">' + vp + '</span><span class="venue-metric-label">Perfs</span></div>' +
+            '</div></div>';
+        });
+        html += '</div>';
+      }
+    }
+
+    // Table breakdown (both modes)
+    if (tableEntries.length > 0) {
+      html += '<div class="section-title">Table Activity</div>';
+      html += '<div class="table-breakdown"><div class="breakdown-grid">';
+      html += '<div><div class="breakdown-section-title">Most Active</div>' + tableListHTML(topTables, false) + '</div>';
+      html += '<div><div class="breakdown-section-title">Least Active</div>' + tableListHTML(bottomTables, true) + '</div>';
+      html += '</div></div>';
+    }
+
+    if (events.length === 0) html = '<div class="no-data">No data for this period yet.</div>';
+
+    document.getElementById('stats-content').innerHTML = html;
   }
 </script>
 </body>
