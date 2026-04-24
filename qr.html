@@ -201,7 +201,13 @@
   Select a venue to preview the QR code URL
 </div>
 
-<div class="section-label">Options</div>
+<div class="section-label">Universal Entry Code</div>
+<div class="url-preview" id="entry-url-preview">Select a venue to preview the entry URL</div>
+<button class="generate-btn secondary" id="generate-entry-btn" onclick="generateEntryPDF()" disabled>Download Universal Entry Code</button>
+
+<div style="height:1.5rem;"></div>
+
+<div class="section-label">Individual Table Codes</div>
 <div class="setting-row" style="margin-bottom:1px;">
   <div class="setting-label">Tables to generate</div>
   <div id="table-count-display" style="font-size:0.7rem;color:var(--teal);font-weight:500;">—</div>
@@ -214,7 +220,7 @@
   </select>
 </div>
 
-<button class="generate-btn" id="generate-btn" onclick="generatePDF()" disabled>Generate PDF</button>
+<button class="generate-btn" id="generate-btn" onclick="generatePDF()" disabled>Download Individual Table Codes</button>
 
 <div class="status-msg" id="status-msg"></div>
 
@@ -271,6 +277,17 @@
     countEl.style.color = tables.length ? 'var(--teal)' : 'var(--red, #a01a1a)';
     updatePreview(slug, tables);
     document.getElementById('generate-btn').disabled = !slug || !tables.length;
+
+    // Update entry code section
+    var entryPreview = document.getElementById('entry-url-preview');
+    if (slug) {
+      var entryUrl = 'https://struckduck.github.io/tablside/enter.html?venue=' + slug;
+      entryPreview.innerHTML = 'Universal entry URL:<br><span>' + entryUrl + '</span>';
+      document.getElementById('generate-entry-btn').disabled = false;
+    } else {
+      entryPreview.innerHTML = 'Select a venue to preview the entry URL';
+      document.getElementById('generate-entry-btn').disabled = true;
+    }
   }
 
   function updatePreview(slug, tables) {
@@ -307,6 +324,41 @@
         }
       }, 150);
     });
+  }
+
+  window.generateEntryPDF = async function() {
+    if (!selectedVenue) return;
+    var venue = venues.find(function(v) { return v.slug === selectedVenue; });
+    var venueName = venue ? venue.name : selectedVenue;
+    var statusEl = document.getElementById('status-msg');
+    statusEl.textContent = 'Generating entry code...';
+    document.getElementById('generate-entry-btn').disabled = true;
+
+    var entryUrl = 'https://struckduck.github.io/tablside/enter.html?venue=' + selectedVenue;
+    var { jsPDF } = window.jspdf;
+    var pageW = 215.9, pageH = 279.4;
+    var doc = new jsPDF({ unit: 'mm', format: 'letter' });
+    var qrData = await makeQRDataURL(entryUrl);
+
+    if (qrData) {
+      var qrSize = 120;
+      var x = (pageW - qrSize) / 2;
+      var y = (pageH - qrSize) / 2 - 15;
+      doc.addImage(qrData, 'PNG', x, y, qrSize, qrSize);
+    }
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(100, 100, 100);
+    doc.text(venueName + ' — Universal Entry Code', pageW / 2, pageH / 2 + 80, { align: 'center' });
+
+    doc.setFontSize(7);
+    doc.setTextColor(180, 180, 180);
+    doc.text(entryUrl, pageW / 2, pageH / 2 + 87, { align: 'center' });
+
+    doc.save('qr-' + selectedVenue + '-entry.pdf');
+    statusEl.textContent = '✓ Downloaded: qr-' + selectedVenue + '-entry.pdf';
+    document.getElementById('generate-entry-btn').disabled = false;
   }
 
   window.generatePDF = async function() {

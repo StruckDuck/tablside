@@ -206,7 +206,7 @@
         <input type="file" id="map-upload-input" accept="image/*" style="display:none;">
       </label>
       <div class="form-label" style="margin-top:0.25rem;">Table numbers</div>
-      <input type="text" class="text-field" id="new-venue-tables" placeholder="e.g. 1,2,3,4,5,10,20,21,22">
+      <textarea class="text-field" id="new-venue-tables" placeholder="e.g. 1,2,3,4,5,10,20,21,22" rows="2" style="resize:none;overflow:hidden;line-height:1.6;font-size:0.78rem;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
       <div style="font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;margin-top:-0.25rem;">Comma-separated. Used for QR code generation.</div>
       <button class="primary-btn" id="add-venue-btn">Add Venue</button>
     </div>
@@ -222,7 +222,7 @@
       <div class="color-row"><div class="setting-label">Venue link URL</div><input type="text" class="short-input" id="c-link-url" placeholder="https://..."></div>
       <div class="color-row" style="flex-direction:column;align-items:flex-start;gap:0.4rem;">
         <div class="setting-label">Table numbers</div>
-        <input type="text" class="short-input" id="c-tables" placeholder="1,2,3,4,5,10,20,21" style="width:100%;">
+        <textarea class="short-input" id="c-tables" placeholder="1,2,3,4,5,10,20,21" rows="2" style="width:100%;resize:none;overflow:hidden;line-height:1.6;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
         <div style="font-size:0.58rem;color:var(--muted);letter-spacing:0.08em;">Comma-separated list for QR code generation</div>
       </div>
       <button class="primary-btn" style="margin-top:0.75rem;" id="save-config-btn">Save Appearance</button>
@@ -534,7 +534,9 @@
     });
     document.getElementById('c-link-label').value = cfg.venueLinkLabel || '';
     document.getElementById('c-link-url').value = cfg.venueLinkUrl || '';
-    document.getElementById('c-tables').value = (v && v.tables) ? v.tables.join(', ') : '';
+    var tablesEl = document.getElementById('c-tables');
+    tablesEl.value = (v && v.tables) ? v.tables.join(', ') : '';
+    setTimeout(function() { tablesEl.style.height = 'auto'; tablesEl.style.height = tablesEl.scrollHeight + 'px'; }, 0);
     document.getElementById('customize-form').scrollIntoView({ behavior: 'smooth' });
   }
 
