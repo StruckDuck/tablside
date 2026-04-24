@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TablSide Stats</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Raleway:wght@300;400;500;600&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg:#f4f2ee; --surface:#fff; --surface2:#ede9e2; --border:#d6d0c6;
+    --text:#1a1612; --muted:#8a8278; --teal:#273534; --plum:#6f0f43; --gold:#7a6545;
+    --red:#a01a1a;
+  }
+
+  body { font-family:'Raleway',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:1.5rem 1rem 3rem; max-width:500px; margin:0 auto; }
+
+  .header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.5rem; }
+  .header-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:400; color:var(--teal); letter-spacing:0.15em; text-transform:uppercase; }
+  .header-venue { font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+
+  /* PASSWORD SCREEN */
+  .password-screen { display:flex; flex-direction:column; align-items:center; gap:1.5rem; padding:3rem 0; }
+  .password-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; text-align:center; }
+  .password-input { width:100%; max-width:280px; padding:0.85rem 1rem; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.9rem; text-align:center; outline:none; letter-spacing:0.1em; }
+  .password-input:focus { border-color:var(--teal); }
+  .password-btn { padding:0.75rem 2rem; background:var(--teal); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .password-error { font-size:0.65rem; color:var(--red); letter-spacing:0.1em; text-transform:uppercase; min-height:1rem; }
+
+  /* STATS */
+  .stats-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:1rem; }
+  .stats-tab { flex:1; padding:0.6rem; font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; text-align:center; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; -webkit-tap-highlight-color:transparent; }
+  .stats-tab.active { color:var(--teal); border-bottom-color:var(--teal); }
+  .month-row { display:none; padding:0.6rem 0; margin-bottom:0.5rem; }
+  .month-row.visible { display:block; }
+  .month-row select { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Raleway',sans-serif; font-size:0.7rem; padding:6px 8px; outline:none; }
+
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); padding:1rem; display:flex; flex-direction:column; gap:0.25rem; }
+  .stat-value { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:400; color:var(--teal); line-height:1; }
+  .stat-label { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; line-height:1.4; }
+
+  .table-breakdown { background:var(--surface); border:1px solid var(--border); padding:1rem; }
+  .breakdown-header { font-size:0.65rem; font-weight:500; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1rem; }
+  .breakdown-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .breakdown-section-title { font-size:0.6rem; font-weight:500; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.6rem; }
+  .table-row { margin-bottom:0.5rem; }
+  .table-row-header { display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text); margin-bottom:3px; }
+  .table-row-count { color:var(--muted); }
+  .bar-track { height:3px; background:var(--border); border-radius:2px; }
+  .bar-fill { height:3px; background:var(--teal); border-radius:2px; }
+  .bar-fill.low { background:var(--gold); }
+
+  .no-data { text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--muted); padding:2rem 0; }
+
+  .footer { text-align:center; margin-top:2rem; font-size:0.62rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">TablSide</div>
+  <div class="header-venue" id="header-venue"></div>
+</div>
+
+<!-- PASSWORD SCREEN -->
+<div id="password-screen" class="password-screen">
+  <div class="password-label">Enter the password to view stats</div>
+  <input type="password" class="password-input" id="password-input" placeholder="Password">
+  <div class="password-error" id="password-error"></div>
+  <button class="password-btn" id="password-btn">View Stats</button>
+</div>
+
+<!-- STATS SCREEN -->
+<div id="stats-screen" style="display:none;">
+  <div class="stats-tabs">
+    <div class="stats-tab active" id="tab-tonight">Tonight</div>
+    <div class="stats-tab" id="tab-month">By Month</div>
+    <div class="stats-tab" id="tab-alltime">All Time</div>
+  </div>
+  <div class="month-row" id="month-row">
+    <select id="month-select"></select>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" id="stat-performances">0</div><div class="stat-label">Tables performed</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-conversion">—</div><div class="stat-label">Scan to request rate</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-cancellations">0</div><div class="stat-label">Cancellations</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-avg-wait">—</div><div class="stat-label">Avg wait time</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-total-scans">0</div><div class="stat-label">Total scans</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-peak">—</div><div class="stat-label">Peak request hour</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-returning">—</div><div class="stat-label">Return visitor rate</div></div>
+  </div>
+
+  <div class="table-breakdown" id="table-breakdown" style="display:none;">
+    <div class="breakdown-header">Table Activity</div>
+    <div class="breakdown-grid">
+      <div>
+        <div class="breakdown-section-title">Most Active</div>
+        <div id="top-tables"></div>
+      </div>
+      <div>
+        <div class="breakdown-section-title">Least Active</div>
+        <div id="bottom-tables"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-data" id="no-data" style="display:none;">No data for this period yet.</div>
+</div>
+
+<div class="footer">Joshua Stacy — Close-Up Magic</div>
+
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyAd59ZE32SWVK9NSX0Q9QmgngyIcjKw0I4",
+    authDomain: "tableside-e94a6.firebaseapp.com",
+    projectId: "tableside-e94a6",
+    storageBucket: "tableside-e94a6.firebasestorage.app",
+    messagingSenderId: "899595202591",
+    appId: "1:899595202591:web:8a9fc53b71bf1b0456652a"
+  });
+  var db = firebase.firestore();
+
+  var params = new URLSearchParams(window.location.search);
+  var venue = params.get('venue') || '';
+  var correctPassword = null;
+  var currentTab = 'tonight';
+
+  // Load venue name and password from Firebase
+  if (venue) {
+    document.getElementById('header-venue').textContent = venue;
+    db.collection('venueConfigs').doc(venue).get().then(function(snap) {
+      if (snap.exists) {
+        var cfg = snap.data();
+        correctPassword = cfg.statsPassword || null;
+        if (cfg.colorBox) document.documentElement.style.setProperty('--teal', cfg.colorBox);
+        // Show venue name from presets
+      }
+    }).catch(function() {});
+
+    db.collection('venuePresets').doc(venue).get().then(function(snap) {
+      if (snap.exists) {
+        document.getElementById('header-venue').textContent = snap.data().name || venue;
+      }
+    }).catch(function() {});
+  }
+
+  // Password check
+  document.getElementById('password-btn').addEventListener('click', checkPassword);
+  document.getElementById('password-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  function checkPassword() {
+    var input = document.getElementById('password-input').value;
+    var errorEl = document.getElementById('password-error');
+    errorEl.textContent = '';
+
+    // If no password is set, let anyone in
+    if (!correctPassword) {
+      showStats(); return;
+    }
+
+    if (input === correctPassword) {
+      showStats();
+    } else {
+      errorEl.textContent = 'Incorrect password';
+      document.getElementById('password-input').value = '';
+    }
+  }
+
+  function showStats() {
+    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('stats-screen').style.display = 'block';
+    loadStats();
+  }
+
+  // Tabs
+  document.getElementById('tab-tonight').addEventListener('click', function() { switchTab('tonight'); });
+  document.getElementById('tab-month').addEventListener('click', function() { switchTab('month'); });
+  document.getElementById('tab-alltime').addEventListener('click', function() { switchTab('alltime'); });
+  document.getElementById('month-select').addEventListener('change', function() { loadStats(); });
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.stats-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('month-row').className = 'month-row' + (tab === 'month' ? ' visible' : '');
+    loadStats();
+  }
+
+  function fmtTime(ms) {
+    var m = Math.floor(ms / 60000);
+    var s = Math.floor((ms % 60000) / 1000);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function loadStats() {
+    if (!venue) return;
+    db.collection('venueEvents').doc(venue).collection('events').get().then(function(snap) {
+      var all = snap.docs.map(function(d) { return d.data(); });
+      var today = new Date().toISOString().split('T')[0];
+
+      // Populate month dropdown
+      var months = [];
+      all.forEach(function(e) { if (e.month && months.indexOf(e.month) < 0) months.push(e.month); });
+      months.sort().reverse();
+      var sel = document.getElementById('month-select');
+      if (months.length) {
+        var cur = sel.value;
+        sel.innerHTML = months.map(function(m) {
+          var d = new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]) - 1);
+          var lbl = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+          return '<option value="' + m + '"' + (m === cur ? ' selected' : '') + '>' + lbl + '</option>';
+        }).join('');
+      }
+
+      // Filter by tab
+      var events = all;
+      if (currentTab === 'tonight') events = all.filter(function(e) { return e.date === today; });
+      else if (currentTab === 'month') {
+        var m = sel.value || months[0];
+        events = all.filter(function(e) { return e.month === m; });
+      }
+
+      var scans = events.filter(function(e) { return e.type === 'scan'; }).length;
+      var reqs  = events.filter(function(e) { return e.type === 'request'; }).length;
+      var perfs = events.filter(function(e) { return e.type === 'performance'; }).length;
+      var cxls  = events.filter(function(e) { return e.type === 'cancellation'; }).length;
+      var waits = events.filter(function(e) { return e.type === 'performance' && e.waitMs; }).map(function(e) { return e.waitMs; });
+
+      var hasData = events.length > 0;
+      document.getElementById('no-data').style.display = hasData ? 'none' : 'block';
+      document.getElementById('stats-screen').querySelectorAll('.stats-grid, .table-breakdown').forEach(function(el) {
+        el.style.display = hasData ? '' : 'none';
+      });
+
+      document.getElementById('stat-performances').textContent = perfs;
+      document.getElementById('stat-total-scans').textContent = scans;
+      document.getElementById('stat-cancellations').textContent = cxls;
+      document.getElementById('stat-conversion').textContent = scans > 0 ? Math.round(reqs / scans * 100) + '%' : '—';
+
+      if (waits.length) {
+        var avg = waits.reduce(function(a, b) { return a + b; }, 0) / waits.length;
+        document.getElementById('stat-avg-wait').textContent = fmtTime(avg);
+      } else document.getElementById('stat-avg-wait').textContent = '—';
+
+      var reqHours = events.filter(function(e) { return e.type === 'request' && e.hour != null; });
+      if (reqHours.length) {
+        var hc = {};
+        reqHours.forEach(function(e) { hc[e.hour] = (hc[e.hour] || 0) + 1; });
+        var ph = parseInt(Object.keys(hc).sort(function(a,b){return hc[b]-hc[a];})[0]);
+        document.getElementById('stat-peak').textContent = ph === 0 ? '12am' : ph < 12 ? ph+'am' : ph === 12 ? '12pm' : (ph-12)+'pm';
+      } else document.getElementById('stat-peak').textContent = '—';
+
+      // Table breakdown
+      var tableScanMap = {};
+      events.filter(function(e) { return e.type === 'scan' && e.table; }).forEach(function(e) {
+        tableScanMap[e.table] = (tableScanMap[e.table] || 0) + 1;
+      });
+      var tableEntries = Object.keys(tableScanMap).map(function(t) { return { table: t, count: tableScanMap[t] }; });
+      tableEntries.sort(function(a, b) { return b.count - a.count; });
+
+      var breakdown = document.getElementById('table-breakdown');
+      if (tableEntries.length > 0) {
+        breakdown.style.display = 'block';
+        var top = tableEntries.slice(0, 10);
+        var bottom = tableEntries.slice(-10).reverse();
+        var maxCount = top[0] ? top[0].count : 1;
+
+        function renderList(entries, elId, isLow) {
+          var el = document.getElementById(elId);
+          if (!entries.length) { el.innerHTML = '<div style="font-size:0.65rem;color:var(--muted);font-style:italic;">No data</div>'; return; }
+          el.innerHTML = entries.map(function(e) {
+            var pct = Math.round((e.count / maxCount) * 100);
+            return '<div class="table-row">' +
+              '<div class="table-row-header"><span>Table ' + e.table + '</span><span class="table-row-count">' + e.count + '</span></div>' +
+              '<div class="bar-track"><div class="bar-fill' + (isLow ? ' low' : '') + '" style="width:' + pct + '%;"></div></div>' +
+            '</div>';
+          }).join('');
+        }
+
+        renderList(top, 'top-tables', false);
+        renderList(bottom, 'bottom-tables', true);
+      } else {
+        breakdown.style.display = 'none';
+      }
+    }).catch(function() {});
+  }
+</script>
+</body>
+</html>
