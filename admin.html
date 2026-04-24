@@ -162,6 +162,19 @@
     <div class="stat-card"><div class="stat-value" id="stat-avg-wait">—</div><div class="stat-label">Avg wait time</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-total-scans">0</div><div class="stat-label">Total scans</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-peak">—</div><div class="stat-label">Peak request hour</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-returning">—</div><div class="stat-label">Return visitor rate</div></div>
+  </div>
+  <div id="table-breakdown" style="display:none;padding:0 1rem 1rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+      <div>
+        <div style="font-size:0.6rem;font-weight:500;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Most Active</div>
+        <div id="top-tables"></div>
+      </div>
+      <div>
+        <div style="font-size:0.6rem;font-weight:500;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Least Active</div>
+        <div id="bottom-tables"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -220,6 +233,7 @@
       <div class="color-row"><div class="setting-label">Muted text</div><div class="color-inputs"><input type="color" id="c-muted-p" value="#9aab9a"><input type="text" class="hex-input" id="c-muted-h" value="#9aab9a" maxlength="7"></div></div>
       <div class="color-row"><div class="setting-label">Venue link label</div><input type="text" class="short-input" id="c-link-label" placeholder="More evenings here"></div>
       <div class="color-row"><div class="setting-label">Venue link URL</div><input type="text" class="short-input" id="c-link-url" placeholder="https://..."></div>
+      <div class="color-row" style="border-bottom:none;"><div class="setting-label">Stats page password</div><input type="text" class="short-input" id="c-password" placeholder="Set a password"></div>
       <div class="color-row" style="flex-direction:column;align-items:flex-start;gap:0.4rem;">
         <div class="setting-label">Table numbers</div>
         <textarea class="short-input" id="c-tables" placeholder="1,2,3,4,5,10,20,21" rows="2" style="width:100%;resize:none;overflow:hidden;line-height:1.6;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
@@ -534,6 +548,7 @@
     });
     document.getElementById('c-link-label').value = cfg.venueLinkLabel || '';
     document.getElementById('c-link-url').value = cfg.venueLinkUrl || '';
+    document.getElementById('c-password').value = cfg.statsPassword || '';
     var tablesEl = document.getElementById('c-tables');
     tablesEl.value = (v && v.tables) ? v.tables.join(', ') : '';
     setTimeout(function() { tablesEl.style.height = 'auto'; tablesEl.style.height = tablesEl.scrollHeight + 'px'; }, 0);
@@ -552,7 +567,8 @@
       colorText:      document.getElementById('c-text-h').value,
       colorMuted:     document.getElementById('c-muted-h').value,
       venueLinkLabel: document.getElementById('c-link-label').value.trim(),
-      venueLinkUrl:   document.getElementById('c-link-url').value.trim()
+      venueLinkUrl:   document.getElementById('c-link-url').value.trim(),
+      statsPassword:  document.getElementById('c-password').value.trim()
     };
     var tablesRaw = document.getElementById('c-tables').value.trim();
     v.tables = tablesRaw ? tablesRaw.split(',').map(function(t) { return t.trim(); }).filter(function(t) { return t; }) : [];
