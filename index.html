@@ -216,7 +216,8 @@
         clearInterval(transitionInt);
         transitionInt = null;
         if (wasWaiting) {
-          // This device was in the queue — show farewell and reset Firebase
+          // Kill the listener first so it can't override the farewell screen
+          cleanup();
           tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
           showScreen('screen-after');
         }
@@ -282,7 +283,8 @@
         if (elapsed >= timerMs) {
           // Timer already expired
           if (wasWaiting) {
-            // This device was waiting — show farewell, reset Firebase
+            // Kill the listener first so it can't override the farewell screen
+            cleanup();
             tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
             showScreen('screen-after');
           } else {
