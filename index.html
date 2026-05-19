@@ -313,9 +313,10 @@
   });
 
   document.getElementById('btn-cancel').addEventListener('click', function() {
-    tableRef.set({ status: 'cancelled', cancelledAt: FS.serverTimestamp() }, { merge: true });
-    logEvent('cancellation');
+    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
     if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() });
+    logEvent('cancellation');
     showScreen('screen-landing');
   });
 

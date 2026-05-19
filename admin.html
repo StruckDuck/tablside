@@ -294,6 +294,7 @@
   // No timers — just polls Firebase timestamp every second.
   // Survives phone lock, page reload, anything.
   var countdownInterval = null;
+  var headingToId = null;
 
   function startCountdown(startedAt, timerMs) {
     stopCountdown();
@@ -314,6 +315,7 @@
   function stopCountdown() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = null;
+    headingToId = null;
   }
 
   // On visibility change, the interval will naturally correct itself on next tick
@@ -731,6 +733,13 @@
     if (data.status === 'reset' || data.status === 'performed') {
       // Clean state — remove from entries if present
       entries = entries.filter(function(e) { return e.id !== data.id; });
+      // If this is the table we're heading to, cancel and hide the bar
+      if (headingToId === data.id) {
+        stopCountdown();
+        document.getElementById('heading-bar').style.display = 'none';
+        // Show brief cancel notice
+        showCancelNotice('Table ' + data.table, data.id, 5 * 60 * 1000);
+      }
       updatePositions();
       return;
     }
