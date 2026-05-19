@@ -884,7 +884,7 @@
         // Once Firebase confirms the server timestamp, restart with accurate time
         db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
           .get().then(function(s) {
-            if (s.exists && s.data().onMyWayAt) {
+            if (s.exists && s.data().onMyWayAt && s.data().status === 'on_my_way') {
               startCountdown(s.data().onMyWayAt.toMillis(), timerMs);
             }
           }).catch(function() {});
