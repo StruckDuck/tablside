@@ -738,7 +738,7 @@
         stopCountdown();
         headingToId = null;
         document.getElementById('heading-bar').style.display = 'none';
-        showCancelNotice('Table ' + data.table, data.id, 5 * 60 * 1000);
+        showCancelNotice('Table ' + (data.table || existing?.table || '?'), data.id, 5 * 60 * 1000);
       }
       updatePositions();
       return;
