@@ -419,6 +419,8 @@
     }
 
     document.getElementById('stats-content').innerHTML = html;
+    var clearBtn = document.getElementById('clear-stats-btn');
+    if (clearBtn) clearBtn.addEventListener('click', openClearModal);
   }
 
   // ─── CLEAR STATS MODAL ──────────────────────────────────────────────────────
