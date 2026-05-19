@@ -144,6 +144,10 @@
 <div class="queue-list" id="queue-list"><div class="queue-empty">No activity yet.</div></div>
 <div class="cancel-notices" id="cancel-notices"></div>
 
+<div style="margin-bottom:1.5rem;">
+  <button id="end-night-btn" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Raleway',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;">End Night</button>
+</div>
+
 <div class="collapse-toggle" id="stats-toggle">
   <div class="collapse-label">Stats</div>
   <div class="collapse-arrow" id="stats-arrow">▼</div>
@@ -878,6 +882,27 @@
   setInterval(function() {
     if (entries.some(function(e) { return e.type === 'request'; })) renderQueue();
   }, 1000);
+
+  // ─── END NIGHT ──────────────────────────────────────────────────────────────
+  document.getElementById('end-night-btn').addEventListener('click', function() {
+    if (!settings.activeVenue) return;
+    if (!confirm('End the night? This will clear all active table data for ' + (document.getElementById('venue-badge').textContent) + '.')) return;
+
+    db.collection('venues').doc(settings.activeVenue).collection('tables').get()
+      .then(function(snap) {
+        var batch = db.batch();
+        snap.docs.forEach(function(doc) { batch.delete(doc.ref); });
+        return batch.commit();
+      })
+      .then(function() {
+        entries = [];
+        document.getElementById('cancel-notices').innerHTML = '';
+        stopCountdown();
+        document.getElementById('heading-bar').style.display = 'none';
+        renderQueue();
+      })
+      .catch(function(e) { console.error('End night error', e); });
+  });
 
   // ─── INIT ───────────────────────────────────────────────────────────────────
   loadVenues();
