@@ -731,6 +731,7 @@
     var FIVE_MIN = 5 * 60 * 1000;
 
     if (data.status === 'reset' || data.status === 'performed') {
+      console.log('reset received for:', data.id, 'headingToId is:', headingToId);
       // Clean state — remove from entries if present
       entries = entries.filter(function(e) { return e.id !== data.id; });
       // If this is the table we're heading to, cancel and hide the bar
@@ -867,6 +868,7 @@
         var timerMs = settings.timer * 60 * 1000;
 
         headingToId = id;
+        console.log('headingToId set to:', headingToId);
 
         // Write to Firebase — diner page reads onMyWayAt and handles its own transition
         db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
