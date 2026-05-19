@@ -120,6 +120,21 @@
   <div id="stats-content"><div class="loading">Loading...</div></div>
 </div>
 
+<!-- CLEAR STATS MODAL -->
+<div id="clear-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;padding:1.5rem;">
+  <div style="background:var(--surface);border:1px solid var(--border);width:100%;max-width:380px;padding:2rem;display:flex;flex-direction:column;gap:1.25rem;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--red);">Permanently Delete Stats</div>
+    <div style="font-size:0.72rem;color:var(--text);line-height:1.7;letter-spacing:0.04em;">This will permanently delete <strong>all performance data</strong> for <span id="clear-venue-name" style="font-weight:600;"></span>. Every scan, request, performance, and click event will be gone forever.<br><br>This cannot be undone.</div>
+    <div style="font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;">Type DELETE to confirm</div>
+    <input type="text" id="clear-confirm-input" placeholder="DELETE" style="width:100%;padding:0.75rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Raleway',sans-serif;font-size:0.9rem;text-align:center;letter-spacing:0.15em;outline:none;">
+    <div style="display:flex;gap:0.75rem;">
+      <button id="clear-cancel-btn" style="flex:1;padding:0.75rem;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Raleway',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">Cancel</button>
+      <button id="clear-confirm-btn" style="flex:1;padding:0.75rem;background:var(--red);border:1px solid var(--red);color:#fff;font-family:'Raleway',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;opacity:0.4;" disabled>Delete Forever</button>
+    </div>
+    <div id="clear-status" style="font-size:0.65rem;color:var(--muted);text-align:center;letter-spacing:0.1em;text-transform:uppercase;min-height:1rem;"></div>
+  </div>
+</div>
+
 <script>
   var ADMIN_PASSWORD = 'StruckDuckAdmin';
 
@@ -394,8 +409,73 @@
 
     if (events.length === 0) html = '<div class="no-data">No data for this period yet.</div>';
 
+    // Admin only — clear stats button at bottom
+    if (isAdminMode) {
+      var slug = document.getElementById('venue-select').value;
+      var venueName = slug === 'all' ? 'all venues' : (venues.find(function(v) { return v.slug === slug; }) || {}).name || slug;
+      html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">' +
+        '<button onclick="openClearModal()" style="width:100%;padding:0.75rem;background:transparent;border:1px solid #c0a0a0;color:#a06060;font-family:'Raleway',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">Clear Stats Data</button>' +
+      '</div>';
+    }
+
     document.getElementById('stats-content').innerHTML = html;
   }
+
+  // ─── CLEAR STATS MODAL ──────────────────────────────────────────────────────
+  function openClearModal() {
+    var slug = document.getElementById('venue-select').value;
+    var venueName = slug === 'all' ? 'all venues' : (venues.find(function(v) { return v.slug === slug; }) || {}).name || slug;
+    document.getElementById('clear-venue-name').textContent = venueName;
+    document.getElementById('clear-confirm-input').value = '';
+    document.getElementById('clear-confirm-btn').disabled = true;
+    document.getElementById('clear-confirm-btn').style.opacity = '0.4';
+    document.getElementById('clear-status').textContent = '';
+    document.getElementById('clear-modal').style.display = 'flex';
+  }
+
+  document.getElementById('clear-confirm-input').addEventListener('input', function() {
+    var match = this.value === 'DELETE';
+    document.getElementById('clear-confirm-btn').disabled = !match;
+    document.getElementById('clear-confirm-btn').style.opacity = match ? '1' : '0.4';
+  });
+
+  document.getElementById('clear-cancel-btn').addEventListener('click', function() {
+    document.getElementById('clear-modal').style.display = 'none';
+  });
+
+  document.getElementById('clear-confirm-btn').addEventListener('click', function() {
+    var slug = document.getElementById('venue-select').value;
+    var statusEl = document.getElementById('clear-status');
+    var btn = document.getElementById('clear-confirm-btn');
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    statusEl.textContent = 'Deleting...';
+
+    var slugsToDelete = slug === 'all' ? venues.map(function(v) { return v.slug; }) : [slug];
+    var promises = slugsToDelete.map(function(s) {
+      return db.collection('venueEvents').doc(s).collection('events').get()
+        .then(function(snap) {
+          var batch = db.batch();
+          snap.docs.forEach(function(doc) { batch.delete(doc.ref); });
+          return batch.commit();
+        });
+    });
+
+    Promise.all(promises).then(function() {
+      // Clear local cache
+      slugsToDelete.forEach(function(s) { allEvents[s] = []; });
+      statusEl.textContent = 'Done.';
+      setTimeout(function() {
+        document.getElementById('clear-modal').style.display = 'none';
+        renderStats();
+      }, 1000);
+    }).catch(function() {
+      statusEl.textContent = 'Something went wrong. Try again.';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    });
+  });
+
 </script>
 </body>
 </html>
