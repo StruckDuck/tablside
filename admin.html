@@ -727,6 +727,13 @@
     var existing = entries.find(function(e) { return e.id === data.id; });
     var FIVE_MIN = 5 * 60 * 1000;
 
+    if (data.status === 'reset' || data.status === 'performed') {
+      // Clean state — remove from entries if present
+      entries = entries.filter(function(e) { return e.id !== data.id; });
+      updatePositions();
+      return;
+    }
+
     if (data.status === 'scanned') {
       if (!existing) {
         var scannedAt = data.scannedAt ? data.scannedAt.toMillis() : Date.now();

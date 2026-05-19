@@ -244,6 +244,8 @@
   function doTransition() {
     if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
     if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    // Write reset status so next scan always gets a fresh landing screen
+    tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
     showScreen('screen-after');
   }
 
@@ -251,7 +253,13 @@
   function listenForUpdates() {
     if (unsubscribe) unsubscribe();
     unsubscribe = tableRef.onSnapshot(function(snap) {
-      if (!snap.exists) return;
+      if (!snap.exists || snap.data().status === 'reset') {
+        // Table was reset — show landing screen for next group
+        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+        if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
+        showScreen('screen-landing');
+        return;
+      }
       var data = snap.data();
 
       if (data.status === 'performed') {
@@ -360,6 +368,9 @@
 
   // ─── INIT ───────────────────────────────────────────────────────────────────
   function init() {
+    // Cancel any running intervals and listeners from a previous session
+    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
     loadConfig();
     tableRef.get().then(function(snap) {
       var prevStatus = snap.exists ? snap.data().status : null;
