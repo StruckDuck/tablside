@@ -49,21 +49,21 @@
   .subtext { font-size:0.78rem; font-weight:300; color:var(--cream-dim); text-align:center; line-height:1.8; letter-spacing:0.08em; text-transform:uppercase; }
   .after-headline { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; font-style:italic; color:var(--cream); text-align:center; line-height:1.4; }
 
-  .btn-primary { width:100%; padding:1rem 2rem; background:transparent; border:1px solid var(--gold-dim); color:var(--gold); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.3s; -webkit-tap-highlight-color:transparent; }
+  .btn-primary { width:100%; padding:1rem 2rem; background:transparent; border:1px solid var(--gold-dim); color:var(--gold); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .btn-primary:active { background:var(--plum); color:var(--cream); border-color:var(--plum); }
 
   .btn-cancel { background:transparent; border:none; color:var(--text-muted); font-family:'Raleway',sans-serif; font-size:0.7rem; font-weight:300; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-underline-offset:3px; -webkit-tap-highlight-color:transparent; }
 
   .status-card { width:100%; border:1px solid var(--border); background:rgba(0,0,0,0.25); padding:1.5rem; display:flex; flex-direction:column; align-items:center; gap:0.75rem; }
 
-  .status-ring { width:48px; height:48px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all 0.8s ease; }
+  .status-ring { width:48px; height:48px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
   .status-ring.waiting  { border-color:var(--text-muted); }
   .status-ring.soon     { border-color:var(--gold-dim); }
   .status-ring.next     { border-color:var(--gold); }
   .status-ring.incoming { border-color:var(--cream); animation:ringpulse 1.5s ease-in-out infinite; }
   @keyframes ringpulse { 0%,100%{box-shadow:0 0 20px rgba(234,233,214,0.2)} 50%{box-shadow:0 0 35px rgba(234,233,214,0.5)} }
 
-  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--text-muted); transition:width 0.8s,height 0.8s,background 0.8s; }
+  .status-dot { border-radius:50%; background:var(--text-muted); transition:width 0.8s,height 0.8s,background 0.8s; }
   .waiting  .status-dot { width:8px;  height:8px;  background:var(--text-muted); }
   .soon     .status-dot { width:18px; height:18px; background:var(--gold-dim); }
   .next     .status-dot { width:28px; height:28px; background:var(--gold); animation:dotpulse 1.8s ease-in-out infinite; }
@@ -83,7 +83,7 @@
   .link.expandable.open .arrow { transform:rotate(90deg); }
   .link.sub { padding-left:2rem; background:rgba(0,0,0,0.15); font-size:0.68rem; }
 
-  .tip-btn { width:100%; padding:1.1rem 2rem; background:var(--plum); border:1px solid var(--plum); color:var(--cream); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; text-decoration:none; display:block; text-align:center; transition:opacity 0.2s; -webkit-tap-highlight-color:transparent; }
+  .tip-btn { width:100%; padding:1.1rem 2rem; background:var(--plum); border:1px solid var(--plum); color:var(--cream); font-family:'Raleway',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; text-decoration:none; display:block; text-align:center; -webkit-tap-highlight-color:transparent; }
   .tip-btn:active { opacity:0.85; }
   .tip-btn.soft { background:transparent; border:1px solid rgba(234,233,214,0.35); color:var(--cream-dim); font-weight:300; letter-spacing:0.12em; }
 
@@ -104,10 +104,10 @@
     <div class="subtext">Request a performance for your table,<br>and he'll be with you shortly.</div>
     <button class="btn-primary" id="btn-request">Yes — come to our table</button>
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
-    <div class="links" id="links-landing">
+    <div class="links">
       <a class="link" id="venue-link" href="#" target="_blank"><span id="venue-link-label">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
       <div class="link expandable" id="joshua-toggle-1"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
-      <div class="joshua-links" style="display:none;">
+      <div class="joshua-sub" style="display:none;">
         <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
         <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
@@ -115,7 +115,7 @@
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
 
-  <!-- SCREEN 2: In Queue -->
+  <!-- SCREEN 2: Queue -->
   <div class="screen" id="screen-queue">
     <img class="monogram" src="https://static.wixstatic.com/media/da145f_f3ea51d6cbf94265b4959acc1d2081cb~mv2.png" alt="Joshua Stacy">
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
@@ -129,7 +129,7 @@
     <div class="links">
       <a class="link" id="venue-link-queue" href="#" target="_blank"><span id="venue-link-label-queue">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
       <div class="link expandable" id="joshua-toggle-2"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
-      <div class="joshua-links" style="display:none;">
+      <div class="joshua-sub" style="display:none;">
         <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
         <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
@@ -137,21 +137,21 @@
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
 
-  <!-- SCREEN 3: After Performance -->
+  <!-- SCREEN 3: Farewell -->
   <div class="screen" id="screen-after">
     <img class="monogram" src="https://static.wixstatic.com/media/da145f_f3ea51d6cbf94265b4959acc1d2081cb~mv2.png" alt="Joshua Stacy">
     <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
     <div class="after-headline">Thank you for having me.</div>
-    <a class="tip-btn" href="https://g.page/r/CT8uYeXujDHFEBM/review" target="_blank">Leave a kind word</a>
-    <a class="tip-btn soft" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
+    <a class="tip-btn" id="link-review" href="https://g.page/r/CT8uYeXujDHFEBM/review" target="_blank">Leave a kind word</a>
+    <a class="tip-btn soft" id="link-venmo" href="https://venmo.com/JoshuaStacyUpClose" target="_blank">Enjoyed the show? Find me on Venmo.</a>
     <div class="links">
       <a class="link" id="venue-link-after" href="#" target="_blank"><span id="venue-link-label-after">More evenings at Lady Slipper</span><span class="arrow">›</span></a>
       <div class="link expandable" id="joshua-toggle-3"><span>Keep up with Joshua</span><span class="arrow">›</span></div>
-      <div class="joshua-links" style="display:none;">
+      <div class="joshua-sub" style="display:none;">
         <a class="link sub" href="https://joshuastacyupclose.com" target="_blank"><span>Website</span><span class="arrow">›</span></a>
         <a class="link sub" href="https://www.instagram.com/joshua_stacy_up_close" target="_blank"><span>Instagram</span><span class="arrow">›</span></a>
       </div>
-      <a class="link" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank"><span>Stay in the loop</span><span class="arrow">›</span></a>
+      <a class="link" id="link-mailing" href="https://docs.google.com/forms/d/1OO5CuavhZy073Qsklc4JwBs9u8XS3A7ZqutSMVFP4IA/viewform" target="_blank"><span>Stay in the loop</span><span class="arrow">›</span></a>
     </div>
     <div class="footer-name">Joshua Stacy — Close-Up Magic</div>
   </div>
@@ -172,19 +172,169 @@
   var FS = firebase.firestore.FieldValue;
 
   // ─── PARAMS ─────────────────────────────────────────────────────────────────
-  // Visitor token — persists in localStorage to track returning visitors
-  var visitorToken = localStorage.getItem('tablside_visitor_token');
+  var params  = new URLSearchParams(window.location.search);
+  var venue   = params.get('venue') || 'unknown';
+  var table   = params.get('table') || '?';
+  var tableRef = db.collection('venues').doc(venue).collection('tables').doc('table_' + table);
+  var configRef = db.collection('venueConfigs').doc(venue);
+
+  // ─── STATE ──────────────────────────────────────────────────────────────────
+  var wasWaiting     = false;  // true if this device entered the queue
+  var unsubscribe    = null;   // Firebase listener
+  var transitionInt  = null;   // interval checking timer expiry
+  var visitorToken   = localStorage.getItem('tablside_visitor_token');
   if (!visitorToken) {
-    visitorToken = 'vst_' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+    visitorToken = 'vst_' + Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
     localStorage.setItem('tablside_visitor_token', visitorToken);
   }
 
-  var params = new URLSearchParams(window.location.search);
-  var venue = params.get('venue') || 'unknown';
-  var table = params.get('table') || '?';
-  var tableRef = db.collection('venues').doc(venue).collection('tables').doc('table_' + table);
-  var configRef = db.collection('venueConfigs').doc(venue);
-  var unsubscribe = null;
+  // ─── HELPERS ────────────────────────────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function setStatus(state, label, sub) {
+    document.getElementById('status-ring').className = 'status-ring ' + state;
+    document.getElementById('status-label').textContent = label;
+    document.getElementById('status-sub').textContent = sub;
+  }
+
+  function cleanup() {
+    if (unsubscribe)   { unsubscribe(); unsubscribe = null; }
+    if (transitionInt) { clearInterval(transitionInt); transitionInt = null; }
+  }
+
+  // ─── TRANSITION INTERVAL ────────────────────────────────────────────────────
+  // Starts when device sees on_my_way. Checks every 500ms using timestamp math.
+  // No drift, no freeze — always accurate regardless of phone sleep.
+  function startTransitionCheck(onMyWayAt, timerMins) {
+    if (transitionInt) clearInterval(transitionInt);
+    var timerMs = (timerMins || 3) * 60 * 1000;
+    transitionInt = setInterval(function() {
+      if (Date.now() - onMyWayAt >= timerMs) {
+        clearInterval(transitionInt);
+        transitionInt = null;
+        if (wasWaiting) {
+          // This device was in the queue — show farewell and reset Firebase
+          tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
+          showScreen('screen-after');
+        }
+        // If not wasWaiting, the listener will handle it when Firebase updates
+      }
+    }, 500);
+  }
+
+  // ─── THE SINGLE LISTENER ────────────────────────────────────────────────────
+  // This is the heart of the system. One listener, always running, always
+  // shows the correct screen based on current Firebase state.
+  function subscribe() {
+    if (unsubscribe) unsubscribe();
+    unsubscribe = tableRef.onSnapshot(function(snap) {
+      var data = snap.exists ? snap.data() : null;
+      var status = data ? data.status : null;
+      var TEN_MIN = 10 * 60 * 1000;
+
+      // ── RESET / FRESH / STALE ──────────────────────────────────────────────
+      // No document, reset status, or on_my_way older than 10 minutes
+      // = treat as fresh, show landing screen
+      var isStale = status === 'on_my_way' && data.onMyWayAt &&
+                    (Date.now() - data.onMyWayAt.toMillis()) > TEN_MIN;
+
+      if (!status || status === 'reset' || isStale) {
+        if (transitionInt) { clearInterval(transitionInt); transitionInt = null; }
+        wasWaiting = false;
+        showScreen('screen-landing');
+        // Write scanned status so admin sees activity
+        tableRef.set({
+          table: table, venue: venue,
+          status: 'scanned',
+          scannedAt: FS.serverTimestamp()
+        }).catch(function() {});
+        logEvent('scan');
+        return;
+      }
+
+      // ── SCANNED ───────────────────────────────────────────────────────────
+      if (status === 'scanned') {
+        showScreen('screen-landing');
+        return;
+      }
+
+      // ── REQUESTED ─────────────────────────────────────────────────────────
+      if (status === 'requested') {
+        wasWaiting = true;
+        showScreen('screen-queue');
+        var pos = data.queuePosition || 1;
+        if (pos <= 1)       setStatus('next',    "You're next.",      'The magician will be with you shortly');
+        else if (pos === 2) setStatus('soon',    'Almost time.',      'One table ahead of you');
+        else                setStatus('waiting', "You're on the list.", (pos - 1) + ' table' + (pos > 2 ? 's' : '') + ' ahead of you');
+        return;
+      }
+
+      // ── ON MY WAY ─────────────────────────────────────────────────────────
+      if (status === 'on_my_way') {
+        var onMyWayAt = data.onMyWayAt ? data.onMyWayAt.toMillis() : Date.now();
+        var timerMins = data.timerMins || 3;
+        var timerMs   = timerMins * 60 * 1000;
+        var elapsed   = Date.now() - onMyWayAt;
+
+        if (elapsed >= timerMs) {
+          // Timer already expired
+          if (wasWaiting) {
+            // This device was waiting — show farewell, reset Firebase
+            tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
+            showScreen('screen-after');
+          } else {
+            // New device scanning after performance — treat as fresh
+            tableRef.set({
+              table: table, venue: venue,
+              status: 'scanned',
+              scannedAt: FS.serverTimestamp()
+            }).catch(function() {});
+            logEvent('scan');
+            showScreen('screen-landing');
+          }
+        } else {
+          // Timer still running — show pulsing dot, start interval
+          wasWaiting = true;
+          showScreen('screen-queue');
+          setStatus('incoming', 'On the way.', 'Your magician is headed to your table');
+          startTransitionCheck(onMyWayAt, timerMins);
+        }
+        return;
+      }
+
+      // ── SAFE DEFAULT ──────────────────────────────────────────────────────
+      // Any unrecognised status — show landing screen
+      showScreen('screen-landing');
+
+    }, function(err) {
+      // On listener error, show landing screen as safe fallback
+      showScreen('screen-landing');
+    });
+  }
+
+  // ─── BUTTONS ────────────────────────────────────────────────────────────────
+  document.getElementById('btn-request').addEventListener('click', function() {
+    wasWaiting = true;
+    tableRef.set({
+      table: table, venue: venue,
+      status: 'requested',
+      requestedAt: FS.serverTimestamp(),
+      performedAt: null
+    }).catch(function() {});
+    logEvent('request');
+    // Listener will fire and show queue screen
+  });
+
+  document.getElementById('btn-cancel').addEventListener('click', function() {
+    wasWaiting = false;
+    if (transitionInt) { clearInterval(transitionInt); transitionInt = null; }
+    tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
+    logEvent('cancellation');
+    // Listener will fire and show landing screen
+  });
 
   // ─── VENUE CONFIG ───────────────────────────────────────────────────────────
   function loadConfig() {
@@ -198,7 +348,6 @@
       if (cfg.colorHighlight) { r.style.setProperty('--gold', cfg.colorHighlight); r.style.setProperty('--gold-dim', cfg.colorHighlight); }
       if (cfg.colorText)      { r.style.setProperty('--cream', cfg.colorText); r.style.setProperty('--text', cfg.colorText); }
       if (cfg.colorMuted)     { r.style.setProperty('--cream-dim', cfg.colorMuted); r.style.setProperty('--text-muted', cfg.colorMuted); }
-
       var label = cfg.venueLinkLabel || 'More evenings here';
       var url   = cfg.venueLinkUrl   || '#';
       ['venue-link','venue-link-queue','venue-link-after'].forEach(function(id) {
@@ -210,83 +359,10 @@
     }).catch(function() {});
   }
 
-  // ─── SCREEN MANAGEMENT ──────────────────────────────────────────────────────
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-    document.getElementById(id).classList.add('active');
-  }
-
-  function setStatus(state, label, sub) {
-    document.getElementById('status-ring').className = 'status-ring ' + state;
-    document.getElementById('status-label').textContent = label;
-    document.getElementById('status-sub').textContent = sub;
-  }
-
-  // ─── TRANSITION TIMER ───────────────────────────────────────────────────────
-  // Polls every second using the Firebase onMyWayAt timestamp.
-  // Survives phone lock, page reload, anything.
-  var transitionInterval = null;
-
-  function scheduleTransition(onMyWayAt, timerMins) {
-    if (transitionInterval) clearInterval(transitionInterval);
-    var timerMs = (timerMins || 3) * 60 * 1000;
-    // Check immediately
-    if (Date.now() - onMyWayAt >= timerMs) { doTransition(); return; }
-    transitionInterval = setInterval(function() {
-      if (Date.now() - onMyWayAt >= timerMs) {
-        clearInterval(transitionInterval);
-        transitionInterval = null;
-        doTransition();
-      }
-    }, 500);
-  }
-
-  function doTransition() {
-    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
-    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-    // Write reset status so next scan always gets a fresh landing screen
-    tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() }).catch(function() {});
-    showScreen('screen-after');
-  }
-
-  // ─── FIREBASE LISTENER ──────────────────────────────────────────────────────
-  function listenForUpdates() {
-    if (unsubscribe) unsubscribe();
-    unsubscribe = tableRef.onSnapshot(function(snap) {
-      if (!snap.exists || snap.data().status === 'reset') {
-        // Table was reset — show landing screen for next group
-        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-        if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
-        showScreen('screen-landing');
-        return;
-      }
-      var data = snap.data();
-
-      if (data.status === 'performed') {
-            doTransition(); return;
-      }
-
-      if (data.status === 'on_my_way') {
-        setStatus('incoming', 'On the way.', 'Your magician is headed to your table');
-        var onMyWayAt = data.onMyWayAt ? data.onMyWayAt.toMillis() : Date.now();
-        scheduleTransition(onMyWayAt, data.timerMins || 3);
-        return;
-      }
-
-      var pos = data.queuePosition || 1;
-      if (pos <= 1)      setStatus('next',    "You're next.",   'The magician will be with you shortly');
-      else if (pos === 2) setStatus('soon',   'Almost time.',   'One table ahead of you');
-      else                setStatus('waiting', "You're on the list.", (pos - 1) + ' table' + (pos > 2 ? 's' : '') + ' ahead of you');
-    });
-  }
-
   // ─── EVENTS ─────────────────────────────────────────────────────────────────
   function logEvent(type) {
-    // Check if this token has visited this venue before
-    var tokenKey = 'tablside_seen_' + venue;
-    var isReturning = !!localStorage.getItem(tokenKey);
-    if (type === 'scan') localStorage.setItem(tokenKey, '1');
-
+    var isReturning = !!localStorage.getItem('tablside_seen_' + venue);
+    if (type === 'scan') localStorage.setItem('tablside_seen_' + venue, '1');
     db.collection('venueEvents').doc(venue).collection('events')
       .doc(Date.now() + '_' + table + '_' + type)
       .set({
@@ -300,40 +376,21 @@
       }).catch(function() {});
   }
 
-  // ─── BUTTONS ────────────────────────────────────────────────────────────────
-  document.getElementById('btn-request').addEventListener('click', function() {
-    tableRef.get().then(function(snap) {
-      var status = snap.exists ? snap.data().status : null;
-      if (status === 'requested' || status === 'on_my_way') return;
-      tableRef.set({ table: table, venue: venue, status: 'requested', requestedAt: FS.serverTimestamp(), performedAt: null });
-      logEvent('request');
-      showScreen('screen-queue');
-      listenForUpdates();
-    });
-  });
+  // ─── LINK CLICK TRACKING ────────────────────────────────────────────────────
+  document.getElementById('link-review').addEventListener('click', function() { logEvent('click_review'); });
+  document.getElementById('link-venmo').addEventListener('click', function() { logEvent('click_venmo'); });
+  document.getElementById('link-mailing').addEventListener('click', function() { logEvent('click_mailing_list'); });
 
-  document.getElementById('btn-cancel').addEventListener('click', function() {
-    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
-    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-    tableRef.set({ status: 'reset', resetAt: FS.serverTimestamp() });
-    logEvent('cancellation');
-    showScreen('screen-landing');
-  });
-
-  // ─── JOSHUA LINKS TOGGLE ────────────────────────────────────────────────────
-  ['joshua-toggle-1','joshua-toggle-2','joshua-toggle-3'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
+  document.querySelectorAll('#screen-after .link').forEach(function(el) {
     el.addEventListener('click', function() {
-      this.classList.toggle('open');
-      var next = this.nextElementSibling;
-      if (next && next.classList.contains('joshua-links')) {
-        next.style.display = next.style.display === 'none' ? 'block' : 'none';
-      }
+      var href = this.href || '';
+      if (href.indexOf('instagram') > -1) logEvent('click_instagram');
+      else if (href.indexOf('joshuastacyupclose.com') > -1) logEvent('click_website');
+      else if (href.indexOf('ladyslipper') > -1 || href.indexOf('preachersson') > -1) logEvent('click_venue_link');
     });
   });
 
-  // Tap flash and click tracking on regular links
+  // ─── TAP FLASH ──────────────────────────────────────────────────────────────
   document.querySelectorAll('.link:not(.expandable)').forEach(function(el) {
     el.addEventListener('click', function() {
       var self = this;
@@ -344,67 +401,22 @@
     });
   });
 
-  // Link click tracking — only fires on after-performance screen links
-  function trackClick(type) {
-    logEvent('click_' + type);
-  }
-
-  document.querySelectorAll('.tip-btn').forEach(function(el) {
+  // ─── JOSHUA TOGGLES ─────────────────────────────────────────────────────────
+  ['joshua-toggle-1','joshua-toggle-2','joshua-toggle-3'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
     el.addEventListener('click', function() {
-      var href = this.href || '';
-      if (href.indexOf('venmo') > -1) trackClick('venmo');
-      else if (href.indexOf('google') > -1) trackClick('review');
-    });
-  });
-
-  document.querySelectorAll('#screen-after .link').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var href = this.href || '';
-      if (href.indexOf('instagram') > -1) trackClick('instagram');
-      else if (href.indexOf('joshuastacyupclose.com') > -1) trackClick('website');
-      else if (href.indexOf('google.com/forms') > -1) trackClick('mailing_list');
-      else if (href.indexOf('ladyslipper') > -1 || href.indexOf('preachersson') > -1) trackClick('venue_link');
+      this.classList.toggle('open');
+      var next = this.nextElementSibling;
+      if (next && next.classList.contains('joshua-sub')) {
+        next.style.display = next.style.display === 'none' ? 'block' : 'none';
+      }
     });
   });
 
   // ─── INIT ───────────────────────────────────────────────────────────────────
-  function init() {
-    // Cancel any running intervals and listeners from a previous session
-    if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
-    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-    loadConfig();
-    tableRef.get().then(function(snap) {
-      var prevStatus = snap.exists ? snap.data().status : null;
-
-      if (prevStatus === 'performed') {
-        // New group at this table — reset to fresh
-        tableRef.set({ table: table, venue: venue, status: 'scanned', scannedAt: FS.serverTimestamp(), requestedAt: null, performedAt: null, queuePosition: null });
-        logEvent('scan');
-        showScreen('screen-landing');
-        return;
-      }
-
-      // Log the scan
-      tableRef.set({ table: table, venue: venue, status: 'scanned', scannedAt: FS.serverTimestamp() }, { merge: true });
-      logEvent('scan');
-
-      if (prevStatus === 'requested') {
-        showScreen('screen-queue');
-        listenForUpdates();
-      } else if (prevStatus === 'on_my_way') {
-        showScreen('screen-queue');
-        snap.ref.get().then(function(fresh) {
-          var d = fresh.data();
-          setStatus('incoming', 'On the way.', 'Your magician is headed to your table');
-          var onMyWayAt = d.onMyWayAt ? d.onMyWayAt.toMillis() : Date.now();
-          scheduleTransition(onMyWayAt, d.timerMins || 3);
-          listenForUpdates();
-        });
-      }
-    });
-  }
-
-  init();
+  loadConfig();
+  subscribe();
 </script>
 </body>
 </html>

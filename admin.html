@@ -274,7 +274,6 @@
   var customizeSlug = null;
   var newMapData = null;
 
-
   // ─── HELPERS ────────────────────────────────────────────────────────────────
   function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
@@ -414,6 +413,14 @@
           var ph = parseInt(Object.keys(hc).sort(function(a,b){return hc[b]-hc[a];})[0]);
           document.getElementById('stat-peak').textContent = ph === 0 ? '12am' : ph < 12 ? ph + 'am' : ph === 12 ? '12pm' : (ph-12) + 'pm';
         } else document.getElementById('stat-peak').textContent = '—';
+
+        // Return visitor rate
+        var scanEvents = events.filter(function(e) { return e.type === 'scan' && e.visitorToken; });
+        if (scanEvents.length > 0) {
+          var returningCount = scanEvents.filter(function(e) { return e.returning; }).length;
+          document.getElementById('stat-returning').textContent = Math.round(returningCount / scanEvents.length * 100) + '%';
+        } else document.getElementById('stat-returning').textContent = '—';
+
       }).catch(function() {});
   }
 
@@ -730,15 +737,19 @@
     var existing = entries.find(function(e) { return e.id === data.id; });
     var FIVE_MIN = 5 * 60 * 1000;
 
-    if (data.status === 'reset' || data.status === 'performed') {
-      // Clean state — remove from entries if present
+    if (data.status === 'reset') {
+      var wasRequest = existing && existing.type === 'request';
       entries = entries.filter(function(e) { return e.id !== data.id; });
-      // If this is the table we're heading to, cancel and hide the bar
+      // If heading to this table, cancel the bar
       if (headingToId === data.id) {
         stopCountdown();
         headingToId = null;
         document.getElementById('heading-bar').style.display = 'none';
-        showCancelNotice('Table ' + (data.table || existing?.table || '?'), data.id, 5 * 60 * 1000);
+      }
+      // Only show cancel notice if the table was actively in the queue
+      if (wasRequest) {
+        var tableLabel = 'Table ' + (data.table || (existing && existing.table) || '?');
+        showCancelNotice(tableLabel, data.id, 5 * 60 * 1000);
       }
       updatePositions();
       return;
@@ -765,15 +776,6 @@
       playAlert();
       updatePositions();
 
-    } else if (data.status === 'cancelled') {
-      entries = entries.filter(function(e) { return e.id !== data.id; });
-      var cancelledAt = data.cancelledAt ? data.cancelledAt.toMillis() : Date.now();
-      var age = Date.now() - cancelledAt;
-      if (age < FIVE_MIN && !document.querySelector('[data-cancel-id="' + data.id + '"]')) {
-        showCancelNotice(label, data.id, FIVE_MIN - age);
-      }
-      updatePositions();
-
     } else if (data.status === 'on_my_way') {
       entries = entries.filter(function(e) { return e.id !== data.id; });
       updatePositions();
@@ -788,9 +790,6 @@
         }
       }
 
-    } else if (data.status === 'performed') {
-      entries = entries.filter(function(e) { return e.id !== data.id; });
-      updatePositions();
     }
   }
 
