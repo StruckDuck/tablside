@@ -866,6 +866,8 @@
         localStorage.setItem('timer', settings.timer);
         var timerMs = settings.timer * 60 * 1000;
 
+        headingToId = id;
+
         // Write to Firebase — diner page reads onMyWayAt and handles its own transition
         db.collection('venues').doc(settings.activeVenue).collection('tables').doc(id)
           .update({ status: 'on_my_way', onMyWayAt: FS.serverTimestamp(), timerMins: settings.timer });
